@@ -1,5 +1,7 @@
-const Home = () => {
-  return <div>메인페이지</div>;
-};
+import React from 'react';
+
+function Home() {
+  return <div>Home</div>;
+}
 
 export default Home;
