@@ -1,7 +1,19 @@
-import React from 'react';
+import Header from '../common/header/Header';
+import KakaoMap from '../common/kakao/KaKaoMap';
+import styled from 'styled-components';
 
-function Home() {
-  return <div>Home</div>;
-}
+const Home = () => {
+  return (
+    <>
+      <Header />
+      <HomeLayout>
+        <KakaoMap />
+      </HomeLayout>
+    </>
+  );
+};
 
+const HomeLayout = styled.div`
+  padding-top: 100px;
+`;
 export default Home;
