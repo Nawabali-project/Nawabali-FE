@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import LoginSignupModal from '../modal/LoginSignupModal';
+import Login from '@/pages/auth/Login';
+import Signup from '@/pages/auth/Signup';
 import { useState } from 'react';
 
 const Header: React.FC = () => {
@@ -26,7 +27,13 @@ const Header: React.FC = () => {
         </Items>
       </HeaderLayout>
       {isModalOpen && (
-        <LoginSignupModal isLogin={isLogin} setIsModalOpen={setIsModalOpen} />
+        <>
+          {isLogin ? (
+            <Login setIsModalOpen={setIsModalOpen} />
+          ) : (
+            <Signup setIsModalOpen={setIsModalOpen} />
+          )}
+        </>
       )}
     </>
   );

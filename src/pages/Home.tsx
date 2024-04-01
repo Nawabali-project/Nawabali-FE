@@ -1,5 +1,6 @@
+import SocialKaKao from '@/common/kakao/SocialKaKao';
 import Header from '../common/header/Header';
-import KakaoMap from '../common/kakao/KaKaoMap';
+// import KakaoMap from '../common/kakao/KaKaoMap';
 import styled from 'styled-components';
 
 const Home = () => {
@@ -7,7 +8,8 @@ const Home = () => {
     <>
       <Header />
       <HomeLayout>
-        <KakaoMap />
+        {/* <KakaoMap /> */}
+        <SocialKaKao />
       </HomeLayout>
     </>
   );
