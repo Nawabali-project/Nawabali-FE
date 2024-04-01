@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from './Modal';
-import Addr from '../kakao/KaKaoAddr';
+import KaKaoAddr from '../kakao/KaKaoAddr';
 
 interface LoginSignupProps {
   isLogin: boolean;
@@ -33,7 +33,7 @@ const LoginSignupModal: React.FC<LoginSignupProps> = (props) => {
           <input type="password" placeholder="비밀번호를 입력해주세요" />
           <div>비밀번호 확인</div>
           <input type="password" placeholder="비밀번호를 다시 입력해주세요" />
-          <Addr />
+          <KaKaoAddr />
           <button>가입하기</button>
         </>
       )}
