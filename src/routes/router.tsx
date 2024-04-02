@@ -3,6 +3,9 @@ import App from '@/App';
 import Home from '@/pages/Home';
 import KakaoCallBack from '@/pages/auth/KakaoCallBack';
 import Myplace from '@/pages/user/Myplace';
+import Main from '@/pages/Main';
+// import KakaoRedirectHandler from '@/pages/KakaoRedirectHandler';
+
 
 const router = createBrowserRouter([
   {
@@ -20,6 +23,14 @@ const router = createBrowserRouter([
         path: '/myplace',
         element: <Myplace />,
       },
+      {
+        path: '/main',
+        element: <Main />,
+      },
+      // {
+      //   path: '/login/oauth',
+      //   element: <KakaoRedirectHandler />,
+      // },
     ],
   },
 ]);
