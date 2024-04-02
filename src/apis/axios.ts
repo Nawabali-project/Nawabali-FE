@@ -3,12 +3,12 @@ import { Cookies } from 'react-cookie';
 
 // 헤더가 필요 없는 인스턴스
 export const instanceWithoutHeaders = axios.create({
-  baseURL: import.meta.env.VITE_APP_SERVER_URL,
+  baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
 
 // 헤더가 필요한 인스턴스
 export const instanceWithToken = axios.create({
-  baseURL: import.meta.env.VITE_APP_SERVER_URL,
+  baseURL: import.meta.env.VITE_APP_BASE_URL,
   headers: {
     'content-type': 'application/json',
     accept: 'application/json',
