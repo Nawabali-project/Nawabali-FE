@@ -50,7 +50,7 @@ const Header: React.FC = () => {
               placeholder="지역명, 상호 등으로 검색할 수 있어요!"
               onChange={(e) => setAddress(e.target.value)}
             />
-            <SearchBar address={address} isOpen={isSearchbarOpen} />
+            <SearchBar address={address} $isOpen={isSearchbarOpen} />
           </SearchDiv>
 
           {isLoggedin ? (
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
       {isModalOpen && (
         <>
           {isLogin ? (
-            <Login setIsModalOpen={setIsModalOpen} isLogin={isLogin} />
+            <Login setIsModalOpen={setIsModalOpen} />
           ) : (
             <Signup setIsModalOpen={setIsModalOpen} />
           )}

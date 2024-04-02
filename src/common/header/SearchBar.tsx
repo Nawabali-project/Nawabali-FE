@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 
 interface SearchBarProps {
   address: string;
-  isOpen: boolean;
+  $isOpen: boolean;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ address, isOpen }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ address, $isOpen }) => {
   const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ address, isOpen }) => {
   }, [address]);
 
   return (
-    <ModalDiv isOpen={isOpen}>
+    <ModalDiv $isOpen={$isOpen}>
       <div>
         <span>
           <FaMapMarkerAlt />
@@ -37,7 +37,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ address, isOpen }) => {
 
 export default SearchBar;
 
-const ModalDiv = styled.div<{ isOpen: boolean }>`
+const ModalDiv = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   left: 0;
   top: 35px;
@@ -49,11 +49,11 @@ const ModalDiv = styled.div<{ isOpen: boolean }>`
   font-size: 13px;
   border-radius: 10px;
   background-color: white;
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
   transition:
     opacity 0.3s,
     transform 0.3s;
-  animation: ${({ isOpen }) => (isOpen ? slideDown : 'none')} 0.3s ease;
+  animation: ${({ $isOpen }) => ($isOpen ? slideDown : 'none')} 0.3s ease;
 `;
 
 const slideDown = keyframes`

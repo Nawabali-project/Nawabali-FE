@@ -9,6 +9,7 @@ import {
   SideDiv,
   BottomDiv,
 } from '@pages/auth/authStyle';
+import SocialKaKao from '@/common/kakao/SocialKaKao';
 
 interface FormValue {
   email: string;
@@ -56,7 +57,7 @@ const Login: React.FC<LoginProps> = (props) => {
         </AuthDiv>
       </form>
       <AuthButton type="submit">로그인</AuthButton>
-      <AuthButton>카카오계정으로 시작하기</AuthButton>
+      <SocialKaKao />
       <SideDiv>
         <span>로그인 유지</span>
         <span>아이디/비밀번호 찾기</span>

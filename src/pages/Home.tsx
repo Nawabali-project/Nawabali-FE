@@ -1,10 +1,7 @@
 // import KakaoMap from '../common/kakao/KaKaoMap';
+
 const Home = () => {
-  return (
-    <>
-      <div>HELLLLLLLLP</div>
-    </>
-  );
+  return <>{/* <KakaoMap /> */}</>;
 };
 
 export default Home;
