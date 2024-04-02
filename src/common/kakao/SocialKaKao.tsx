@@ -1,32 +1,22 @@
-import { useEffect } from 'react';
-
 const SocialKaKao = () => {
   const kakaoLoginImg = '/assets/images/kakaoLoginImg.png';
+  const REDIRECT_URI = `${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
 
   const loginWithKakao = () => {
-    const { Kakao } = window;
-    Kakao.Auth.authorize({
-      redirectUri: `${import.meta.env.VITE_APP_BASE_URL}/login/oauth`,
-      scope: 'profile_nickname, account_email',
-    });
+    const CLIENT_ID = `${import.meta.env.VITE_KAKAO_RESTAPI_KEY}`;
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    window.location.href = KAKAO_AUTH_URL;
   };
-
-  useEffect(() => {
-    const kakao = (window as any)?.Kakao;
-
-    // 카카오 객체를 초기화 (필수)
-    if (!kakao?.isInitialized()) {
-      kakao?.init(import.meta.env.VITE_KAKAO_JS_KEY);
-    }
-  }, []);
 
   return (
     <>
-      <button onClick={loginWithKakao}>
-        <img src={kakaoLoginImg} alt="login with kakao" />
-      </button>
+      <img
+        src={kakaoLoginImg}
+        alt="login with kakao"
+        onClick={loginWithKakao}
+        style={{ cursor: 'pointer' }}
+      />
     </>
   );
 };
-
 export default SocialKaKao;

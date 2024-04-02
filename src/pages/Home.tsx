@@ -1,20 +1,13 @@
-import SocialKaKao from '@/common/kakao/SocialKaKao';
-import Header from '../common/header/Header';
-import styled from 'styled-components';
+// import KakaoMap from '../common/kakao/KaKaoMap';
+// import SocialKaKao from '@/common/kakao/SocialKaKao';
 
 const Home = () => {
   return (
     <>
-      <Header />
-      <HomeLayout>
-        <SocialKaKao />
-      </HomeLayout>
+      {/* <KakaoMap /> */}
+      {/* <SocialKaKao /> */}
     </>
   );
 };
-
-const HomeLayout = styled.div`
-  padding-top: 100px;
-`;
 
 export default Home;
