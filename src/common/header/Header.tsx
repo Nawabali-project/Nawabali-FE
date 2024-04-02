@@ -1,16 +1,38 @@
 import styled from 'styled-components';
 import Login from '@/pages/auth/Login';
 import Signup from '@/pages/auth/Signup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { IoIosSearch } from 'react-icons/io';
+import { FaRegEdit } from 'react-icons/fa';
+import { HiOutlineChatBubbleLeftRight } from 'react-icons/hi2';
+import { GoBell } from 'react-icons/go';
+import SearchBar from './SearchBar';
+import { useDebounce } from '@/common/hooks/useDebounce';
+const profileImg = '/assets/images/basicImg.png';
 
 const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [isLoggedin, setIsLoggedin] = useState<boolean>(false);
+  const [address, setAddress] = useState<string>('');
+  const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    setIsLoggedin(!!accessToken);
+  }, []);
+
+  const debouncedAddress = useDebounce(address, 300);
+
+  useEffect(() => {
+    setSearchbarOpen(!!debouncedAddress.trim());
+  }, [debouncedAddress]);
 
   const handleLogin = () => {
     setIsLogin(true);
     setIsModalOpen(true);
   };
+
   const handleSignup = () => {
     setIsLogin(false);
     setIsModalOpen(true);
@@ -19,17 +41,59 @@ const Header: React.FC = () => {
   return (
     <>
       <HeaderLayout>
-        <div>logo</div>
         <Items>
-          <input type="text" placeholder="사진스팟을 검색해 보세요" />
-          <button onClick={handleLogin}>로그인</button>
-          <button onClick={handleSignup}>회원가입</button>
+          <SearchDiv style={{ position: 'relative' }}>
+            <IoIosSearch style={{ color: 'gray' }} />
+            <input
+              value={address}
+              type="text"
+              placeholder="지역명, 상호 등으로 검색할 수 있어요!"
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <SearchBar address={address} isOpen={isSearchbarOpen} />
+          </SearchDiv>
+
+          {isLoggedin ? (
+            <Items style={{ width: '150px' }}>
+              <HiOutlineChatBubbleLeftRight
+                style={{
+                  fontSize: '25px',
+                  color: 'gray',
+                  margin: '8px',
+                  cursor: 'pointer',
+                }}
+              />
+              <GoBell
+                style={{
+                  fontSize: '25px',
+                  color: 'gray',
+                  margin: '8px',
+                  cursor: 'pointer',
+                }}
+              />
+              <Profile />
+            </Items>
+          ) : (
+            <Items style={{ width: '150px' }}>
+              <HeaderSpan onClick={handleLogin}>로그인</HeaderSpan>
+              <div
+                style={{ width: '1px', height: '15px', background: 'gray' }}
+              />
+              <HeaderSpan onClick={handleSignup}>회원가입</HeaderSpan>
+            </Items>
+          )}
+          <WriteButton>
+            <HeaderSpan style={{ margin: '0', color: 'white' }}>
+              글쓰기
+            </HeaderSpan>
+            <FaRegEdit style={{ color: 'white' }} />
+          </WriteButton>
         </Items>
       </HeaderLayout>
       {isModalOpen && (
         <>
           {isLogin ? (
-            <Login setIsModalOpen={setIsModalOpen} />
+            <Login setIsModalOpen={setIsModalOpen} isLogin={isLogin} />
           ) : (
             <Signup setIsModalOpen={setIsModalOpen} />
           )}
@@ -39,21 +103,72 @@ const Header: React.FC = () => {
   );
 };
 
+export default Header;
+
 const HeaderLayout = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   position: fixed;
   top: 0;
-  z-index: 999;
+  right: 0;
   width: 100%;
-  padding: 10px 0px 10px 50px;
-  background-color: gray;
+  height: 60px;
+  z-index: 900;
+  background-color: white;
+  border-bottom: 1px solid gray;
+  padding: 0 100px;
 `;
 
 const Items = styled.div`
   display: flex;
-  margin-right: 100px;
+  justify-content: center;
+  align-items: center;
 `;
 
-export default Header;
+const SearchDiv = styled.div`
+  border: 1px solid gray;
+  border-radius: 15px;
+  height: 30px;
+  width: 250px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 10px;
+
+  input {
+    width: 230px;
+    border: none;
+    font-size: 13px;
+    &:focus {
+      outline: none;
+    }
+  }
+`;
+
+const HeaderSpan = styled.span`
+  font-size: 13px;
+  color: gray;
+  margin: 0 8px;
+  cursor: pointer;
+`;
+
+const WriteButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  background-color: gray;
+  padding: 2px 5px;
+  cursor: pointer;
+`;
+
+const Profile = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+  cursor: pointer;
+  margin: 0 8px;
+  background-image: url(${profileImg});
+`;
