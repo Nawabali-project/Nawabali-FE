@@ -1,19 +1,22 @@
 import Header from '../common/header/Header';
-import KakaoMap from '../common/kakao/KaKaoMap';
 import styled from 'styled-components';
+import CreatePostModal from '@/common/modal/CreatePostModal';
+import { useState } from 'react';
 
 const Main = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   return (
     <>
       <Header />
-      <HomeLayout>
-        <KakaoMap />
-      </HomeLayout>
+      <Button onClick={() => setIsModalOpen(true)}>글쓰기</Button>
+      {isModalOpen && <CreatePostModal setIsModalOpen={setIsModalOpen} />}
     </>
   );
 };
 
-const HomeLayout = styled.div`
-  padding-top: 100px;
+const Button = styled.button`
+  margin-top: 100px;
 `;
+
 export default Main;

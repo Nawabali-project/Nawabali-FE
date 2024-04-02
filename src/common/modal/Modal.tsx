@@ -21,7 +21,7 @@ const ModalWrapper = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(82, 82, 82, 0.6);
 `;
 
 const ModalContent = styled.div`
@@ -30,7 +30,7 @@ const ModalContent = styled.div`
   justify-content: center;
   position: relative;
   padding: 40px;
-  border-radius: 30px;
+  border-radius: 15px;
   background-color: white;
   box-shadow: 0 0 5px;
 `;

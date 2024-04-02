@@ -24,5 +24,6 @@ module.exports = {
         trailingComma: 'all',
       },
     ],
+    'prefer-const': 'off',
   },
 };
