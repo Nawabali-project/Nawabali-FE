@@ -25,8 +25,9 @@ const SideBarDiv = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  width: 160px;
+  width: 140px;
   height: 500px;
   padding: 20px;
   border: 1px solid red;
+  margin-right: 30px;
 `;

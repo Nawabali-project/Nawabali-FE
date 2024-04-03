@@ -1,9 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import Home from '@/pages/Home';
-import KakaoCallBack from '@/pages/auth/KakaoCallBack';
+import KakaoRedirect from '@/pages/auth/KakaoRedirect';
 import Myplace from '@/pages/user/Myplace';
-import Mypage from '@/pages/user/Mypage';
+import EditUser from '@/pages/user/Mypage';
+import Mypage from '@/pages/user/EditUser';
 import Main from '@/pages/Main';
 // import KakaoRedirectHandler from '@/pages/KakaoRedirectHandler';
 
@@ -17,11 +18,15 @@ const router = createBrowserRouter([
       },
       {
         path: '/login/oauth',
-        element: <KakaoCallBack />,
+        element: <KakaoRedirect />,
       },
       {
         path: '/myplace',
         element: <Myplace />,
+      },
+      {
+        path: '/mypage/edit',
+        element: <EditUser />,
       },
       {
         path: '/mypage',
@@ -31,10 +36,6 @@ const router = createBrowserRouter([
         path: '/main',
         element: <Main />,
       },
-      // {
-      //   path: '/login/oauth',
-      //   element: <KakaoRedirectHandler />,
-      // },
     ],
   },
 ]);
