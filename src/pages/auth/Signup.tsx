@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import Modal from '../../common/modal/Modal';
+import Modal from '../../components/modal/Modal';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   StyledLabel,

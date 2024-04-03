@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from './Modal';
-import KaKaoAddr from '../kakao/KaKaoAddr';
+import KaKaoAddr from '../../api/kakao/KaKaoAddr';
 
 interface LoginSignupProps {
   isLogin: boolean;
