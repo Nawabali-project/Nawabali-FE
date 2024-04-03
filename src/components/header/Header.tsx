@@ -7,7 +7,7 @@ import { FaRegEdit } from 'react-icons/fa';
 import { HiOutlineChatBubbleLeftRight } from 'react-icons/hi2';
 import { GoBell } from 'react-icons/go';
 import SearchBar from './SearchBar';
-import { useDebounce } from '@/common/hooks/useDebounce';
+import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
 const profileImg = '/assets/images/basicImg.png';
 

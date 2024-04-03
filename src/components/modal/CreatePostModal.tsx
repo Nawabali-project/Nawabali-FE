@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import KaKaoMap from '@/common/kakao/KaKaoMap';
+import KaKaoMap from '@/api/kakao/KaKaoMap';
 import styled from 'styled-components';
 import Modal from './Modal';
 import { BackIcon } from '@/utils/regex/icons/icons';

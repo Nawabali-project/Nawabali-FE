@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import Modal from '../../common/modal/Modal';
+import Modal from '../../components/modal/Modal';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   StyledLabel,
@@ -9,7 +9,7 @@ import {
   SideDiv,
   BottomDiv,
 } from '@pages/auth/authStyle';
-import SocialKaKao from '@/common/kakao/SocialKaKao';
+import SocialKaKao from '@/api/kakao/SocialKaKao';
 
 interface FormValue {
   email: string;

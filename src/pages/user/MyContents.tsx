@@ -1,4 +1,4 @@
-const Contents = () => {
+const MyContents = () => {
   return (
     <div style={{ width: '500px', height: '800px', border: '1px solid black' }}>
       Contents
@@ -6,4 +6,4 @@ const Contents = () => {
   );
 };
 
-export default Contents;
+export default MyContents;
