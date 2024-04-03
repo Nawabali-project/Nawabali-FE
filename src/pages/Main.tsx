@@ -1,9 +1,10 @@
+import FeedsLayout from '@/components/mainPage/FeedLayout';
 import styled from 'styled-components';
 
 const Main = () => {
   return (
     <Layout>
-      <h1>메인 페이지~</h1>
+      <FeedsLayout />
     </Layout>
   );
 };

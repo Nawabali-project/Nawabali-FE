@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import useDidMountEffect from '@/utils/regex/customHooks/useDidMountEffect';
+import useDidMountEffect from '@/hooks/useDidMountEffect';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MyLocationIcon } from '@/utils/regex/icons/icons';
