@@ -29,10 +29,8 @@ const ModalContent = styled.div`
   flex-direction: column;
   justify-content: center;
   position: relative;
-  padding: 40px;
   border-radius: 15px;
   background-color: white;
-  box-shadow: 0 0 5px;
 `;
 
 export default Modal;
