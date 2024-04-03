@@ -2,6 +2,7 @@
 import useDidMountEffect from '@/utils/regex/customHooks/useDidMountEffect';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { MyLocationIcon } from '@/utils/regex/icons/icons';
 
 declare global {
   interface Window {
@@ -24,7 +25,7 @@ const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
     window.kakao.maps.load(() => {
       const container = document.getElementById('map');
       const options = {
-        center: new window.kakao.maps.LatLng(37.514575, 127.0495556),
+        center: new window.kakao.maps.LatLng(37.555949, 126.972309),
         level: 3,
       };
 
@@ -119,7 +120,7 @@ const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
   };
 
   return (
-    <>
+    <Layout>
       <div onClick={onClickAddr}>
         <AddressInput
           type="text"
@@ -129,23 +130,45 @@ const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
           readOnly
         />
       </div>
-      <MapBox id="map" style={{ width, height }}></MapBox>
-      <MyLocationBtn onClick={getCurrentPosBtn}>현 위치</MyLocationBtn>
-    </>
+      <MapContainer style={{ width, height }}>
+        <MapBox id="map" style={{ width: '100%', height: '100%' }}></MapBox>
+        <MyLocationBtn onClick={getCurrentPosBtn}>
+          <MyLocationIcon />
+        </MyLocationBtn>
+      </MapContainer>
+    </Layout>
   );
 };
 
-const MapBox = styled.div`
+const Layout = styled.div`
+  padding: 10px;
+`;
+
+const MapContainer = styled.div`
+  position: relative;
   border-radius: 20px;
+  overflow: hidden;
+`;
+
+const MapBox = styled.div`
+  width: 100%;
+  height: 100%;
 `;
 
 const MyLocationBtn = styled.div`
-  width: 55px;
-  margin: 10px;
-  padding: 10px;
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  padding: 5px 6px 3px 7px;
   border: 1px solid #c2c2c2;
-  border-radius: 15px;
+  border-radius: 100px;
+  background: white;
+  z-index: 1;
   cursor: pointer;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
 `;
 
 const AddressInput = styled.input`
@@ -153,9 +176,8 @@ const AddressInput = styled.input`
   width: 100%;
   margin: 10px 0px 10px 0px;
   padding: 12px 16px;
-  background-color: #f1f1f1;
-  border: none;
-  border-radius: 10px;
+  border: 1px solid #d4d3d3;
+  border-radius: 100px;
   font-size: 15px;
   cursor: pointer;
 `;
