@@ -1,86 +1,84 @@
 import styled from 'styled-components';
-// import SearchBar from '@/common/header/SearchBar';
-import { IoIosSearch } from 'react-icons/io';
-import { IoIosArrowForward } from 'react-icons/io';
 import SideBar from './SideBar';
 const profileImg = '/assets/images/basicImg.png';
 
 const Mypage = () => {
   return (
-    <div style={{ marginTop: '100px' }}>
-      <MypageContainer>
-        <SideBar />
-        <ColumnFlexDiv style={{ width: '700px' }}>
-          <RowFlexDiv>
-            <Profile />
-            <ColumnFlexDiv>
-              <ColumnFlexDiv>
-                <TitleSpan>사용자 닉네임</TitleSpan>
-                <UserInput value="소갈비찜" />
-              </ColumnFlexDiv>
-              <ColumnFlexDiv>
-                <TitleSpan>이메일</TitleSpan>
-                <UserInput value="abcd@gmail.com" />
-              </ColumnFlexDiv>
-            </ColumnFlexDiv>
-          </RowFlexDiv>
-          <div>
-            <TitleSpan>동네 설정</TitleSpan>
-            <span style={{ fontSize: '11px', color: 'gray' }}>
-              소갈비님은 현재 서초구 주민입니다!
-            </span>
-            <div>
-              <SearchDiv>
-                <IoIosSearch style={{ color: 'gray' }} />
-                <input
-                  value=""
-                  type="text"
-                  placeholder="이사갈 동네를 검색해주세요!"
-                />
-              </SearchDiv>
-              {/* <SearchBar address="address" $isOpen={true} /> */}
-            </div>
+    <Container>
+      <SideBar />
+      <Col style={{ width: '700px' }}>
+        <Col style={{ width: '500px', margin: '0 auto' }}>
+          <Col>
+            <Row style={{ alignItems: 'center' }}>
+              <Profile />
+              <Col>
+                <Row>
+                  <TitleSpan>소갈비찜</TitleSpan>
+                  <span>서교동</span>
+                  <span>. 토박이</span>
+                </Row>
+                <span>abcd@gmail.com</span>
+              </Col>
+            </Row>
+          </Col>
+          <div
+            style={{
+              borderTop: '1px solid grey',
+              borderBottom: '1px solid grey',
+              height: '50px',
+              margin: '10px 0',
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}
+          >
+            <span>게시물</span>
+            <span>마이플레이스</span>
           </div>
-          <div>
-            <TitleSpan style={{ display: 'block' }}>내 등급 확인하기</TitleSpan>
-            <span style={{ fontSize: '13px' }}>
-              소갈비찜님의 현재 등급은 토박이 입니다!
-            </span>
-          </div>
-          <div>
-            <span>
-              회원 탈퇴하기
-              <IoIosArrowForward />
-            </span>
-            <button>수정완료</button>
-          </div>
-        </ColumnFlexDiv>
-      </MypageContainer>
-    </div>
+          <Row
+            style={{
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              margin: '0 auto',
+            }}
+          >
+            <Contents />
+            <Contents />
+            <Contents />
+            <Contents />
+            <Contents />
+            <Contents />
+            <Contents />
+            <Contents />
+            <Contents />
+          </Row>
+        </Col>
+      </Col>
+    </Container>
   );
 };
 
 export default Mypage;
 
-const MypageContainer = styled.div`
+const Container = styled.div`
   width: 1000px;
-  margin: 0 auto;
+  margin: 100px auto 0;
   justify-content: center;
   display: flex;
   border: 1px solid pink;
 `;
 
-const RowFlexDiv = styled.div`
+const Row = styled.div`
   display: flex;
-  border: 1px solid blue;
   border-radius: 10px;
+  /* border: 1px solid blue; */
 `;
 
-const ColumnFlexDiv = styled.div`
+const Col = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 `;
 
 const Profile = styled.div`
@@ -99,29 +97,10 @@ const TitleSpan = styled.span`
   margin-right: 10px;
 `;
 
-const UserInput = styled.input`
-  border: 1px solid gray;
+const Contents = styled.div`
+  width: 150px;
+  height: 150px;
   border-radius: 10px;
-  height: 30px;
-  width: 350px;
-`;
-
-const SearchDiv = styled.div`
-  border: 1px solid gray;
-  border-radius: 10px;
-  height: 30px;
-  width: 400px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 0 10px;
-
-  input {
-    width: 230px;
-    border: none;
-    font-size: 13px;
-    &:focus {
-      outline: none;
-    }
-  }
+  margin: 8px;
+  background-color: lightgrey;
 `;
