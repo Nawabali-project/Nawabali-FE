@@ -1,22 +1,15 @@
-import Header from '../common/header/Header';
 import styled from 'styled-components';
-import CreatePostModal from '@/common/modal/CreatePostModal';
-import { useState } from 'react';
 
 const Main = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   return (
-    <>
-      <Header />
-      <Button onClick={() => setIsModalOpen(true)}>글쓰기</Button>
-      {isModalOpen && <CreatePostModal setIsModalOpen={setIsModalOpen} />}
-    </>
+    <Layout>
+      <h1>메인 페이지~</h1>
+    </Layout>
   );
 };
 
-const Button = styled.button`
-  margin-top: 100px;
+const Layout = styled.div`
+  padding-top: 61.25px;
 `;
 
 export default Main;

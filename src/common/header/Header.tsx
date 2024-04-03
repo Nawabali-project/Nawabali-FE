@@ -8,6 +8,7 @@ import { HiOutlineChatBubbleLeftRight } from 'react-icons/hi2';
 import { GoBell } from 'react-icons/go';
 import SearchBar from './SearchBar';
 import { useDebounce } from '@/common/hooks/useDebounce';
+import CreatePostModal from '../modal/CreatePostModal';
 const profileImg = '/assets/images/basicImg.png';
 
 const Header: React.FC = () => {
@@ -16,6 +17,7 @@ const Header: React.FC = () => {
   const [isLoggedin, setIsLoggedin] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
   const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
+  const [isAddPostModalOpen, setIsAddPostModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
@@ -82,12 +84,15 @@ const Header: React.FC = () => {
               <HeaderSpan onClick={handleSignup}>회원가입</HeaderSpan>
             </Items>
           )}
-          <WriteButton>
+          <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
             <HeaderSpan style={{ margin: '0', color: 'white' }}>
               글쓰기
             </HeaderSpan>
             <FaRegEdit style={{ color: 'white' }} />
           </WriteButton>
+          {isAddPostModalOpen && (
+            <CreatePostModal setIsAddPostModalOpen={setIsAddPostModalOpen} />
+          )}
         </Items>
       </HeaderLayout>
       {isModalOpen && (

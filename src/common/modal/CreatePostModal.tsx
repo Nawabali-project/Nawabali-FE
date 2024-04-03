@@ -7,18 +7,20 @@ import UploadBox from './UploadBox';
 import { useState } from 'react';
 
 interface CreatePostProps {
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAddPostModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface CategoryButtonProps {
   isSelected: boolean;
 }
 
-const CreatePostModal: React.FC<CreatePostProps> = ({ setIsModalOpen }) => {
+const CreatePostModal: React.FC<CreatePostProps> = ({
+  setIsAddPostModalOpen,
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    setIsAddPostModalOpen(false);
   };
 
   const handleCategoryClick = (category: string) => {
@@ -27,7 +29,7 @@ const CreatePostModal: React.FC<CreatePostProps> = ({ setIsModalOpen }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setIsModalOpen(false);
+    setIsAddPostModalOpen(false);
   };
 
   return (
