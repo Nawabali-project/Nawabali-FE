@@ -1,4 +1,4 @@
-import FeedsLayout from '@/components/mainPage/FeedLayout';
+import FeedsLayout from '@/components/mainPage/MainLayout';
 import styled from 'styled-components';
 
 const Main = () => {
