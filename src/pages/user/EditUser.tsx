@@ -2,7 +2,6 @@ import styled from 'styled-components';
 // import SearchBar from '@/common/header/SearchBar';
 import { IoIosArrowForward } from 'react-icons/io';
 import SideBar from './SideBar';
-import { AddressInput, InputField } from '@/components/input/InputField';
 import Button from '@/components/button/Button';
 const profileImg = '/assets/images/basicImg.png';
 
@@ -17,11 +16,11 @@ const EditUser = () => {
             <Col>
               <Col>
                 <TitleSpan>사용자 닉네임</TitleSpan>
-                <InputField type="text" value="소갈비찜" />
+                <input type="text" value="소갈비찜" />
               </Col>
               <Col>
                 <TitleSpan>이메일</TitleSpan>
-                <InputField type="email" value="abcd@gmail.com" />
+                <input type="email" value="abcd@gmail.com" />
               </Col>
             </Col>
           </Row>
@@ -31,7 +30,7 @@ const EditUser = () => {
               소갈비님은 현재 서초구 주민입니다!
             </span>
             <div>
-              <AddressInput
+              <input
                 value=""
                 type="text"
                 placeholder="이사갈 동네를 검색해주세요!"

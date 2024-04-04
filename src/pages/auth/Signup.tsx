@@ -2,16 +2,19 @@ import { useInput } from '@/hooks/useInput';
 import Modal from '../../components/modal/Modal';
 import {
   StyledLabel,
-  AuthButton,
   AuthDiv,
   BottomDiv,
+  AuthInput,
 } from '@pages/auth/authStyle';
+import Button from '@/components/button/Button';
+import { signUp } from '@/api/auth/user';
 
-interface LoginSignupProps {
+interface SignupProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setModalType: (modalType: string) => void;
 }
 
-const Signup: React.FC<LoginSignupProps> = (props) => {
+const Signup: React.FC<SignupProps> = (props) => {
   const [
     {
       email,
@@ -21,6 +24,7 @@ const Signup: React.FC<LoginSignupProps> = (props) => {
       admin,
       certificated,
       city,
+      username,
       district,
     },
     onInputChange,
@@ -33,12 +37,24 @@ const Signup: React.FC<LoginSignupProps> = (props) => {
     admin: 'false',
     certificated: 'true',
     city: '서울시',
+    username: '홍홍홍',
     district: '마포구',
   });
 
   const handleSubmit = async () => {
+    const user = {
+      email,
+      nickname,
+      password,
+      confirmPassword,
+      admin,
+      certificated,
+      city,
+      username,
+      district,
+    };
     try {
-      // 회원가입 처리 로직 작성
+      await signUp(user);
       resetInput();
       console.log('회원가입 정보:', {
         email,
@@ -57,13 +73,19 @@ const Signup: React.FC<LoginSignupProps> = (props) => {
     }
   };
 
+  const handleLoginClick = () => {
+    props.setModalType('login');
+  };
+
   return (
     <Modal size="auth">
       <span onClick={() => props.setIsModalOpen(false)}>X</span>
       <h1>회원가입</h1>
-      <AuthButton>카카오로 3초만에 가입하기</AuthButton>
+      <Button size="large" color="normal">
+        카카오로 3초만에 가입하기
+      </Button>
       <StyledLabel>이메일</StyledLabel>
-      <input
+      <AuthInput
         type="text"
         name="email"
         value={email}
@@ -74,7 +96,7 @@ const Signup: React.FC<LoginSignupProps> = (props) => {
       <AuthDiv>
         <span>영문, 숫자를 포함한 8자 이상의 비밀번호를 입력해주세요.</span>
       </AuthDiv>
-      <input
+      <AuthInput
         type="password"
         name="password"
         value={password}
@@ -82,7 +104,7 @@ const Signup: React.FC<LoginSignupProps> = (props) => {
         placeholder="비밀번호"
       />
       <StyledLabel>비밀번호 확인</StyledLabel>
-      <input
+      <AuthInput
         type="password"
         name="confirmPassword"
         value={confirmPassword}
@@ -93,19 +115,19 @@ const Signup: React.FC<LoginSignupProps> = (props) => {
         <StyledLabel>닉네임</StyledLabel>
         <span>다른 유저와 겹치지 않도록 입력해주세요. (2~10자)</span>
       </AuthDiv>
-      <input
+      <AuthInput
         type="text"
         name="nickname"
         value={nickname}
         onChange={onInputChange}
         placeholder="비밀번호확인"
       />
-      <AuthButton type="submit" onClick={handleSubmit}>
+      <Button size="large" color="normal" onClick={handleSubmit}>
         회원가입하기
-      </AuthButton>
+      </Button>
       <BottomDiv>
         <span>이미 계정이 있으신가요?</span>
-        <span>로그인하기</span>
+        <span onClick={handleLoginClick}>로그인하기</span>
       </BottomDiv>
     </Modal>
   );

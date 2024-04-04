@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components';
 
-interface ModalChildrenType {
+interface ModalProps {
   children?: React.ReactNode;
   size?: 'regular' | 'auth';
 }
 
-const Modal: React.FC<ModalChildrenType> = ({ children, size = 'regular' }) => {
+const Modal: React.FC<ModalProps> = ({ size = 'regular', children }) => {
   return (
     <ModalWrapper>
       <ModalContent size={size}>{children}</ModalContent>
@@ -43,9 +43,10 @@ const ModalContent = styled.div<{ size?: 'regular' | 'auth' }>`
     props.size === 'auth' &&
     css`
       padding: 100px;
+      margin-top: 60px;
       box-sizing: border-box;
-      width: 600px;
-      height: 800px;
+      width: 500px;
+      height: 700px;
     `}
 `;
 

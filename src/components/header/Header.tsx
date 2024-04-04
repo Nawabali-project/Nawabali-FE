@@ -9,20 +9,16 @@ import { GoBell } from 'react-icons/go';
 import SearchBar from './SearchBar';
 import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
+import useAuthStore from '@/store/AuthState';
 const profileImg = '/assets/images/basicImg.png';
 
 const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [isLoggedin, setIsLoggedin] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
   const [isAddPostModalOpen, setIsAddPostModalOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    setIsLoggedin(!!accessToken);
-  }, []);
+  const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   const debouncedAddress = useDebounce(address, 300);
 
@@ -31,13 +27,18 @@ const Header: React.FC = () => {
   }, [debouncedAddress]);
 
   const handleLogin = () => {
-    setIsLogin(true);
+    setModalType('login');
     setIsModalOpen(true);
   };
 
   const handleSignup = () => {
-    setIsLogin(false);
+    setModalType('signup');
     setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalType('');
   };
 
   return (
@@ -55,7 +56,7 @@ const Header: React.FC = () => {
             <SearchBar address={address} $isOpen={isSearchbarOpen} />
           </SearchDiv>
 
-          {isLoggedin ? (
+          {useIsLoggedIn ? (
             <Items style={{ width: '150px' }}>
               <HiOutlineChatBubbleLeftRight
                 style={{
@@ -97,10 +98,17 @@ const Header: React.FC = () => {
       </HeaderLayout>
       {isModalOpen && (
         <>
-          {isLogin ? (
-            <Login setIsModalOpen={setIsModalOpen} />
-          ) : (
-            <Signup setIsModalOpen={setIsModalOpen} />
+          {modalType === 'login' && (
+            <Login
+              setIsModalOpen={handleCloseModal}
+              setModalType={setModalType}
+            />
+          )}
+          {modalType === 'signup' && (
+            <Signup
+              setIsModalOpen={handleCloseModal}
+              setModalType={setModalType}
+            />
           )}
         </>
       )}

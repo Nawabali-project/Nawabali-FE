@@ -19,7 +19,7 @@ export const signUp = async (user: SignUpUser) => {
 export const login = async (user: LoginUser) => {
   try {
     const res = await authInstance.post('/users/login', user);
-    return res;
+    return res.data;
   } catch (error) {
     const axiosError = error as AxiosError<ErrorResponse>;
     if (axiosError.response) {
