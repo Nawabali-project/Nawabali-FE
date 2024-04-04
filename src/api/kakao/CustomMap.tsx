@@ -15,10 +15,10 @@ interface KaKaoMapProps {
   height: string;
 }
 
-const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
+const CustomMap = ({ width, height }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
-  const [pointAddr, setPointAddr] = useState<string>('');
+  const [, setPointAddr] = useState<string>('');
 
   // 1. 카카오맵 불러오기
   useEffect(() => {
@@ -93,43 +93,8 @@ const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
     );
   }, [map]);
 
-  // 5. 검색된 주소 위치 표시
-  const onClickAddr = () => {
-    new window.daum.Postcode({
-      oncomplete: function (addrData: any) {
-        let geocoder = new window.kakao.maps.services.Geocoder();
-        geocoder.addressSearch(
-          addrData.address,
-          function (result: any, status: any) {
-            if (status === window.kakao.maps.services.Status.OK) {
-              let currentPos = new window.kakao.maps.LatLng(
-                result[0].y,
-                result[0].x,
-              );
-              (document.getElementById('addr') as HTMLInputElement).value =
-                addrData.address;
-              map.panTo(currentPos);
-              marker.setMap(null);
-              marker.setPosition(currentPos);
-              marker.setMap(map);
-            }
-          },
-        );
-      },
-    }).open();
-  };
-
   return (
     <Layout>
-      <div onClick={onClickAddr}>
-        <AddressInput
-          type="text"
-          id="addr"
-          value={pointAddr}
-          placeholder="주소를 검색하세요"
-          readOnly
-        />
-      </div>
       <MapContainer style={{ width, height }}>
         <MapBox id="map" style={{ width: '100%', height: '100%' }}></MapBox>
         <MyLocationBtn onClick={getCurrentPosBtn}>
@@ -171,15 +136,4 @@ const MyLocationBtn = styled.div`
   }
 `;
 
-const AddressInput = styled.input`
-  box-sizing: border-box;
-  width: 100%;
-  margin: 10px 0px 10px 0px;
-  padding: 12px 16px;
-  border: 1px solid #d4d3d3;
-  border-radius: 100px;
-  font-size: 15px;
-  cursor: pointer;
-`;
-
-export default KaKaoMap;
+export default CustomMap;
