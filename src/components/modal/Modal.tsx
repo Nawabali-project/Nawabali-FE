@@ -1,13 +1,14 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-interface ModalChildrenType {
+interface ModalProps {
   children?: React.ReactNode;
+  size?: 'regular' | 'auth';
 }
 
-const Modal: React.FC<ModalChildrenType> = ({ children }) => {
+const Modal: React.FC<ModalProps> = ({ size = 'regular', children }) => {
   return (
     <ModalWrapper>
-      <ModalContent>{children}</ModalContent>
+      <ModalContent size={size}>{children}</ModalContent>
     </ModalWrapper>
   );
 };
@@ -24,13 +25,29 @@ const ModalWrapper = styled.div`
   background-color: rgba(82, 82, 82, 0.6);
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ size?: 'regular' | 'auth' }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
   border-radius: 15px;
   background-color: white;
+
+  ${(props) =>
+    props.size === 'regular' &&
+    css`
+      padding: 20px;
+    `}
+
+  ${(props) =>
+    props.size === 'auth' &&
+    css`
+      padding: 100px;
+      margin-top: 60px;
+      box-sizing: border-box;
+      width: 500px;
+      height: 700px;
+    `}
 `;
 
 export default Modal;

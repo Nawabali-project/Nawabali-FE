@@ -2819,10 +2819,10 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-cookie@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/react-cookie/-/react-cookie-7.1.0.tgz#646ddc578ead7dfa2bf1d767c79348dfed74006e"
-  integrity sha512-n2+Gt07/xxuShXary+SImk1sw5l7a1UguQOQEN55YewEW5LoA0opbR4nbeo8sY6OYwR37iCFJtqJ0AGEywqAtg==
+react-cookie@^7.1.4:
+  version "7.1.4"
+  resolved "https://registry.yarnpkg.com/react-cookie/-/react-cookie-7.1.4.tgz#1e35c9f11394b44fbbc30c5eba1287d89258e993"
+  integrity sha512-wDxxa/HYaSXSMlyWJvJ5uZTzIVtQTPf1gMksFgwAz/2/W3lCtY8r4OChCXMPE7wax0PAdMY97UkNJedGv7KnDw==
   dependencies:
     "@types/hoist-non-react-statics" "^3.3.5"
     hoist-non-react-statics "^3.3.2"
@@ -3418,9 +3418,9 @@ undici-types@~5.26.4:
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
 universal-cookie@^7.0.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/universal-cookie/-/universal-cookie-7.1.0.tgz#aff65cf57fa7d42c9c53cebb6c646a143799417f"
-  integrity sha512-LCLHwP0whxTqkBYMptW1dzNS0xxIVJmU6c51N5CfPNheVxuJW7fVxPa6MUGX7boUSyOlpMveBO96hMs5Gee6Fg==
+  version "7.1.4"
+  resolved "https://registry.yarnpkg.com/universal-cookie/-/universal-cookie-7.1.4.tgz#d11bb95e405639c0ff0b467a64a5ccc5ce97dfc6"
+  integrity sha512-Q+DVJsdykStWRMtXr2Pdj3EF98qZHUH/fXv/gwFz/unyToy1Ek1w5GsWt53Pf38tT8Gbcy5QNsj61Xe9TggP4g==
   dependencies:
     "@types/cookie" "^0.6.0"
     cookie "^0.6.0"
