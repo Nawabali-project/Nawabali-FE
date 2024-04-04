@@ -1,31 +1,45 @@
 import axios from 'axios';
-import { Cookies } from 'react-cookie';
 
-// 헤더가 필요 없는 인스턴스
-export const instanceWithoutHeaders = axios.create({
+export const instance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
 
-// 헤더가 필요한 인스턴스
-export const instanceWithToken = axios.create({
+export const authInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
-  headers: {
-    'content-type': 'application/json',
-    accept: 'application/json',
-    Authorization: `${new Cookies().get('accessToken')}`,
-  },
+  withCredentials: true,
 });
 
-// interceptor로 해야함
-instanceWithToken.interceptors.request.use(
+authInstance.interceptors.request.use(
   (config) => {
-    const token = `${new Cookies().get('accessToken')}`;
+    const token = localStorage.getItem('accessToken');
     if (token) {
-      config.headers.Authorization = token;
+      config.headers['Authorization'] = `${token}`;
     }
     return config;
   },
   (error) => {
+    console.error(error);
     return Promise.reject(error);
   },
 );
+
+// authInstance.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     if (error.response.status === 401 && !originalRequest._retry) {
+//       try {
+//         const response = await instance.post('/api/v1/members/reissue');
+//         const accessToken = response.headers['authorization'];
+
+//         localStorage.setItem('accessToken', accessToken);
+//         originalRequest.headers['authorization'] = `${accessToken}`;
+
+//         return authInstance(originalRequest);
+//       } catch (refreshError) {
+//         return Promise.reject(refreshError);
+//       }
+//     }
+//     return Promise.reject(error);
+//   },
+// );

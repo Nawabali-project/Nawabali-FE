@@ -1,3 +1,5 @@
+import { instance } from '../axios/axios';
+
 const SocialKaKao = () => {
   const kakaoLoginImg = '/assets/images/kakaoLoginImg.png';
 
@@ -7,6 +9,19 @@ const SocialKaKao = () => {
     const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
     window.location.href = KAKAO_AUTH_URL;
+
+    const code = new URL(window.location.href).searchParams.get('code');
+    console.log('code: ', code);
+    async (code: string) => {
+      try {
+        const res = await instance.post('api/user/kakao/callback', {
+          param: code,
+        });
+        return res;
+      } catch (error) {
+        console.log(error);
+      }
+    };
   };
 
   return (

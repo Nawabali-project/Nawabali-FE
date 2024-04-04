@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 type ButtonStyleProps = {
   size: 'small' | 'medium';
-  colorType: 'normal';
+  color: 'normal';
 };
 
 interface ButtonProps extends ButtonStyleProps {
@@ -30,7 +30,7 @@ const StyledButton = styled.button<ButtonStyleProps>`
   cursor: pointer;
 
   ${(props) => buttonSize[props.size]}
-  ${(props) => buttonType[props.colorType]}
+  ${(props) => buttonType[props.color]}
 `;
 
 const buttonSize = {

@@ -50,7 +50,7 @@ const EditUser = () => {
               회원 탈퇴하기
               <IoIosArrowForward />
             </span>
-            <Button size="small" colorType="normal">
+            <Button size="small" color="normal">
               수정완료
             </Button>
           </div>
