@@ -13,12 +13,26 @@ declare global {
 interface KaKaoMapProps {
   width: string;
   height: string;
+  onLocationChange: (latitude: number, logitude: number) => void;
 }
 
-const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
+const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
   const [pointAddr, setPointAddr] = useState<string>('');
+
+  const updateMarkerAndLocation = (latLng: any) => {
+    const latitude = latLng.getLat();
+    const longitude = latLng.getLng();
+
+    marker.setMap(null);
+    marker.setPosition(latLng);
+    marker.setMap(map);
+
+    if (onLocationChange) {
+      onLocationChange(latitude, longitude); // 상위 컴포넌트로 위도와 경도 값 전달
+    }
+  };
 
   // 1. 카카오맵 불러오기
   useEffect(() => {
@@ -89,6 +103,7 @@ const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
             }
           },
         );
+        updateMarkerAndLocation(mouseEvent.latLng);
       },
     );
   }, [map]);
@@ -106,6 +121,7 @@ const KaKaoMap = ({ width, height }: KaKaoMapProps) => {
                 result[0].y,
                 result[0].x,
               );
+              updateMarkerAndLocation(currentPos);
               (document.getElementById('addr') as HTMLInputElement).value =
                 addrData.address;
               map.panTo(currentPos);
