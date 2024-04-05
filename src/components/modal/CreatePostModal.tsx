@@ -4,7 +4,10 @@ import styled from 'styled-components';
 import Modal from './Modal';
 import { BackIcon } from '@/utils/regex/icons/icons';
 import UploadBox from './UploadBox';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { createPost } from '@/api/axios/post';
 
 interface CreatePostProps {
   setIsAddPostModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,45 +17,85 @@ interface CategoryButtonProps {
   isSelected: boolean;
 }
 
-const CreatePostModal: React.FC<CreatePostProps> = ({
-  setIsAddPostModalOpen,
-}) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+interface FormValue {
+  file: File[];
+  contents: string;
+  category: string;
+  latitude: number;
+  longitude: number;
+}
+
+const CreatePostModal: React.FC<CreatePostProps> = (props) => {
+  const { register, handleSubmit, setValue, watch } = useForm<FormValue>();
+  const [, setImages] = useState<File[]>([]);
 
   const handleCloseModal = () => {
-    setIsAddPostModalOpen(false);
+    props.setIsAddPostModalOpen(false);
+  };
+
+  const handleImagesChange = (selectedImages: File[]) => {
+    setImages(selectedImages);
+    setValue('file', selectedImages);
+  };
+
+  const handleLocationChange = (latitude: number, longitude: number) => {
+    setValue('latitude', latitude);
+    setValue('longitude', longitude);
   };
 
   const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category);
+    setValue('category', category);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    setIsAddPostModalOpen(false);
+  // 게시글 생성 통신
+  const createPostMutation = useMutation({
+    mutationFn: createPost,
+  });
+
+  // 생성 form 제출
+  const onSubmitHandler: SubmitHandler<FormValue> = (data) => {
+    const formData = new FormData();
+
+    const requestDto = {
+      contents: data.contents,
+      category: data.category,
+      latitude: data.latitude,
+      longitude: data.longitude,
+    };
+    formData.append('requestDto', JSON.stringify(requestDto));
+
+    data.file.forEach((file, index) => {
+      formData.append(`files[${index}]`, file);
+    });
+
+    console.log('choi');
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: `, value);
+    }
+
+    createPostMutation.mutate(formData); //통신 보내기
   };
 
   return (
     <Modal>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmitHandler)}>
         <BackBox onClick={handleCloseModal}>
           <BackIcon />
         </BackBox>
         <MainLayout>
           <ImageBox>
-            <UploadBox />
+            <UploadBox onImagesChange={handleImagesChange} />
           </ImageBox>
           <ContentBox>
             <ContentHeader>
               <ProfileBox>
                 <ProfileImg />
               </ProfileBox>
-              <TitleInput type="text" placeholder="제목을 입력해주세요" />
-              <SubmitButton>업로드</SubmitButton>
+              <NickName>닉네임</NickName>
+              <SubmitInput type="submit" value="업로드" />
             </ContentHeader>
             <ContentTextArea
-              name=""
-              id=""
+              {...register('contents', { required: true, minLength: 1 })}
               cols={10}
               rows={6}
               placeholder="문구를 입력해주세요..."
@@ -61,7 +104,7 @@ const CreatePostModal: React.FC<CreatePostProps> = ({
               <CategoryButton
                 type="button"
                 className="firstCategory"
-                isSelected={selectedCategory === '맛집'}
+                isSelected={watch('category') === '맛집'}
                 onClick={() => handleCategoryClick('맛집')}
               >
                 맛집
@@ -69,7 +112,7 @@ const CreatePostModal: React.FC<CreatePostProps> = ({
               <CategoryButton
                 type="button"
                 className="secondCategory"
-                isSelected={selectedCategory === '감성카페'}
+                isSelected={watch('category') === '감성카페'}
                 onClick={() => handleCategoryClick('감성카페')}
               >
                 감성카페
@@ -77,13 +120,17 @@ const CreatePostModal: React.FC<CreatePostProps> = ({
               <CategoryButton
                 type="button"
                 className="thirdCategory"
-                isSelected={selectedCategory === '사진스팟'}
+                isSelected={watch('category') === '사진스팟'}
                 onClick={() => handleCategoryClick('사진스팟')}
               >
                 사진스팟
               </CategoryButton>
             </CategoryBox>
-            <KaKaoMap width="100%" height="250px" />
+            <KaKaoMap
+              width="100%"
+              height="250px"
+              onLocationChange={handleLocationChange}
+            />
           </ContentBox>
         </MainLayout>
       </form>
@@ -209,7 +256,9 @@ const CategoryButton = styled.button<CategoryButtonProps>`
   cursor: pointer;
 `;
 
-const TitleInput = styled.input`
+const NickName = styled.div`
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
   height: 70px;
@@ -227,7 +276,7 @@ const ContentTextArea = styled.textarea`
   resize: none;
 `;
 
-const SubmitButton = styled.button`
+const SubmitInput = styled.input`
   width: 100px;
   margin-right: 10px;
   background-color: white;

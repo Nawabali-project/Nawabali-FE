@@ -43,17 +43,11 @@ const ScoreMap: React.FC = () => {
 
     const displayArea = (coordinates: number[][][], name: string) => {
       let path: kakao.maps.LatLng[] = [];
-      let latSum = 0;
-      let lngSum = 0;
-      let count = 0;
 
       // 모든 좌표를 순회하면서 경로와 총합을 계산
       coordinates[0].forEach((coordinate) => {
         let latLng = new kakao.maps.LatLng(coordinate[1], coordinate[0]);
         path.push(latLng);
-        latSum += coordinate[1]; // 위도 합계
-        lngSum += coordinate[0]; // 경도 합계
-        count++;
       });
 
       let polygon = new kakao.maps.Polygon({
@@ -69,13 +63,13 @@ const ScoreMap: React.FC = () => {
 
       polygons.push(polygon);
 
-      // 마우스가 지역 위에 있을 때 중심점에 지역명 표시
+      // 마우스가 지역 위에 있을 때 지역에 색이 채워짐
       kakao.maps.event.addListener(polygon, 'mouseover', function () {
         polygon.setOptions({ fillColor: '#09f' });
         customOverlay.setContent('<div class="area">' + name + '</div>');
       });
 
-      // 마우스가 지역 밖으로 나갔을 때 지역명 숨기기
+      // 마우스가 지역 밖으로 나갔을 때 채워진 색이 원상복구
       kakao.maps.event.addListener(polygon, 'mouseout', function () {
         polygon.setOptions({ fillColor: '#fff' });
       });

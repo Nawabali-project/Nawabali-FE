@@ -2,19 +2,17 @@ import { CameraIcon, LeftIcon, RightIcon } from '@/utils/regex/icons/icons';
 import { useState } from 'react';
 import styled from 'styled-components';
 
-interface FileInfoProps {
-  uploadedInfo: {
-    name: string;
-    size: string;
-    type: string;
-    imageUrl?: string;
-  } | null;
+interface UploadBoxProps {
+  onImagesChange: (images: File[]) => void;
 }
 
-const UploadBox: React.FC = () => {
-  const [uploadedImages, setUploadedImages] = useState<
-    Array<FileInfoProps['uploadedInfo']>
-  >([]);
+interface UploadedImageInfo {
+  file: File;
+  imageUrl: string;
+}
+
+const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
+  const [uploadedImages, setUploadedImages] = useState<UploadedImageInfo[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isActive, setActive] = useState<boolean>(false);
 
@@ -23,22 +21,18 @@ const UploadBox: React.FC = () => {
   };
 
   const handleImageUpload = (files: FileList) => {
-    const imagesArray: Array<FileInfoProps['uploadedInfo']> = [];
+    const imagesArray: UploadedImageInfo[] = [];
 
     Array.from(files).forEach((file) => {
-      const { name, type } = file;
-      const size = (file.size / (1024 * 1024)).toFixed(2) + 'mb';
       const reader = new FileReader();
-
       reader.onload = () => {
         imagesArray.push({
-          name,
-          size,
-          type,
+          file,
           imageUrl: reader.result as string,
         });
         if (imagesArray.length === files.length) {
           setUploadedImages(imagesArray);
+          onImagesChange(imagesArray.map((info) => info.file)); // File 객체 배열을 상위 컴포넌트로 전달
         }
       };
       reader.readAsDataURL(file);
