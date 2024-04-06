@@ -11,35 +11,55 @@ export const authInstance = axios.create({
 
 authInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers['Authorization'] = `${token}`;
+    const accessToken = localStorage.getItem('access_Token');
+    if (accessToken) {
+      config.headers['Authorization'] = `${accessToken}`;
+    } else {
+      delete config.headers['Authorization'];
     }
     return config;
   },
   (error) => {
-    console.error(error);
     return Promise.reject(error);
   },
 );
 
-// authInstance.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-//     if (error.response.status === 401 && !originalRequest._retry) {
-//       try {
-//         const response = await instance.post('/api/v1/members/reissue');
-//         const accessToken = response.headers['authorization'];
+authInstance.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const newAccessToken = await refreshAccessToken();
+        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        return authInstance(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
-//         localStorage.setItem('accessToken', accessToken);
-//         originalRequest.headers['authorization'] = `${accessToken}`;
+const refreshAccessToken = async () => {
+  const refreshToken = window.localStorage.getItem('refresh_Token');
 
-//         return authInstance(originalRequest);
-//       } catch (refreshError) {
-//         return Promise.reject(refreshError);
-//       }
-//     }
-//     return Promise.reject(error);
-//   },
-// );
+  try {
+    const res = await authInstance.post(
+      `/refresh`,
+      {},
+      {
+        headers: {
+          Authorization: `${refreshToken}`,
+        },
+      },
+    );
+    window.localStorage.setItem('access_Token', res.data.accessToken);
+    window.localStorage.setItem('refresh_Token', res.data.refreshToken);
+    return res.data.accessToken;
+  } catch (err) {
+    console.error('엑세스 토큰 새로고침에 실패하였습니다', err);
+    throw err;
+  }
+};
