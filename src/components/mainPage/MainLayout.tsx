@@ -18,10 +18,7 @@ const MainLayout = () => {
   return (
     <Layout>
       <CategoryBox>
-        <ScoreCategory
-          onClick={() => setClickedCategory('score')}
-          selected={clickedCategory === 'score'}
-        >
+        <ScoreCategory onClick={() => setClickedCategory('score')}>
           <GlobalIcon />
           동네별 점수
         </ScoreCategory>
@@ -42,9 +39,7 @@ const MainLayout = () => {
       {clickedCategory === 'map' && <Map />}
       {clickedCategory === 'feeds' && (
         <FeedsBox>
-          {Array.from({ length: 50 }).map((_, index) => (
-            <Feed key={index} />
-          ))}
+          <Feed />
         </FeedsBox>
       )}
       {clickedCategory === 'news' && <News />}
@@ -68,7 +63,6 @@ const ScoreCategory = styled.div`
   align-items: center;
   margin-right: 10px;
   cursor: pointer;
-  color: ${(props) => (props.selected ? 'black' : 'inherit')};
 `;
 
 const MapCategory = styled.div`
