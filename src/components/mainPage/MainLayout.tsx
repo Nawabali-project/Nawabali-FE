@@ -1,9 +1,4 @@
-import {
-  GlobalIcon,
-  ListIcon,
-  MapIcon,
-  StarIcon,
-} from '@/utils/regex/icons/icons';
+import { GlobalIcon, ListIcon, MapIcon, StarIcon } from '@/utils/icons/icons';
 import Feed from './Feed';
 import styled from 'styled-components';
 import { useState } from 'react';
