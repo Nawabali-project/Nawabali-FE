@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import Slider, { Settings } from 'react-slick';
 import { FaArrowCircleRight, FaArrowCircleLeft } from 'react-icons/fa';
-
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
