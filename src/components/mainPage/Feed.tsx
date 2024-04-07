@@ -1,4 +1,4 @@
-import { CommentIcon, LikeIcon } from '@/utils/regex/icons/icons';
+import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useInfiniteQuery } from '@tanstack/react-query';
