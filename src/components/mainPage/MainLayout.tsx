@@ -3,7 +3,7 @@ import Feed from './Feed';
 import styled from 'styled-components';
 import { useState } from 'react';
 import Map from './Map';
-import News from './News';
+import News from './news/News';
 import Score from './Score';
 
 // 반응형 구조
