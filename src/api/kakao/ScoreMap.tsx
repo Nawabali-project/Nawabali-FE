@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from 'react';
-import geojson from '../../utils/regex/geojson.json';
+import geojson from '../../utils/geojson.json';
 const { kakao } = window;
 
 declare global {

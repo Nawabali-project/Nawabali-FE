@@ -10,7 +10,6 @@ import {
   BottomDiv,
 } from '@pages/auth/authStyle';
 import Button from '@/components/button/Button';
-import SocialKaKao from '@/api/kakao/SocialKaKao';
 import useAuthStore from '@/store/AuthState';
 
 interface LoginProps {
@@ -31,13 +30,23 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     try {
       const response = await login(user);
       cookies.set('refreshToken', response.refreshToken);
-      localStorage.setItem('accessToken', response.accessToken);
+      cookies.set('accessToken', response.accessToken);
       resetInput();
       setLoggedIn(true);
       setIsModalOpen(false);
     } catch (error) {
       console.error('로그인 오류:', error);
     }
+  };
+
+  const handleKakaoLogin = async () => {
+    const REDIRECT_URI = `${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+    const CLIENT_ID = `${import.meta.env.VITE_KAKAO_RESTAPI_KEY}`;
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+    console.log('KAKAO_AUTH_URL:', KAKAO_AUTH_URL);
+
+    location.replace(`${KAKAO_AUTH_URL}`);
   };
 
   const handleSignupClick = () => {
@@ -72,7 +81,11 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
         <Button size="large" color="normal" onClick={handleSubmit}>
           로그인
         </Button>
-        <SocialKaKao />
+        <img
+          src="/assets/images/kakaoLoginImg.png"
+          style={{ cursor: 'pointer' }}
+          onClick={handleKakaoLogin}
+        />
         <SideDiv>
           <span>로그인 유지</span>
           <span>아이디/비밀번호 찾기</span>

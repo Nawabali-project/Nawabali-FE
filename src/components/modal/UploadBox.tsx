@@ -1,4 +1,4 @@
-import { CameraIcon, LeftIcon, RightIcon } from '@/utils/regex/icons/icons';
+import { CameraIcon, LeftIcon, RightIcon } from '@/utils/icons/icons';
 import { useState } from 'react';
 import styled from 'styled-components';
 

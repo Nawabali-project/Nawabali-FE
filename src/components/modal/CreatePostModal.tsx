@@ -2,7 +2,7 @@
 import KaKaoMap from '@/api/kakao/KaKaoMap';
 import styled from 'styled-components';
 import Modal from './Modal';
-import { BackIcon } from '@/utils/regex/icons/icons';
+import { BackIcon } from '@/utils/icons/icons';
 import UploadBox from './UploadBox';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';

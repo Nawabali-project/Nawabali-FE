@@ -1,4 +1,4 @@
-import { CommentIcon, LikeIcon } from '@/utils/regex/icons/icons';
+import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
 import styled from 'styled-components';
 import { getPosts } from '@/api/axios/post';
 import { useQuery } from '@tanstack/react-query';
@@ -16,7 +16,6 @@ const Feed = () => {
     return <div>Error fetching data</div>;
   }
 
-  // `data?.data.content`를 사용하여 content 배열에 접근
   return (
     <>
       {data?.data.content.map((post: any) => (
