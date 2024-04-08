@@ -36,3 +36,13 @@ export const BottomDiv = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const WarnSpan = styled.span`
+  color: red;
+  font-size: 0.7rem;
+`;
+
+export const InfoSpan = styled.span`
+  color: black;
+  font-size: 0.7rem;
+`;

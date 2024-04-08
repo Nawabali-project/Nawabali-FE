@@ -26,7 +26,7 @@ const ModalWrapper = styled.div`
   z-index: 10;
 `;
 
-const ModalContent = styled.div<{ size?: 'regular' | 'auth' }>`
+const ModalContent = styled.div<{ size?: 'auth' | 'regular' }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
