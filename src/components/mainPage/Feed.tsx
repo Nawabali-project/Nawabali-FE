@@ -1,7 +1,7 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
 import styled from 'styled-components';
-import { useQuery } from '@tanstack/react-query';
 import { getPosts } from '@/api/axios/post';
+import { useQuery } from '@tanstack/react-query';
 
 const Feed = () => {
   const { data, isLoading, isError } = useQuery({
@@ -21,7 +21,7 @@ const Feed = () => {
       {data?.data.content.map((post: any) => (
         <FeedTotalBox key={post.postId}>
           <UserInfoBox>
-            <UserImg />
+            <UserImg src={post.profileImageUrl} />
             <UserName>{post.nickname}</UserName>
             <UserGrade>서교동 토박이</UserGrade>
           </UserInfoBox>
@@ -41,7 +41,6 @@ const Feed = () => {
           </LikeCommentBox>
         </FeedTotalBox>
       ))}
-      ,
     </>
   );
 };
@@ -57,7 +56,7 @@ const UserInfoBox = styled.div`
   margin: 5px;
 `;
 
-const UserImg = styled.div`
+const UserImg = styled.img`
   width: 36px;
   height: 36px;
   background-size: cover;

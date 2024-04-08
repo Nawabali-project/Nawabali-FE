@@ -25,10 +25,7 @@ const Signup: React.FC<SignupProps> = (props) => {
     nickname: '',
     password: '',
     confirmPassword: '',
-    admin: 'false',
-    certificated: 'true',
     city: '서울시',
-    username: '홍홍홍',
     district: '마포구',
   });
   const [emailValidityMessage, setEmailValidityMessage] = useState<string>('');
