@@ -1,83 +1,46 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
-import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { getPosts } from '@/api/axios/post';
+import { useQuery } from '@tanstack/react-query';
 
 const Feed = () => {
-  // const { data, isLoading, isError } = useQuery({
-  //   queryKey: ['posts'],
-  //   queryFn: getPosts,
-  // });
-
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-  // if (isError) {
-  //   return <div>Error fetching data</div>;
-  // }
-
-  const bottomRef = useRef(null);
-
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['posts'],
-    queryFn: ({ pageParam = 0 }) => getPosts(pageParam),
-    getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage.last) {
-        return lastPage.pageable.pageNumber + 1;
-      }
-      return undefined;
-    },
+    queryFn: getPosts,
   });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.25, rootMargin: '80px' },
-    );
-
-    if (bottomRef.current) {
-      observer.observe(bottomRef.current);
-    }
-
-    return () => {
-      if (bottomRef.current) {
-        observer.unobserve(bottomRef.current);
-      }
-    };
-  }, [hasNextPage, fetchNextPage]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return <div>Error fetching data</div>;
+  }
 
   return (
     <>
-      {data?.pages.map((page: any) =>
-        page.content.map((post: any) => (
-          <FeedTotalBox key={post.postId}>
-            <UserInfoBox>
-              <UserImg />
-              <UserName>{post.nickname}</UserName>
-              <UserGrade>서교동 토박이</UserGrade>
-            </UserInfoBox>
-            <ImgBox>
-              <img
-                src={post.imageUrls[0]}
-                alt="Post Image"
-                style={{ width: '100%', height: 'auto' }}
-              />
-              <PostType>{post.category}</PostType>
-            </ImgBox>
-            <LikeCommentBox>
-              <LikeIcon />
-              <LikesCountBox>{post.likesCount}</LikesCountBox>
-              <CommentIcon />
-              <CommentsCountBox>{post.commentCount}</CommentsCountBox>
-            </LikeCommentBox>
-          </FeedTotalBox>
-        )),
-      )}
+      {data?.data.content.map((post: any) => (
+        <FeedTotalBox key={post.postId}>
+          <UserInfoBox>
+            <UserImg src={post.profileImageUrl} />
+            <UserName>{post.nickname}</UserName>
+            <UserGrade>서교동 토박이</UserGrade>
+          </UserInfoBox>
+          <ImgBox>
+            <img
+              src={post.imageUrls[0]}
+              alt="Post Image"
+              style={{ width: '100%', height: '100%' }}
+            />
+            <PostType>{post.category}</PostType>
+          </ImgBox>
+          <LikeCommentBox>
+            <LikeIcon />
+            <LikesCountBox>{post.likesCount}</LikesCountBox>
+            <CommentIcon />
+            <CommentsCountBox>{post.commentCount}</CommentsCountBox>
+          </LikeCommentBox>
+        </FeedTotalBox>
+      ))}
     </>
   );
 };
@@ -93,7 +56,7 @@ const UserInfoBox = styled.div`
   margin: 5px;
 `;
 
-const UserImg = styled.div`
+const UserImg = styled.img`
   width: 36px;
   height: 36px;
   background-size: cover;
@@ -123,6 +86,14 @@ const ImgBox = styled.div`
   background-color: #d9d9d9;
   border-top-left-radius: 50px;
   border-bottom-right-radius: 50px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+  }
 `;
 
 const PostType = styled.div`
