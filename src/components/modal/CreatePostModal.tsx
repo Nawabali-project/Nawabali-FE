@@ -57,6 +57,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     const formData = new FormData();
 
     const requestDto = {
+      title: localStorage.getItem('username'),
       contents: data.contents,
       category: data.category,
       latitude: data.latitude,
@@ -64,14 +65,18 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     };
     formData.append('requestDto', JSON.stringify(requestDto));
 
-    data.file.forEach((file, index) => {
-      formData.append(`files[${index}]`, file);
+    let files: File[] = [];
+
+    data.file.forEach((file: any) => {
+      files.push(file);
     });
+    formData.append(`files`, files);
 
     console.log('choi');
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: `, value);
     }
+    console.log('최씨의 테스트', formData);
 
     createPostMutation.mutate(formData); //통신 보내기
   };
@@ -91,7 +96,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               <ProfileBox>
                 <ProfileImg />
               </ProfileBox>
-              <NickName>닉네임</NickName>
+              <NickName>{localStorage.getItem('username')}</NickName>
               <SubmitInput type="submit" value="업로드" />
             </ContentHeader>
             <ContentTextArea
@@ -105,7 +110,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
                 type="button"
                 className="firstCategory"
                 isSelected={watch('category') === '맛집'}
-                onClick={() => handleCategoryClick('맛집')}
+                onClick={() => handleCategoryClick('CAFE')}
               >
                 맛집
               </CategoryButton>
@@ -113,7 +118,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
                 type="button"
                 className="secondCategory"
                 isSelected={watch('category') === '감성카페'}
-                onClick={() => handleCategoryClick('감성카페')}
+                onClick={() => handleCategoryClick('FOOD')}
               >
                 감성카페
               </CategoryButton>
@@ -121,7 +126,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
                 type="button"
                 className="thirdCategory"
                 isSelected={watch('category') === '사진스팟'}
-                onClick={() => handleCategoryClick('사진스팟')}
+                onClick={() => handleCategoryClick('PHOTOZONE')}
               >
                 사진스팟
               </CategoryButton>

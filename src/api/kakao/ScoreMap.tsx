@@ -31,15 +31,13 @@ const ScoreMap: React.FC = () => {
     if (!mapContainer) return;
 
     const mapOption: kakao.maps.MapOptions = {
-      center: new kakao.maps.LatLng(37.555949, 127.00231),
-      level: 8,
+      center: new kakao.maps.LatLng(37.565949, 127.00231),
+      level: 9,
       scrollwheel: false,
-      draggable: true,
     };
 
-    let map = new kakao.maps.Map(mapContainer, mapOption),
-      customOverlay = new kakao.maps.CustomOverlay({}),
-      infowindow = new kakao.maps.InfoWindow({ removable: true });
+    let map = new kakao.maps.Map(mapContainer, mapOption);
+    let infowindow = new kakao.maps.InfoWindow({ removable: true });
 
     const displayArea = (coordinates: number[][][], name: string) => {
       let path: kakao.maps.LatLng[] = [];
@@ -54,27 +52,46 @@ const ScoreMap: React.FC = () => {
         map: map,
         path: path,
         strokeWeight: 2,
-        strokeColor: '#004c80',
+        strokeColor: 'white',
         strokeOpacity: 0.8,
         strokeStyle: 'solid',
-        fillColor: '#fff',
+        fillColor: 'white',
         fillOpacity: 0.7,
       });
 
+      // 점수별 지역 색 정하기
+      const areaPower = Math.floor(polygon.getArea());
+      let areaPowerColor = '';
+      if (areaPower < 15000000) {
+        areaPowerColor = '#abe9ff';
+      } else if (areaPower >= 15000000 && areaPower < 17000000) {
+        areaPowerColor = '#5cd3ff';
+      } else if (areaPower >= 17000000 && areaPower < 20000000) {
+        areaPowerColor = '#00bbff';
+      } else if (areaPower >= 20000000 && areaPower < 23000000) {
+        areaPowerColor = '#2a7cff';
+      } else if (areaPower >= 23000000 && areaPower < 26000000) {
+        areaPowerColor = '#0062ff';
+      } else if (areaPower >= 26000000 && areaPower < 29000000) {
+        areaPowerColor = '#0011ff';
+      } else if (areaPower >= 29000000) {
+        areaPowerColor = '#0011ff';
+      }
+
+      // 점수별로 지역 색 업데이트
+      polygon.setOptions({ fillColor: areaPowerColor });
+
       polygons.push(polygon);
 
-      // 마우스가 지역 위에 있을 때 지역에 색이 채워짐
       kakao.maps.event.addListener(polygon, 'mouseover', function () {
-        polygon.setOptions({ fillColor: '#09f' });
-        customOverlay.setContent('<div class="area">' + name + '</div>');
+        polygon.setOptions({ strokeWeight: 10, fillOpacity: 0.8 });
       });
 
-      // 마우스가 지역 밖으로 나갔을 때 채워진 색이 원상복구
       kakao.maps.event.addListener(polygon, 'mouseout', function () {
-        polygon.setOptions({ fillColor: '#fff' });
+        polygon.setOptions({ strokeWeight: 2, fillOpacity: 0.7 });
       });
 
-      // 다각형에 click 이벤트를 등록하고 이벤트가 발생하면 다각형의 이름과 면적을 인포윈도우에 표시합니다
+      // 클릭하면 지역의 정보창
       kakao.maps.event.addListener(
         polygon,
         'click',
@@ -84,9 +101,9 @@ const ScoreMap: React.FC = () => {
             '   <div class="title">' +
             name +
             '</div>' +
-            '   <div class="size">총 면적 : 약 ' +
+            '   <div class="size">총 점수 : ' +
             Math.floor(polygon.getArea()) + // 이 부분에 우리 동네 점수 넣기
-            ' m<sup>2</sup></div>' +
+            ' </div>' +
             '</div>';
 
           infowindow.setContent(content);
@@ -105,7 +122,7 @@ const ScoreMap: React.FC = () => {
   }, []);
 
   return (
-    <div id="pollution-map" style={{ width: '100%', height: '800px' }}></div>
+    <div id="pollution-map" style={{ width: '100%', height: '815px' }}></div>
   );
 };
 

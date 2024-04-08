@@ -16,17 +16,7 @@ interface SignupProps {
 
 const Signup: React.FC<SignupProps> = (props) => {
   const [
-    {
-      email,
-      nickname,
-      password,
-      confirmPassword,
-      admin,
-      certificated,
-      city,
-      username,
-      district,
-    },
+    { email, nickname, password, confirmPassword, city, district },
     onInputChange,
     resetInput,
   ] = useInput({
@@ -34,10 +24,7 @@ const Signup: React.FC<SignupProps> = (props) => {
     nickname: '',
     password: '',
     confirmPassword: '',
-    admin: 'false',
-    certificated: 'true',
     city: '서울시',
-    username: '홍홍홍',
     district: '마포구',
   });
 
@@ -47,10 +34,7 @@ const Signup: React.FC<SignupProps> = (props) => {
       nickname,
       password,
       confirmPassword,
-      admin,
-      certificated,
       city,
-      username,
       district,
     };
     try {
@@ -61,8 +45,6 @@ const Signup: React.FC<SignupProps> = (props) => {
         nickname,
         password,
         confirmPassword,
-        admin,
-        certificated,
         city,
         district,
       });

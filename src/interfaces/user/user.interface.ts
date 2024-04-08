@@ -3,8 +3,6 @@ export interface SignUpUser {
   nickname: string;
   password: string;
   confirmPassword: string;
-  admin?: boolean;
-  certificated: boolean;
   city: string;
   district: string;
 }
