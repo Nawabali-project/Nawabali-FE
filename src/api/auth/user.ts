@@ -4,7 +4,7 @@ import { ErrorResponse } from 'react-router-dom';
 import type {
   SignUpUser,
   LoginUser,
-  DuplicateCheck,
+  VerifyCheck,
 } from '@/interfaces/user/user.interface';
 
 export const signUp = async (user: SignUpUser) => {
@@ -29,23 +29,21 @@ export const login = async (user: LoginUser) => {
   }
 };
 
-export const duplicateTest = async (email: string) => {
+export const verificationTest = async (email: string) => {
   try {
-    const res = await instance.get(`/email-verification?email=${email}`);
-    const result = res.data.data.isExist;
-    return result;
+    await instance.post(`/email-verification?email=${email}`);
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
   }
 };
 
-export const duplicateCheck = async (user: DuplicateCheck) => {
+export const verifyNumberCheck = async (user: VerifyCheck) => {
   const { email, code } = user;
   try {
     const res = await instance.get(
       `/email-verification?email=${email}&code=${code}`,
     );
-    const result = res.data.data.isExist;
+    const result = res.data;
     return result;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;

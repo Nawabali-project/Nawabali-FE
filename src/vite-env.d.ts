@@ -3,6 +3,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_BASE_URL: string;
   readonly VITE_KAKAO_RESTAPI_KEY: string;
   readonly VITE_KAKAO_REDIRECT_URI: string;
+  readonly VITE_KAKAO_SDK_KEY: string;
 }
 
 interface Window {
