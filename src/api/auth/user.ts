@@ -35,7 +35,7 @@ export const duplicateTest = async (email: string) => {
     const result = res.data.data.isExist;
     return result;
   } catch (error) {
-    console.log(error);
+    throw error as AxiosError<ErrorResponse>;
   }
 };
 
@@ -48,15 +48,15 @@ export const duplicateCheck = async (user: DuplicateCheck) => {
     const result = res.data.data.isExist;
     return result;
   } catch (error) {
-    console.log(error);
+    throw error as AxiosError<ErrorResponse>;
   }
 };
 
-// export const logout = async () => {
-//   try {
-//     const res = await authInstance.post(`/users/?userId=${userId}`);
-//     return res;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+export const logout = async () => {
+  try {
+    const res = await authInstance.post(`/users/logout`);
+    return res;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};
