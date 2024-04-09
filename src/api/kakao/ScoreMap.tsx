@@ -24,23 +24,18 @@ const ScoreMap: React.FC = () => {
     let coordinates: number[][][] = [];
     let name: string = '';
 
-    let polygons: kakao.maps.Polygon[] = [];
-
-    const mapContainer = document.getElementById('pollution-map');
-
-    if (!mapContainer) return;
-
-    const mapOption: kakao.maps.MapOptions = {
-      center: new kakao.maps.LatLng(37.565949, 127.00231),
-      level: 9,
-      scrollwheel: false,
-    };
+    const mapContainer = document.getElementById('pollution-map'),
+      mapOption = {
+        center: new kakao.maps.LatLng(37.565949, 127.00231),
+        level: 9,
+        scrollwheel: false,
+      };
 
     let map = new kakao.maps.Map(mapContainer, mapOption);
     let infowindow = new kakao.maps.InfoWindow({ removable: true });
 
     const displayArea = (coordinates: number[][][], name: string) => {
-      let path: kakao.maps.LatLng[] = [];
+      let path: any = [];
 
       // 모든 좌표를 순회하면서 경로와 총합을 계산
       coordinates[0].forEach((coordinate) => {
@@ -80,8 +75,6 @@ const ScoreMap: React.FC = () => {
 
       // 점수별로 지역 색 업데이트
       polygon.setOptions({ fillColor: areaPowerColor });
-
-      polygons.push(polygon);
 
       kakao.maps.event.addListener(polygon, 'mouseover', function () {
         polygon.setOptions({ strokeWeight: 10, fillOpacity: 0.8 });

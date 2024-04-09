@@ -71,13 +71,16 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     };
     formData.append('requestDto', JSON.stringify(requestDto));
 
-    // data.file.forEach((file: File) => {
-    //   formData.append('files', file);
-    // });
-    let files: File[] = [];
-    data.file.forEach((file: any) => {
-      files.push(file);
+    data.file.forEach((file: File) => {
+      formData.append('files', file);
     });
+    
+    // let files: File[] = [];
+    // data.file.forEach((file: any) => {
+    //   files.push(file);
+    // });
+    // formData.append('files', files);
+        
     files.forEach((file: File) => {
       formData.append('files', file);
     });
