@@ -74,14 +74,14 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     data.file.forEach((file: File) => {
       formData.append('files', file);
     });
-    
+
     // let files: File[] = [];
     // data.file.forEach((file: any) => {
     //   files.push(file);
     // });
     // formData.append('files', files);
-        
-    files.forEach((file: File) => {
+
+    data.file.forEach((file: File) => {
       formData.append('files', file);
     });
 
@@ -96,9 +96,9 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   return (
     <Modal>
       <form onSubmit={handleSubmit(onSubmitHandler)}>
-        <BackBox onClick={handleCloseModal}>
+        <div onClick={handleCloseModal}>
           <BackIcon />
-        </BackBox>
+        </div>
         <MainLayout>
           <ImageBox>
             <UploadBox onImagesChange={handleImagesChange} />
@@ -154,16 +154,6 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     </Modal>
   );
 };
-
-const BackBox = styled.div`
-  position: absolute;
-  left: 15px;
-  top: 15px;
-  padding: 5px 6px 3px 7px;
-  border-radius: 100px;
-  z-index: 1;
-  cursor: pointer;
-`;
 
 const MainLayout = styled.div`
   display: flex;
