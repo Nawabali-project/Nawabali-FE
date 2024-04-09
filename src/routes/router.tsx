@@ -2,9 +2,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import Home from '@/pages/Home';
 import KakaoRedirect from '@/pages/auth/KakaoRedirect';
-import Myplace from '@/pages/user/Myplace';
-import EditUser from '@/pages/user/Mypage';
-import Mypage from '@/pages/user/EditUser';
+import Myplace from '@/pages/mypage/Myplace';
+import EditUser from '@/pages/mypage/EditUser';
+import Mypage from '@/pages/mypage/Mypage';
 import Main from '@/pages/Main';
 // import KakaoRedirectHandler from '@/pages/KakaoRedirectHandler';
 
