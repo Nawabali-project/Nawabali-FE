@@ -96,9 +96,9 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   return (
     <Modal>
       <form onSubmit={handleSubmit(onSubmitHandler)}>
-        <div onClick={handleCloseModal}>
+        <BackBox onClick={handleCloseModal}>
           <BackIcon />
-        </div>
+        </BackBox>
         <MainLayout>
           <ImageBox>
             <UploadBox onImagesChange={handleImagesChange} />
@@ -154,6 +154,15 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     </Modal>
   );
 };
+const BackBox = styled.div`
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  padding: 5px 6px 3px 7px;
+  border-radius: 100px;
+  z-index: 1;
+  cursor: pointer;
+`;
 
 const MainLayout = styled.div`
   display: flex;
