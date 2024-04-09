@@ -11,7 +11,7 @@ import {
 import Button from '@/components/button/Button';
 import { emailCheck, pwCheck, nicknameCheck } from '@/utils/regex/regex';
 import { useEffect, useState } from 'react';
-import { Districts } from './districts';
+import { Districts } from '../../utils/districts';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useMutation } from '@tanstack/react-query';
 import { signUp, verificationTest, verifyNumberCheck } from '@/api/auth/user';
@@ -92,10 +92,15 @@ const Signup: React.FC<SignupProps> = (props) => {
     }
   }, [debouncedEmail]);
 
-  const mutation = useMutation({ mutationFn: verificationTest });
+  const mutation = useMutation({
+    mutationFn: verificationTest,
+  });
 
   const handleValidateButtonClick = () => {
-    verifyNumberCheck({ email: writtenEmail, code: validateNumber })
+    verifyNumberCheck({
+      email: writtenEmail,
+      code: validateNumber,
+    })
       .then((response) => {
         if (response != true) {
           setValidNumberValidityMessage('인증번호가 일치하지 않아요.');
