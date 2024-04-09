@@ -23,6 +23,7 @@ interface FormValue {
   category: string;
   latitude: number;
   longitude: number;
+  district: string;
 }
 
 const CreatePostModal: React.FC<CreatePostProps> = (props) => {
@@ -38,9 +39,14 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     setValue('file', selectedImages);
   };
 
-  const handleLocationChange = (latitude: number, longitude: number) => {
+  const handleLocationChange = (
+    latitude: number,
+    longitude: number,
+    district: string,
+  ) => {
     setValue('latitude', latitude);
     setValue('longitude', longitude);
+    setValue('district', district);
   };
 
   const handleCategoryClick = (category: string) => {
@@ -57,28 +63,29 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     const formData = new FormData();
 
     const requestDto = {
-      title: localStorage.getItem('username'),
       contents: data.contents,
       category: data.category,
       latitude: data.latitude,
       longitude: data.longitude,
+      district: data.district,
     };
     formData.append('requestDto', JSON.stringify(requestDto));
 
+    // data.file.forEach((file: File) => {
+    //   formData.append('files', file);
+    // });
     let files: File[] = [];
-
     data.file.forEach((file: any) => {
       files.push(file);
     });
-    formData.append(`files`, files);
+    formData.append('files', files);
 
-    console.log('choi');
+    console.log('폼 데이터 값 출력');
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: `, value);
     }
-    console.log('최씨의 테스트', formData);
 
-    createPostMutation.mutate(formData); //통신 보내기
+    createPostMutation.mutate(formData);
   };
 
   return (
@@ -109,23 +116,23 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               <CategoryButton
                 type="button"
                 className="firstCategory"
-                isSelected={watch('category') === '맛집'}
-                onClick={() => handleCategoryClick('CAFE')}
+                isSelected={watch('category') === 'FOOD'}
+                onClick={() => handleCategoryClick('FOOD')}
               >
                 맛집
               </CategoryButton>
               <CategoryButton
                 type="button"
                 className="secondCategory"
-                isSelected={watch('category') === '감성카페'}
-                onClick={() => handleCategoryClick('FOOD')}
+                isSelected={watch('category') === 'CAFE'}
+                onClick={() => handleCategoryClick('CAFE')}
               >
                 감성카페
               </CategoryButton>
               <CategoryButton
                 type="button"
                 className="thirdCategory"
-                isSelected={watch('category') === '사진스팟'}
+                isSelected={watch('category') === 'PHOTOZONE'}
                 onClick={() => handleCategoryClick('PHOTOZONE')}
               >
                 사진스팟
