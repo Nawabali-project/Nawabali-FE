@@ -78,7 +78,9 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     data.file.forEach((file: any) => {
       files.push(file);
     });
-    formData.append('files', files);
+    files.forEach((file: File) => {
+      formData.append('files', file);
+    });
 
     console.log('폼 데이터 값 출력');
     for (let [key, value] of formData.entries()) {
