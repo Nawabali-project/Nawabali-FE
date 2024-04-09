@@ -13,7 +13,11 @@ declare global {
 interface KaKaoMapProps {
   width: string;
   height: string;
-  onLocationChange: (latitude: number, logitude: number) => void;
+  onLocationChange: (
+    latitude: number,
+    logitude: number,
+    district: string,
+  ) => void;
 }
 
 const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
@@ -21,7 +25,7 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   const [marker, setMarker] = useState<any>();
   const [pointAddr, setPointAddr] = useState<string>('');
 
-  const updateMarkerAndLocation = (latLng: any) => {
+  const updateMarkerAndLocation = (latLng: any, district: string) => {
     const latitude = latLng.getLat();
     const longitude = latLng.getLng();
 
@@ -30,7 +34,7 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
     marker.setMap(map);
 
     if (onLocationChange) {
-      onLocationChange(latitude, longitude); // 상위 컴포넌트로 위도와 경도 값 전달
+      onLocationChange(latitude, longitude, district); // 상위 컴포넌트로 위도와 경도 값 전달
     }
   };
 
@@ -100,10 +104,12 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
               marker.setMap(null);
               marker.setPosition(mouseEvent.latLng);
               marker.setMap(map);
+
+              let district = newPointAddr.split(' ')[1];
+              updateMarkerAndLocation(mouseEvent.latLng, district);
             }
           },
         );
-        updateMarkerAndLocation(mouseEvent.latLng);
       },
     );
   }, [map]);
@@ -121,7 +127,10 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
                 result[0].y,
                 result[0].x,
               );
-              updateMarkerAndLocation(currentPos);
+              let district = result[0].address_name.split(' ')[1];
+
+              updateMarkerAndLocation(currentPos, district);
+
               (document.getElementById('addr') as HTMLInputElement).value =
                 addrData.address;
               map.panTo(currentPos);
