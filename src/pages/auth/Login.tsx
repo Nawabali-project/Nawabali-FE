@@ -29,8 +29,11 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     const user = { email, password };
     try {
       const response = await login(user);
+      console.log('백리프레시', response.refreshToken);
+      console.log('백엑세스', response.accessToken);
+
       cookies.set('refreshToken', response.refreshToken);
-      cookies.set('accessToken', response.accessToken);
+      cookies.set('accessToken', response.accessToken.slice(7));
       resetInput();
       setLoggedIn(true);
       setIsModalOpen(false);

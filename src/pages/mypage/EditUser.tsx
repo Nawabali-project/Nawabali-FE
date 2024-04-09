@@ -15,8 +15,8 @@ const EditUser = () => {
             <Profile />
             <Col>
               <Col>
-                <TitleSpan>사용자 닉네임</TitleSpan>
-                <input type="text" value="소갈비찜" />
+                <TitleSpan>아이디</TitleSpan>
+                <span></span>
               </Col>
               <Col>
                 <TitleSpan>이메일</TitleSpan>
