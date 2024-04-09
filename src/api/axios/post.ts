@@ -1,3 +1,4 @@
+import { Cookies } from 'react-cookie';
 import { authInstance, instance } from './axios';
 
 export const getPosts = async () => {
@@ -16,5 +17,6 @@ export const getPosts = async () => {
 
 export const createPost = async (newPost: FormData) => {
   console.log('새로운 포스트 생성 createPost api');
+  console.log(new Cookies().get('accessToken'));
   await authInstance.post('/posts', newPost);
 };
