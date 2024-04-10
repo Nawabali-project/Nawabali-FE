@@ -3,9 +3,15 @@ import styled from 'styled-components';
 import { IoIosArrowForward } from 'react-icons/io';
 import SideBar from './SideBar';
 import Button from '@/components/button/Button';
+import { useUserInfo } from '@/api/user';
+// import { useMutation } from '@tanstack/react-query';
 const profileImg = '/assets/images/basicImg.png';
 
 const EditUser = () => {
+  const { data, error } = useUserInfo();
+  if (error) return <div>{error.message}</div>;
+  console.log('useQuery data: ', data);
+
   return (
     <Container>
       <SideBar />
@@ -16,7 +22,7 @@ const EditUser = () => {
             <Col>
               <Col>
                 <TitleSpan>아이디</TitleSpan>
-                <span></span>
+                <span>{data?.email}</span>
               </Col>
               <Col>
                 <TitleSpan>이메일</TitleSpan>
