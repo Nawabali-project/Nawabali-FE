@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
-import Home from '@/pages/Home';
 import KakaoRedirect from '@/pages/auth/KakaoRedirect';
 import Myplace from '@/pages/mypage/Myplace';
 import EditUser from '@/pages/mypage/EditUser';
@@ -24,7 +23,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />,
+        element: <Main />,
       },
       {
         path: '/api/user/kakao/callback',
@@ -45,10 +44,6 @@ export const router = createBrowserRouter([
             <Mypage />
           </ProtectedRoute>
         ),
-      },
-      {
-        path: '/main',
-        element: <Main />,
       },
     ],
   },

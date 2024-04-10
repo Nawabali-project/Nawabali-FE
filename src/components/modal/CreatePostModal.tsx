@@ -71,14 +71,14 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     };
     formData.append('requestDto', JSON.stringify(requestDto));
 
-    // data.file.forEach((file: File) => {
-    //   formData.append('files', file);
-    // });
     let files: File[] = [];
     data.file.forEach((file: any) => {
       files.push(file);
     });
-    formData.append('files', files);
+
+    files.forEach((file: File) => {
+      formData.append('files', file);
+    });
 
     console.log('폼 데이터 값 출력');
     for (let [key, value] of formData.entries()) {
@@ -149,7 +149,6 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     </Modal>
   );
 };
-
 const BackBox = styled.div`
   position: absolute;
   left: 15px;

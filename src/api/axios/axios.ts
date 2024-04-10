@@ -9,7 +9,6 @@ export const instance = axios.create({
 
 export const authInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
-  withCredentials: true,
 });
 
 authInstance.interceptors.request.use(
