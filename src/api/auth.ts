@@ -1,11 +1,11 @@
-import { authInstance, instance } from '../axios/axios';
+import { authInstance, instance } from './axios/axios';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from 'react-router-dom';
 import type {
   SignUpUser,
   LoginUser,
   VerifyCheck,
-} from '@/interfaces/user/user.interface';
+} from '@/interfaces/main/auth/auth.interface';
 
 export const signUp = async (user: SignUpUser) => {
   try {
@@ -19,7 +19,7 @@ export const signUp = async (user: SignUpUser) => {
 export const login = async (user: LoginUser) => {
   try {
     const res = await authInstance.post('/users/login', user);
-    return res.data;
+    return res.headers as any;
   } catch (error) {
     const axiosError = error as AxiosError<ErrorResponse>;
     if (axiosError.response) {

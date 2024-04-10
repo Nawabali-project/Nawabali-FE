@@ -1,7 +1,6 @@
 import Modal from '../../components/modal/Modal';
 import { useInput } from '@/hooks/useInput';
-import { Cookies } from 'react-cookie';
-import { login } from '@/api/auth/user';
+import { login } from '@/api/auth';
 import {
   StyledLabel,
   AuthInput,
@@ -10,7 +9,7 @@ import {
   BottomDiv,
 } from '@pages/auth/authStyle';
 import Button from '@/components/button/Button';
-import useAuthStore from '@/store/AuthState';
+import { Cookies } from 'react-cookie';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,22 +17,19 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
+  const cookie = new Cookies();
   const [{ email, password }, onInputChange, resetInput] = useInput({
     email: '',
     password: '',
   });
-  const cookies = new Cookies();
-  const { setLoggedIn } = useAuthStore();
 
   const handleSubmit = async () => {
     const user = { email, password };
     try {
-      const response = await login(user);
-      cookies.set('refreshToken', response.refreshToken);
-      cookies.set('accessToken', response.accessToken);
+      const data = await login(user);
       resetInput();
-      setLoggedIn(true);
       setIsModalOpen(false);
+      cookie.set('accessToken', data['authorization'].slice(7));
     } catch (error) {
       console.error('로그인 오류:', error);
     }

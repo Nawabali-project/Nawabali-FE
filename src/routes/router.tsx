@@ -1,4 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { ReactNode } from 'react';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import Home from '@/pages/Home';
 import KakaoRedirect from '@/pages/auth/KakaoRedirect';
@@ -6,9 +7,18 @@ import Myplace from '@/pages/mypage/Myplace';
 import EditUser from '@/pages/mypage/EditUser';
 import Mypage from '@/pages/mypage/Mypage';
 import Main from '@/pages/Main';
-// import KakaoRedirectHandler from '@/pages/KakaoRedirectHandler';
+import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 
-const router = createBrowserRouter([
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const isLoggedIn = useIsLoggedIn();
+  return isLoggedIn ? <Navigate to="/" /> : children;
+};
+
+export const router = createBrowserRouter([
   {
     element: <App />,
     children: [
@@ -30,7 +40,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/mypage',
-        element: <Mypage />,
+        element: (
+          <ProtectedRoute>
+            <Mypage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/main',

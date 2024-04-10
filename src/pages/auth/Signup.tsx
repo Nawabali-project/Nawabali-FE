@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { Districts } from '../../utils/districts';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useMutation } from '@tanstack/react-query';
-import { signUp, verificationTest, verifyNumberCheck } from '@/api/auth/user';
+import { signUp, verificationTest, verifyNumberCheck } from '@/api/auth';
 
 interface SignupProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;

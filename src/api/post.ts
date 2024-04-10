@@ -1,4 +1,4 @@
-import { authInstance, instance } from './axios';
+import { authInstance, instance } from './axios/axios';
 
 export const getPosts = async () => {
   const response = await instance.get('/posts');
