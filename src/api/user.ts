@@ -22,8 +22,23 @@ export const editUserInfo = async (userInfo: UserInfo) => {
   } catch (error) {
     const axiosError = error as AxiosError<ErrorResponse>;
     if (axiosError.response) {
-      const result = axiosError.response.data.status;
-      return result;
+      return axiosError.response.data;
     }
+    return '';
+  }
+};
+
+export const checkPassWord = async (password: string) => {
+  try {
+    const response = await authInstance.post('users/check-myPassword', {
+      password: password,
+    });
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<ErrorResponse>;
+    if (axiosError.response) {
+      return axiosError.response.data;
+    }
+    return '';
   }
 };

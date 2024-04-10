@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components';
 
 type ButtonStyleProps = {
+  type?: string;
   size: 'small' | 'medium' | 'large';
-  color: 'normal';
+  color: 'light' | 'dark';
 };
 
 interface ButtonProps extends ButtonStyleProps {
@@ -47,11 +48,19 @@ const buttonSize = {
 };
 
 const buttonType = {
-  normal: css`
-    background-color: gray;
+  light: css`
+    background-color: #dadada;
+    color: black;
+    &:hover {
+      background-color: #a8a8a8;
+      color: black;
+    }
+  `,
+  dark: css`
+    background-color: #585656;
     color: white;
     &:hover {
-      background-color: lightgray;
+      background-color: grey;
       color: black;
     }
   `,

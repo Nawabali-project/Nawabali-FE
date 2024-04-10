@@ -12,7 +12,7 @@ export interface LoginUser {
   password: string;
 }
 
-export interface VerifyCheck {
+export interface VarifyCheck {
   email: string;
-  code: string;
+  code: number;
 }

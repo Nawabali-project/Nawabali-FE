@@ -74,7 +74,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             placeholder="비밀번호"
           />
         </AuthDiv>
-        <Button size="large" color="normal" onClick={handleSubmit}>
+        <Button size="large" color="dark" onClick={handleSubmit}>
           로그인
         </Button>
         <img
