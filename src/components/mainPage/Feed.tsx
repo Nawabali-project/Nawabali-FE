@@ -1,6 +1,6 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
 import styled from 'styled-components';
-import { getPosts } from '@/api/post';
+import { getPosts } from '@/api/axios/post';
 import { useQuery } from '@tanstack/react-query';
 
 const Feed = () => {
