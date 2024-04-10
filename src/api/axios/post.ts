@@ -1,7 +1,18 @@
 import { authInstance, instance } from './../api/axios/axios';
 
-export const getPosts = async () => {
-  const response = await instance.get('/posts');
+export const getPosts = async ({ pageParam }: { pageParam: number }) => {
+  let params = {
+    page: String(pageParam),
+    size: '10',
+    sort: ['string'],
+  };
+
+  let pageable = new URLSearchParams();
+  pageable.append('page', params.page);
+  pageable.append('size', params.size);
+  params.sort.forEach((s) => pageable.append('sort', s));
+
+  const response = await instance.get(`/posts?${pageable.toString()}`);
   console.log('포스트들 가져오기v1 getPosts api');
   console.log(response);
   return response;

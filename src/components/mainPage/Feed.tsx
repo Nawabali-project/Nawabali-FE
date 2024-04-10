@@ -1,46 +1,89 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
 import styled from 'styled-components';
-import { getPosts } from '@/api/post';
-import { useQuery } from '@tanstack/react-query';
+import { getPosts } from '@/api/axios/post';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInView } from 'react-intersection-observer';
+import { useState, useEffect } from 'react';
+import DetailPostModal from '../modal/DetailPostModal';
 
 const Feed = () => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['posts'],
+  const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
+    useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const handlePostClick = (post: any) => {
+    setSelectedPost(post);
+    setIsDetailPostModalOpen(true);
+  };
+
+  const { ref, inView } = useInView();
+
+  const {
+    data,
+    status,
+    error,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['scrollPosts'],
     queryFn: getPosts,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.data.content.length > 0) {
+        return allPages.length + 1;
+      }
+
+      return undefined;
+    },
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  console.log('choi data', data);
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      console.log('Fire!');
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
+
+  if (status === 'pending') {
+    return <p>Loading...</p>;
   }
-  if (isError) {
-    return <div>Error fetching data</div>;
+
+  if (status === 'error') {
+    return <p>Error: {error.message}</p>;
   }
 
   return (
     <>
-      {data?.data.content.map((post: any) => (
-        <FeedTotalBox key={post.postId}>
-          <UserInfoBox>
-            <UserImg src={post.profileImageUrl} />
-            <UserName>{post.nickname}</UserName>
-            <UserGrade>서교동 토박이</UserGrade>
-          </UserInfoBox>
-          <ImgBox>
-            <img
-              src={post.imageUrls[0]}
-              alt="Post Image"
-              style={{ width: '100%', height: '100%' }}
-            />
-            <PostType>{post.category}</PostType>
-          </ImgBox>
-          <LikeCommentBox>
-            <LikeIcon />
-            <LikesCountBox>{post.likesCount}</LikesCountBox>
-            <CommentIcon />
-            <CommentsCountBox>{post.commentCount}</CommentsCountBox>
-          </LikeCommentBox>
-        </FeedTotalBox>
-      ))}
+      {data?.pages.map((page: any) =>
+        page.data.content.map((post: any) => (
+          <FeedTotalBox ref={ref} key={post.postId}>
+            <UserInfoBox>
+              <UserImg src={post.profileImageUrl} />
+              <UserName>{post.nickname}</UserName>
+              <UserGrade>서교동 토박이</UserGrade>
+            </UserInfoBox>
+            <ImgBox onClick={() => handlePostClick(post)}>
+              <img src={post.imageUrls?.[0]} alt="Post Image" />
+              <PostType>{post.category}</PostType>
+            </ImgBox>
+            <LikeCommentBox>
+              <LikeIcon />
+              <LikesCountBox>{post.likesCount}</LikesCountBox>
+              <CommentIcon />
+              <CommentsCountBox>{post.commentCount}</CommentsCountBox>
+            </LikeCommentBox>
+          </FeedTotalBox>
+        )),
+      )}
+      {isDetailPostModalOpen && (
+        <DetailPostModal
+          post={selectedPost}
+          setIsDetailPostModalOpen={setIsDetailPostModalOpen}
+        />
+      )}
+      {isFetchingNextPage && <h3>Loading...</h3>}
     </>
   );
 };
@@ -86,6 +129,7 @@ const ImgBox = styled.div`
   background-color: #d9d9d9;
   border-top-left-radius: 50px;
   border-bottom-right-radius: 50px;
+  cursor: pointer;
 
   img {
     width: 100%;
@@ -105,7 +149,7 @@ const PostType = styled.div`
   color: white;
   border-radius: 20px;
   font-size: 9px;
-  z-index: 100;
+  z-index: 5;
 `;
 
 const LikeCommentBox = styled.div`

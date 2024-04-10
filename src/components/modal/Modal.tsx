@@ -22,7 +22,7 @@ const ModalWrapper = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(82, 82, 82, 0.6);
+  background-color: rgba(79, 79, 79, 0.6);
   z-index: 10;
 `;
 
@@ -37,7 +37,7 @@ const ModalContent = styled.div<{ size?: 'auth' | 'regular' }>`
   ${(props) =>
     props.size === 'regular' &&
     css`
-      padding: 20px;
+      padding: 0px;
     `}
 
   ${(props) =>
