@@ -225,7 +225,7 @@ const Signup: React.FC<SignupProps> = (props) => {
     <Modal size="auth">
       <span onClick={() => props.setIsModalOpen(false)}>X</span>
       <h1>회원가입</h1>
-      <Button size="large" color="normal">
+      <Button size="large" color="grey">
         카카오로 3초만에 시작하기
       </Button>
       <StyledLabel>이메일</StyledLabel>
@@ -303,7 +303,7 @@ const Signup: React.FC<SignupProps> = (props) => {
           ))}
         </div>
       )}
-      <Button size="large" color="normal" onClick={handleSubmit}>
+      <Button size="large" color="grey" onClick={handleSubmit}>
         회원가입하기
       </Button>
       <BottomDiv>
