@@ -1,46 +1,79 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
 import styled from 'styled-components';
 import { getPosts } from '@/api/axios/post';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInView } from 'react-intersection-observer';
+import { useEffect } from 'react';
+
 
 const Feed = () => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['posts'],
+  const { ref, inView } = useInView();
+
+  const {
+    data,
+    status,
+    error,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['scrollPosts'],
     queryFn: getPosts,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.data.content.length > 0) {
+        return allPages.length + 1;
+      }
+
+      return undefined;
+    },
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  console.log('choi data', data);
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      console.log('Fire!');
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
+
+  if (status === 'pending') {
+    return <p>Loading...</p>;
   }
-  if (isError) {
-    return <div>Error fetching data</div>;
+
+  if (status === 'error') {
+    return <p>Error: {error.message}</p>;
   }
 
   return (
     <>
-      {data?.data.content.map((post: any) => (
-        <FeedTotalBox key={post.postId}>
-          <UserInfoBox>
-            <UserImg src={post.profileImageUrl} />
-            <UserName>{post.nickname}</UserName>
-            <UserGrade>서교동 토박이</UserGrade>
-          </UserInfoBox>
-          <ImgBox>
-            <img
-              src={post.imageUrls[0]}
-              alt="Post Image"
-              style={{ width: '100%', height: '100%' }}
-            />
-            <PostType>{post.category}</PostType>
-          </ImgBox>
-          <LikeCommentBox>
-            <LikeIcon />
-            <LikesCountBox>{post.likesCount}</LikesCountBox>
-            <CommentIcon />
-            <CommentsCountBox>{post.commentCount}</CommentsCountBox>
-          </LikeCommentBox>
-        </FeedTotalBox>
-      ))}
+      {data?.pages.map((page: any) =>
+        page.data.content.map((post: any) => (
+          <FeedTotalBox ref={ref} key={post.postId}>
+            <UserInfoBox>
+              <UserImg src={post.profileImageUrl} />
+              <UserName>{post.nickname}</UserName>
+              <UserGrade>서교동 토박이</UserGrade>
+            </UserInfoBox>
+            <ImgBox>
+              <img
+                src={post.imageUrls?.[0]} // 'imageUrls' 배열이 undefined일 수 있으므로 옵셔널 체이닝 사용
+                alt="Post Image"
+                style={{ width: '100%', height: '100%' }}
+              />
+              <PostType>{post.category}</PostType>
+            </ImgBox>
+            <LikeCommentBox>
+              <LikeIcon />
+              <LikesCountBox>{post.likesCount}</LikesCountBox>
+              <CommentIcon />
+              <CommentsCountBox>{post.commentCount}</CommentsCountBox>
+            </LikeCommentBox>
+          </FeedTotalBox>
+        )),
+      )}
+      {isFetchingNextPage && <h3>Loading...</h3>}
     </>
   );
 };
