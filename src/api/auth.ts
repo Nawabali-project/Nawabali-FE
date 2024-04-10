@@ -4,7 +4,7 @@ import { ErrorResponse } from 'react-router-dom';
 import type {
   SignUpUser,
   LoginUser,
-  VerifyCheck,
+  VarifyCheck,
 } from '@/interfaces/main/auth/auth.interface';
 
 export const signUp = async (user: SignUpUser) => {
@@ -29,7 +29,7 @@ export const login = async (user: LoginUser) => {
   }
 };
 
-export const verificationTest = async (email: string) => {
+export const sendVerificationCode = async (email: string) => {
   try {
     await instance.post(`/email-verification?email=${email}`);
   } catch (error) {
@@ -37,7 +37,7 @@ export const verificationTest = async (email: string) => {
   }
 };
 
-export const verifyNumberCheck = async (user: VerifyCheck) => {
+export const varifyNumberCheck = async (user: VarifyCheck) => {
   const { email, code } = user;
   try {
     const res = await instance.get(
@@ -45,6 +45,17 @@ export const verifyNumberCheck = async (user: VerifyCheck) => {
     );
     const result = res.data;
     return result;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};
+
+export const nicknameDupCheck = async (nickname: string) => {
+  try {
+    const res = await instance.get(
+      `/users/check-nickname?nickname=${nickname}`,
+    );
+    return res;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
   }

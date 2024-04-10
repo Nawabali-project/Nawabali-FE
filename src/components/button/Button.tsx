@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 
 type ButtonStyleProps = {
+  type?: string;
   size: 'small' | 'medium' | 'large';
   color: 'light' | 'dark';
 };

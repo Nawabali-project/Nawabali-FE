@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useInput } from '@/hooks/useInput';
 import Modal from '../../components/modal/Modal';
 import {
@@ -10,11 +11,17 @@ import {
 } from '@pages/auth/authStyle';
 import Button from '@/components/button/Button';
 import { emailCheck, pwCheck, nicknameCheck } from '@/utils/regex/regex';
-import { useEffect, useState } from 'react';
-import { Districts } from '../../utils/districts';
 import { useDebounce } from '@/hooks/useDebounce';
+import {
+  nicknameDupCheck,
+  signUp,
+  varifyNumberCheck,
+  sendVerificationCode,
+} from '@/api/auth';
 import { useMutation } from '@tanstack/react-query';
-import { signUp, verificationTest, verifyNumberCheck } from '@/api/auth';
+import { Districts } from '../../utils/districts';
+import { AxiosError } from 'axios';
+import { VarifyCheck } from '@/interfaces/main/auth/auth.interface';
 
 interface SignupProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,103 +29,86 @@ interface SignupProps {
 }
 
 const Signup: React.FC<SignupProps> = (props) => {
-  const [
-    { email, nickname, password, confirmPassword, city, district },
-    resetInput,
-  ] = useInput({
+  const [input, onChange, resetInput] = useInput({
     email: '',
     nickname: '',
     password: '',
     confirmPassword: '',
-    city: '서울시',
+    city: '서울특별시',
     district: '',
+    validateNumber: '',
   });
-  const [emailValidityMessage, setEmailValidityMessage] = useState<string>('');
-  const [pwValidityMessage, setPwValidityMessage] = useState<string>('');
-  const [pwConfirmMessage, setPwConfirmMessage] = useState<string>('');
-  const [nicknameValidityMessage, setNicknameValidityMessage] =
-    useState<string>('');
+  const [emailValidityMessage, setEmailValidityMessage] = useState('');
+  const [pwValidityMessage, setPwValidityMessage] = useState('');
+  const [pwConfirmMessage, setPwConfirmMessage] = useState('');
+  const [nicknameValidityMessage, setNicknameValidityMessage] = useState('');
   const [validNumberValidityMessage, setValidNumberValidityMessage] =
-    useState<string>('');
-  const [searchDistrict, setSearchDistrict] = useState<string>('');
-  useState<boolean>(false);
+    useState('');
   const [results, setResults] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [writtenEmail, setWrittenEmail] = useState('');
-  const [writtenPassword, setWrittenPassword] = useState('');
-  const [writtenNickname, setWrittenNickname] = useState('');
-  const [validateNumber, setValidateNumber] = useState('');
-  const debouncedSearchDistrict = useDebounce(searchDistrict, 500);
-  const debouncedEmail = useDebounce(writtenEmail, 500);
-  const debouncedPassword = useDebounce(writtenPassword, 500);
-  const debouncedNickname = useDebounce(writtenNickname, 500);
-  const [writtenConfirmPassword, setWrittenConfirmPassword] = useState('');
-  const debouncedConfirmPassword = useDebounce(writtenConfirmPassword, 500);
 
-  // 이메일 입력 변경 핸들러
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWrittenEmail(e.target.value);
-  };
+  const debouncedEmail = useDebounce(input.email, 500);
+  const debouncedPassword = useDebounce(input.password, 500);
+  const debouncedConfirmPassword = useDebounce(input.confirmPassword, 500);
+  const debouncedNickname = useDebounce(input.nickname, 500);
+  const debouncedDistrict = useDebounce(input.district, 500);
 
-  const handleValidateNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValidateNumber(e.target.value);
-  };
-
-  // 비밀번호 입력 변경 핸들러
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWrittenPassword(e.target.value);
-  };
-
-  const handleConfirmPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setWrittenConfirmPassword(e.target.value);
-  };
-
-  // 닉네임 입력 변경 핸들러
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWrittenNickname(e.target.value);
-  };
-
-  //이메일 유효성 검사
+  // 이메일 유효성 검사
   useEffect(() => {
-    if (debouncedEmail) {
-      const isValidEmail = emailCheck(debouncedEmail);
+    if (debouncedEmail.length > 0) {
       setEmailValidityMessage(
-        isValidEmail ? '' : '제대로 된 이메일을 입력해주세요',
+        emailCheck(debouncedEmail) ? '' : '제대로 된 이메일을 입력해주세요',
       );
     } else {
       setEmailValidityMessage('');
     }
   }, [debouncedEmail]);
 
-  const mutation = useMutation({
-    mutationFn: verificationTest,
+  // 이메일 인증번호 전송
+  const sendVerificationMutation = useMutation<unknown, AxiosError, string>({
+    mutationKey: ['sendVerificationCode'],
+    mutationFn: (email: string) => sendVerificationCode(email),
+    onError: (error: AxiosError) => {
+      console.error('Error:', error.message);
+    },
   });
 
-  const handleValidateButtonClick = () => {
-    verifyNumberCheck({
-      email: writtenEmail,
-      code: validateNumber,
-    })
-      .then((response) => {
-        if (response != true) {
-          setValidNumberValidityMessage('인증번호가 일치하지 않아요.');
-        } else {
-          setValidNumberValidityMessage('');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+  const handleSendVerificationCodeClick = () => {
+    sendVerificationMutation.mutate(input.email);
+  };
+
+  // 이메일 인증번호 확인
+  const checkVerificationMutation = useMutation<
+    unknown,
+    AxiosError,
+    VarifyCheck
+  >({
+    mutationKey: ['checkVerificationCode'],
+    mutationFn: (varifyData) => varifyNumberCheck(varifyData),
+    onSuccess: (result) => {
+      if (result !== true) {
+        setValidNumberValidityMessage('인증번호가 일치하지 않아요.');
+      } else {
+        setValidNumberValidityMessage('');
+      }
+    },
+    onError: (error: AxiosError) => {
+      console.error('Error:', error.message);
+    },
+  });
+  const handleCheckVerificationCodeClick = () => {
+    const varifyData = {
+      email: input.email,
+      code: input.validateNumber,
+    };
+    checkVerificationMutation.mutate(varifyData);
   };
 
   // 비밀번호 유효성 검사
   useEffect(() => {
-    if (debouncedPassword) {
-      const isValidPassword = pwCheck(debouncedPassword);
+    if (debouncedPassword.length > 0) {
       setPwValidityMessage(
-        isValidPassword
+        pwCheck(input.password)
           ? ''
           : '비밀번호는 영문, 숫자, 특수문자 포함 8~15자 입니다.',
       );
@@ -128,51 +118,58 @@ const Signup: React.FC<SignupProps> = (props) => {
   }, [debouncedPassword]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setWrittenConfirmPassword(writtenConfirmPassword);
-    }, 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [writtenConfirmPassword]);
-
-  useEffect(() => {
-    if (
-      debouncedConfirmPassword &&
-      debouncedConfirmPassword !== writtenPassword
-    ) {
-      setPwConfirmMessage('비밀번호가 일치하지 않습니다.');
-    } else {
-      setPwConfirmMessage('');
-    }
-  }, [debouncedConfirmPassword, writtenPassword]);
-
-  // 닉네임 유효성 검사
-  useEffect(() => {
-    if (debouncedNickname) {
-      const isValidNickname = nicknameCheck(debouncedNickname);
-      setNicknameValidityMessage(
-        isValidNickname ? '' : '닉네임은 특수문자 제외 3자~10자 입니다.',
+    if (debouncedConfirmPassword.length > 0) {
+      setPwConfirmMessage(
+        input.confirmPassword === input.password
+          ? ''
+          : '비밀번호가 일치하지 않습니다.',
       );
     } else {
-      setNicknameValidityMessage('');
+      setPwValidityMessage('');
     }
-  }, [debouncedNickname]);
+  }, [debouncedConfirmPassword]);
 
   useEffect(() => {
-    if (debouncedSearchDistrict.trim() !== '' && !selectedDistrict) {
+    const checkNickname = async () => {
+      if (debouncedNickname.length > 0) {
+        if (!nicknameCheck(input.nickname)) {
+          setNicknameValidityMessage('닉네임은 특수문자 제외 3자~10자 입니다.');
+          return;
+        }
+
+        // 닉네임 중복 검사
+        try {
+          const response = await nicknameDupCheck(input.nickname);
+          if (response.data) {
+            setNicknameValidityMessage('');
+          } else {
+            setNicknameValidityMessage('이미 사용중인 닉네임입니다.');
+          }
+        } catch (error) {
+          console.error('닉네임 중복 검사 중 에러 발생:', error);
+          setNicknameValidityMessage('');
+        }
+      } else {
+        setNicknameValidityMessage('');
+      }
+    };
+    checkNickname();
+  }, [debouncedNickname]);
+
+  // 지역 검색
+  useEffect(() => {
+    if (debouncedDistrict.trim() !== '' && !selectedDistrict) {
       const filteredResults = Districts.filter((district) =>
-        district.includes(debouncedSearchDistrict),
+        district.includes(debouncedDistrict),
       );
       setResults(filteredResults);
     } else {
       setResults([]);
     }
-  }, [debouncedSearchDistrict, selectedDistrict]);
+  }, [debouncedDistrict, selectedDistrict]);
 
   const handleResultClick = (selectedDistrict: string) => {
-    setSearchDistrict(selectedDistrict);
+    onChange({ target: { name: 'district', value: selectedDistrict } });
     setSelectedDistrict(selectedDistrict);
     setResults([]);
   };
@@ -181,134 +178,130 @@ const Signup: React.FC<SignupProps> = (props) => {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const newValue = e.target.value;
-    setSearchDistrict(newValue);
+    onChange({ target: { name: 'district', value: newValue } });
     if (selectedDistrict && newValue !== selectedDistrict) {
       setSelectedDistrict('');
     }
   };
 
-  const handleSubmit = async () => {
-    const user = {
-      email: writtenEmail,
-      nickname: writtenNickname,
-      password: writtenPassword,
-      confirmPassword: writtenConfirmPassword,
-      city,
-      district: selectedDistrict,
-    };
+  // 회원가입 처리
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await signUp(user);
-      resetInput();
-      console.log('회원가입 정보:', {
-        email,
-        nickname,
-        password,
-        confirmPassword,
-        city,
-        district,
+      await signUp({
+        email: input.email,
+        nickname: input.nickname,
+        password: input.password,
+        confirmPassword: input.confirmPassword,
+        city: '서울특별시',
+        district: input.district,
       });
+      resetInput();
       props.setIsModalOpen(false);
     } catch (error) {
-      console.error('회원가입 오류:', error);
-      resetInput();
+      console.error('Signup error:', error);
     }
   };
 
-  const handleLoginClick = () => {
-    props.setModalType('login');
-  };
-
   const showSearchResults =
-    searchDistrict && !selectedDistrict && results.length > 0;
+    input.district && !selectedDistrict && results.length > 0;
 
   return (
     <Modal size="auth">
-      <span onClick={() => props.setIsModalOpen(false)}>X</span>
-      <h1>회원가입</h1>
-      <Button size="large" color="grey">
-        카카오로 3초만에 시작하기
-      </Button>
-      <StyledLabel>이메일</StyledLabel>
-      <div style={{ display: 'flex' }}>
-        <AuthInput
-          type="text"
-          name="email"
-          value={writtenEmail}
-          onChange={handleEmailChange}
-          placeholder="이메일"
-        />
-        <button onClick={() => mutation.mutate(writtenEmail)}>인증</button>
-      </div>
-      <WarnSpan>{emailValidityMessage}</WarnSpan>
-      <div style={{ display: 'flex' }}>
-        <AuthInput
-          type="text"
-          name="validateNumber"
-          value={validateNumber}
-          onChange={handleValidateNumber}
-          placeholder="인증번호를 입력해주세요."
-        />
-        <button onClick={handleValidateButtonClick}>확인</button>
-      </div>
-      <WarnSpan>{validNumberValidityMessage}</WarnSpan>
-      <StyledLabel>비밀번호</StyledLabel>
-      <AuthDiv>
-        <InfoSpan>
-          영문, 숫자를 포함한 8자 이상의 비밀번호를 입력해주세요.
-        </InfoSpan>
-      </AuthDiv>
-      <AuthInput
-        type="password"
-        name="password"
-        value={writtenPassword}
-        onChange={handlePasswordChange}
-        placeholder="비밀번호"
-      />
-      <WarnSpan>{pwValidityMessage}</WarnSpan>
-      <StyledLabel>비밀번호 확인</StyledLabel>
-      <AuthInput
-        type="password"
-        name="confirmPassword"
-        value={writtenConfirmPassword}
-        onChange={handleConfirmPasswordChange}
-        placeholder="비밀번호확인"
-      />
-      <WarnSpan>{pwConfirmMessage}</WarnSpan>
-      <AuthDiv>
-        <StyledLabel>닉네임</StyledLabel>
-        <InfoSpan>다른 유저와 겹치지 않도록 입력해주세요. (3~10자)</InfoSpan>
-      </AuthDiv>
-      <AuthInput
-        type="text"
-        name="nickname"
-        value={writtenNickname}
-        onChange={handleNicknameChange}
-        placeholder="닉네임"
-      />
-      <WarnSpan>{nicknameValidityMessage}</WarnSpan>
-      <StyledLabel>사는 곳</StyledLabel>
-      <AuthInput
-        type="text"
-        placeholder="ㅇㅇ구로 검색하세요"
-        value={searchDistrict}
-        onChange={handleSearchDistrictChange}
-      />
-
-      {showSearchResults && (
-        <div>
-          {results.map((result, index) => (
-            <div key={index} onClick={() => handleResultClick(result)}>
-              {result}
-            </div>
-          ))}
+      <form onSubmit={handleSubmit}>
+        <span onClick={() => props.setIsModalOpen(false)}>X</span>
+        <h1>회원가입</h1>
+        <Button type="button" size="large" color="dark">
+          카카오로 3초만에 시작하기
+        </Button>
+        <StyledLabel>이메일</StyledLabel>
+        <div style={{ display: 'flex' }}>
+          <AuthInput
+            type="text"
+            name="email"
+            value={input.email}
+            onChange={onChange}
+            placeholder="이메일"
+          />
+          <button type="button" onClick={handleSendVerificationCodeClick}>
+            인증
+          </button>
         </div>
-      )}
-      <Button size="large" color="grey" onClick={handleSubmit}>
-        회원가입하기
-      </Button>
+        <WarnSpan>{emailValidityMessage}</WarnSpan>
+        <div style={{ display: 'flex' }}>
+          <AuthInput
+            type="text"
+            name="validateNumber"
+            value={input.validateNumber}
+            onChange={onChange}
+            placeholder="인증번호를 입력해주세요."
+          />
+          <button type="button" onClick={handleCheckVerificationCodeClick}>
+            확인
+          </button>
+        </div>
+        <WarnSpan>{validNumberValidityMessage}</WarnSpan>
+        <StyledLabel>비밀번호</StyledLabel>
+        <AuthDiv>
+          <InfoSpan>
+            영문, 숫자를 포함한 8자 이상의 비밀번호를 입력해주세요.
+          </InfoSpan>
+        </AuthDiv>
+        <AuthInput
+          type="password"
+          name="password"
+          value={input.password}
+          onChange={onChange}
+          placeholder="비밀번호"
+        />
+        <WarnSpan>{pwValidityMessage}</WarnSpan>
+        <StyledLabel>비밀번호 확인</StyledLabel>
+        <AuthInput
+          type="password"
+          name="confirmPassword"
+          value={input.confirmPassword}
+          onChange={onChange}
+          placeholder="비밀번호확인"
+        />
+        <WarnSpan>{pwConfirmMessage}</WarnSpan>
+        <AuthDiv>
+          <StyledLabel>닉네임</StyledLabel>
+          <InfoSpan>다른 유저와 겹치지 않도록 입력해주세요. (3~10자)</InfoSpan>
+        </AuthDiv>
+        <AuthInput
+          type="text"
+          name="nickname"
+          value={input.nickname}
+          onChange={onChange}
+          placeholder="닉네임"
+        />
+        <WarnSpan>{nicknameValidityMessage}</WarnSpan>
+        <StyledLabel>사는 곳</StyledLabel>
+        <AuthInput
+          name="district"
+          value={input.district}
+          onChange={handleSearchDistrictChange}
+          placeholder="ㅇㅇ구로 검색하세요"
+        />
+        {showSearchResults && (
+          <div>
+            {results.map((result, index) => (
+              <div key={index} onClick={() => handleResultClick(result)}>
+                서울특별시 {result}
+              </div>
+            ))}
+          </div>
+        )}
+        <Button type="submit" size="large" color="dark">
+          회원가입하기
+        </Button>
+      </form>
       <BottomDiv>
         <InfoSpan>이미 계정이 있으신가요?</InfoSpan>
-        <InfoSpan style={{ fontSize: '0.8rem' }} onClick={handleLoginClick}>
+        <InfoSpan
+          style={{ fontSize: '0.8rem' }}
+          onClick={() => props.setModalType('login')}
+        >
           로그인하기
         </InfoSpan>
       </BottomDiv>
