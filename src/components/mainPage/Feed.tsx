@@ -3,9 +3,18 @@ import styled from 'styled-components';
 import { getPosts } from '@/api/axios/post';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import DetailPostModal from '../modal/DetailPostModal';
 
 const Feed = () => {
+  const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
+    useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const handlePostClick = (post: any) => {
+    setSelectedPost(post);
+    setIsDetailPostModalOpen(true);
+  };
+
   const { ref, inView } = useInView();
 
   const {
@@ -55,12 +64,8 @@ const Feed = () => {
               <UserName>{post.nickname}</UserName>
               <UserGrade>서교동 토박이</UserGrade>
             </UserInfoBox>
-            <ImgBox>
-              <img
-                src={post.imageUrls?.[0]} // 'imageUrls' 배열이 undefined일 수 있으므로 옵셔널 체이닝 사용
-                alt="Post Image"
-                style={{ width: '100%', height: '100%' }}
-              />
+            <ImgBox onClick={() => handlePostClick(post)}>
+              <img src={post.imageUrls?.[0]} alt="Post Image" />
               <PostType>{post.category}</PostType>
             </ImgBox>
             <LikeCommentBox>
@@ -71,6 +76,12 @@ const Feed = () => {
             </LikeCommentBox>
           </FeedTotalBox>
         )),
+      )}
+      {isDetailPostModalOpen && (
+        <DetailPostModal
+          post={selectedPost}
+          setIsDetailPostModalOpen={setIsDetailPostModalOpen}
+        />
       )}
       {isFetchingNextPage && <h3>Loading...</h3>}
     </>
@@ -118,6 +129,7 @@ const ImgBox = styled.div`
   background-color: #d9d9d9;
   border-top-left-radius: 50px;
   border-bottom-right-radius: 50px;
+  cursor: pointer;
 
   img {
     width: 100%;
@@ -137,7 +149,7 @@ const PostType = styled.div`
   color: white;
   border-radius: 20px;
   font-size: 9px;
-  z-index: 100;
+  z-index: 5;
 `;
 
 const LikeCommentBox = styled.div`

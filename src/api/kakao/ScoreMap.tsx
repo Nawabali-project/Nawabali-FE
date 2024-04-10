@@ -27,8 +27,10 @@ const ScoreMap: React.FC = () => {
     const mapContainer = document.getElementById('pollution-map'),
       mapOption = {
         center: new kakao.maps.LatLng(37.565949, 127.00231),
-        level: 9,
+        level: 8,
         scrollwheel: false,
+        zoomable: false,
+        draggable: false,
       };
 
     let map = new kakao.maps.Map(mapContainer, mapOption);
@@ -115,7 +117,12 @@ const ScoreMap: React.FC = () => {
   }, []);
 
   return (
-    <div id="pollution-map" style={{ width: '100%', height: '815px' }}></div>
+    <div id="pollution-map">
+      <div
+        className="map-content"
+        style={{ width: '100%', height: '1000px' }}
+      ></div>
+    </div>
   );
 };
 

@@ -1,11 +1,26 @@
 import ScoreMap from '@/api/kakao/ScoreMap';
+import styled from 'styled-components';
 
 const Score = () => {
   return (
-    <div>
-      <ScoreMap />
-    </div>
+    <MapContainer>
+      <div className="map-content">
+        <ScoreMap />
+      </div>
+    </MapContainer>
   );
 };
+
+const MapContainer = styled.div`
+  width: 100%;
+  height: 815px;
+  overflow: hidden;
+  margin-top: 5px;
+
+  .map-content {
+    transform: scale(0.815);
+    transform-origin: top center;
+  }
+`;
 
 export default Score;

@@ -140,7 +140,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
             </CategoryBox>
             <KaKaoMap
               width="100%"
-              height="250px"
+              height="240px"
               onLocationChange={handleLocationChange}
             />
           </ContentBox>
@@ -151,8 +151,8 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
 };
 const BackBox = styled.div`
   position: absolute;
-  left: 15px;
-  top: 15px;
+  left: 10px;
+  top: 10px;
   padding: 5px 6px 3px 7px;
   border-radius: 100px;
   z-index: 1;
@@ -169,6 +169,9 @@ const ImageBox = styled.div`
   flex-direction: column;
   width: 500px;
   height: 600px;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  overflow: hidden;
 
   .file {
     display: none;

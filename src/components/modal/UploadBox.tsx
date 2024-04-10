@@ -76,7 +76,13 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
           <img
             src={uploadedImages[currentIndex]?.imageUrl}
             alt={`Uploaded ${currentIndex + 1}`}
-            style={{ width: '100%', maxHeight: '100%', objectFit: 'cover' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderTopLeftRadius: '140px',
+              borderBottomRightRadius: '140px',
+            }}
           />
           <div>
             <LeftIconBox
