@@ -7,7 +7,7 @@ import UploadBox from './UploadBox';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { createPost } from '@/api/post';
+import { createPost } from '@/api/axios/post';
 
 interface CreatePostProps {
   setIsAddPostModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
