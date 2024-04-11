@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { instance } from '../../axios';
+=======
+import { instance } from '../axios';
+>>>>>>> d440a807a13d5fdb8f34a91da1aa5043e03f7aba
 import { AxiosError } from 'axios';
 import { ErrorResponse } from 'react-router-dom';
 

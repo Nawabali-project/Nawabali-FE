@@ -1,10 +1,10 @@
-import FeedsLayout from '@/components/mainPage/MainLayout';
+import MainLayout from '@/components/mainLayout/MainLayout';
 import styled from 'styled-components';
 
 const Main = () => {
   return (
     <Layout>
-      <FeedsLayout />
+      <MainLayout />
     </Layout>
   );
 };

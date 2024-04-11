@@ -7,7 +7,7 @@ import { checkPassWord, editUserInfo, useUserInfo } from '@/api/user';
 import { useInput } from '@/hooks/useInput';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Districts } from '../../utils/districts';
-import { pwCheck, nicknameCheck } from '@/utils/regex/regex';
+import { pwCheck, nicknameCheck } from '@/utils/regex';
 import { AuthInput, WarnSpan } from '../auth/authStyle';
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';

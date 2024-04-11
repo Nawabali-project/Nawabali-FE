@@ -5,7 +5,7 @@ import {
   ThreePointIcon,
   LikeIcon,
   BookMarkIcon,
-} from '@/utils/icons/icons';
+} from '@/utils/icons';
 
 interface DetailPostProps {
   post: any;
