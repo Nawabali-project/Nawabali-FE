@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
-import KakaoRedirect from '@/pages/auth/KakaoRedirect';
-import Myplace from '@/pages/mypage/Myplace';
-import EditUser from '@/pages/mypage/EditUser';
-import Mypage from '@/pages/mypage/Mypage';
+import KakaoRedirect from '@/components/auth/KakaoRedirect';
+import Myplace from '@/components/mypage/Myplace';
+import EditUser from '@/components/mypage/EditUser';
+import Mypage from '@/components/mypage/Mypage';
 import Main from '@/pages/Main';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 

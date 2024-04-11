@@ -7,8 +7,12 @@ import {
 import items from '../Items';
 import { TransitionGroup } from 'react-transition-group';
 import './Carousel.css';
+// import { useGetAllPostsByDistrict } from '@/api/news';
 
 function Carousel() {
+  // const { data } = useGetAllPostsByDistrict(user.district);
+  // const { data } = useGetAllPostsByDistrict('마포구');
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 3;
   const totalItems = items.length;
@@ -25,8 +29,9 @@ function Carousel() {
       <div
         style={{
           border: '1px solid pink',
-          height: '18vw',
-          marginTop: '50px',
+          width: '860px',
+          height: '300px',
+          margin: '50px auto 0',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -43,25 +48,23 @@ function Carousel() {
             .map((item, idx) => (
               <ImageContainer key={idx}>
                 {idx === 0 && (
-                  <LeftDiv>
+                  <StyledDiv position={'left'}>
                     <div>
                       <LeftDivSpan>이번주 우리동네</LeftDivSpan>
                       <LeftDivSpan>인기글을 모아봤어요!</LeftDivSpan>
                     </div>
-                    <StyledDiv backgroundImage={item.item} />
-                  </LeftDiv>
+                    <Post backgroundImage={item.item} position={'left'} />
+                  </StyledDiv>
                 )}
-                {idx === 1 && (
-                  <StyledDiv backgroundImage={item.item} isCenter={idx === 1} />
-                )}
-                {idx === itemsPerPage - 1 && (
-                  <RightDiv>
-                    <StyledDiv backgroundImage={item.item} />
+                {idx === 1 && <Post backgroundImage={item.item} />}
+                {idx === 2 && (
+                  <StyledDiv position={'right'}>
+                    <Post backgroundImage={item.item} position={'right'} />
                     <div>
                       <IoArrowBackCircleOutline onClick={handlePrev} />
                       <IoArrowForwardCircleOutline onClick={handleNext} />
                     </div>
-                  </RightDiv>
+                  </StyledDiv>
                 )}
               </ImageContainer>
             ))}
@@ -77,28 +80,31 @@ const ImageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 18vw;
+  height: 300px;
 `;
 
-export const StyledDiv = styled.div<{
+export const Post = styled.div<{
   backgroundImage: string;
-  isCenter?: boolean;
+  position?: 'left' | 'right';
 }>`
   background-image: url(${(props) => props.backgroundImage});
   background-size: cover;
   background-position: center;
-  width: ${(props) => (props.isCenter ? '12vw' : '9vw')};
-  height: ${(props) => (props.isCenter ? '17vw' : '13vw')};
+  width: ${(props) => (props.position ? '180px' : '220px')};
+  height: ${(props) => (props.position ? '240px' : '300px')};
   display: block;
-  border-radius: 15px;
-  margin: ${(props) => (props.isCenter ? '0 5vw' : 0)};
+  border-radius: 20px;
+  margin: 0;
 `;
-
-const RightDiv = styled.div`
-  height: 17vw;
+export const StyledDiv = styled.div<{
+  position?: 'left' | 'right';
+}>`
+  height: 300px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: ${(props) =>
+    props.position === 'left' ? 'flex-end' : 'flex-start'};
+  margin: 0 70px;
 
   svg {
     width: 1.5rem;
@@ -108,14 +114,7 @@ const RightDiv = styled.div`
   }
 `;
 
-const LeftDiv = styled.div`
-  height: 17vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-`;
-
 const LeftDivSpan = styled.span`
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   display: block;
 `;
