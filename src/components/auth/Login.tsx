@@ -1,4 +1,4 @@
-import Modal from '../../components/modal/Modal';
+import Modal from '../modal/Modal';
 import { useInput } from '@/hooks/useInput';
 import { login } from '@/api/auth';
 import {
@@ -7,7 +7,7 @@ import {
   AuthDiv,
   SideDiv,
   BottomDiv,
-} from '@pages/auth/authStyle';
+} from '@/components/auth/authStyle';
 import Button from '@/components/button/Button';
 import { Cookies } from 'react-cookie';
 

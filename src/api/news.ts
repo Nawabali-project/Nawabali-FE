@@ -1,12 +1,17 @@
+import { useQuery } from '@tanstack/react-query';
 import { instance } from '../axios';
-import { AxiosError } from 'axios';
-import { ErrorResponse } from 'react-router-dom';
 
-export const getPosts = async () => {
-  try {
-    const res = await instance.get('/posts');
-    return res;
-  } catch (error) {
-    throw error as AxiosError<ErrorResponse>;
-  }
+const getAllPostsByDistrict = async (district: string) => {
+  const basicParams = '&page=0&size=10&sort=string';
+  const response = await instance.get(
+    `/posts/filtered?district=${district}${basicParams}`,
+  );
+  return response.data.content;
+};
+
+export const useGetAllPostsByDistrict = (district: string) => {
+  return useQuery({
+    queryKey: [district],
+    queryFn: () => getAllPostsByDistrict(district),
+  });
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useInput } from '@/hooks/useInput';
-import Modal from '../../components/modal/Modal';
+import Modal from '../modal/Modal';
 import {
   StyledLabel,
   AuthDiv,
@@ -8,7 +8,7 @@ import {
   AuthInput,
   WarnSpan,
   InfoSpan,
-} from '@pages/auth/authStyle';
+} from '@/components/auth/authStyle';
 import Button from '@/components/button/Button';
 import { emailCheck, pwCheck, nicknameCheck } from '@/utils/regex';
 import { useDebounce } from '@/hooks/useDebounce';

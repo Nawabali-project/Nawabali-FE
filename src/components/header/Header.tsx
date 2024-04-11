@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Login from '@/pages/auth/Login';
-import Signup from '@/pages/auth/Signup';
+import Login from '@/components/auth/Login';
+import Signup from '@/components/auth/Signup';
 import { useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { FaRegEdit } from 'react-icons/fa';
