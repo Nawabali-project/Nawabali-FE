@@ -1,4 +1,4 @@
-import { instance } from '../axios/axios';
+import { instance } from '../../axios';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from 'react-router-dom';
 

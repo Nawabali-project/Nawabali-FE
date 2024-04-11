@@ -1,6 +1,6 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons/icons';
 import styled from 'styled-components';
-import { getPosts } from '@/api/axios/post';
+import { getPosts } from '@/api/post';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
