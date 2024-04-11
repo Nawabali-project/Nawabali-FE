@@ -9,6 +9,7 @@ import { GoBell } from 'react-icons/go';
 import SearchBar from './SearchBar';
 import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
+import BalloonModal from './BalloonModal';
 import useAuthStore from '@/store/AuthState';
 const profileImg = '/assets/images/basicImg.png';
 
@@ -16,8 +17,10 @@ const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
   const [address, setAddress] = useState<string>('');
+  const [isMyInfoModalOpen, setIsMyInfoModalOpen] = useState(false);
   const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
   const [isAddPostModalOpen, setIsAddPostModalOpen] = useState<boolean>(false);
+  const [isSearchFocused, setSearchFocused] = useState<boolean>(false);
   const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   const debouncedAddress = useDebounce(address, 300);
@@ -41,6 +44,21 @@ const Header: React.FC = () => {
     setModalType('');
   };
 
+  const handleOpenInfoModal = () => {
+    setIsMyInfoModalOpen(true);
+  };
+
+  const handleCloseInfoModal = () => {
+    setIsMyInfoModalOpen(false);
+  };
+
+  const handleSearchFocus = () => {
+    setSearchFocused(true);
+  };
+  const handleSearchBlur = () => {
+    setSearchFocused(false);
+  };
+
   return (
     <>
       <HeaderLayout>
@@ -52,11 +70,15 @@ const Header: React.FC = () => {
               type="text"
               placeholder="지역명, 상호 등으로 검색할 수 있어요!"
               onChange={(e) => setAddress(e.target.value)}
+              onFocus={handleSearchFocus}
+              onBlur={handleSearchBlur}
             />
-            <SearchBar address={address} $isOpen={isSearchbarOpen} />
+            {isSearchFocused && (
+              <SearchBar address={address} $isOpen={isSearchbarOpen} />
+            )}
           </SearchDiv>
 
-          {useIsLoggedIn ? (
+          {!useIsLoggedIn ? (
             <Items style={{ width: '150px' }}>
               <HiOutlineChatBubbleLeftRight
                 style={{
@@ -74,7 +96,16 @@ const Header: React.FC = () => {
                   cursor: 'pointer',
                 }}
               />
-              <Profile />
+              <ProfileContainer>
+                <Profile onClick={handleOpenInfoModal} />
+
+                {isMyInfoModalOpen && (
+                  <BalloonModal
+                    isOpen={isMyInfoModalOpen}
+                    onClose={handleCloseInfoModal}
+                  />
+                )}
+              </ProfileContainer>
             </Items>
           ) : (
             <Items style={{ width: '150px' }}>
@@ -173,6 +204,13 @@ const WriteButton = styled.div`
   border-radius: 15px;
   background-color: gray;
   padding: 2px 5px;
+  cursor: pointer;
+`;
+
+const ProfileContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 `;
 
