@@ -22,7 +22,7 @@ const EditUser: React.FC = () => {
     prevPassword: '',
     writtenPassword: '',
     writtenConfirmPassword: '',
-    writtenNickname: '',
+    writtenNickname: data?.nickname || '',
     district: data?.district || '',
   });
 
