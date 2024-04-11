@@ -1,4 +1,4 @@
-import { authInstance } from './axios/axios';
+import { authInstance } from '../axios';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from 'react-router-dom';
 import { UserInfo } from '@/interfaces/user/user.interface';

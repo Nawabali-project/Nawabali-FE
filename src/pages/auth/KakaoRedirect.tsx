@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { authInstance } from '@/api/axios/axios';
+import { authInstance } from '@/axios';
 
 const KakaoRedirect = () => {
   const navigate = useNavigate();

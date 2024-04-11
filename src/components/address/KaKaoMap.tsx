@@ -2,7 +2,7 @@
 import useDidMountEffect from '@/hooks/useDidMountEffect';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MyLocationIcon } from '@/utils/icons/icons';
+import { MyLocationIcon } from '@/utils/icons';
 
 declare global {
   interface Window {
