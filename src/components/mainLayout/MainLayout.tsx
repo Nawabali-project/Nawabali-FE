@@ -12,13 +12,13 @@ import {
   ListBlackIcon,
   GlobalBlackIcon,
   StarBlackIcon,
-} from '@/utils/icons/icons';
-import Feed from './Feed';
+} from '@/utils/icons';
+import Feed from '../feedList/FeedList';
 import styled from 'styled-components';
 import { useState } from 'react';
-import Map from './Map';
-import News from './news/News';
-import Score from './Score';
+import CustomMap from '../customMap/CustomMap';
+import News from '../mainPage/news/News';
+import Score from '../scoreMap/ScoreMap';
 
 // 반응형 구조 할 예정...
 const MainLayout = () => {
@@ -100,7 +100,7 @@ const MainLayout = () => {
         </ThreeComponentBox>
       </CategoryBox>
       {clickedCategory === 'score' && <Score />}
-      {clickedCategory === 'map' && <Map />}
+      {clickedCategory === 'map' && <CustomMap width="100%" height="811px" />}
       {clickedCategory === 'feeds' && (
         <FeedsBox>
           <Feed />

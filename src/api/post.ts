@@ -1,4 +1,4 @@
-import { authInstance, instance } from './../api/axios/axios';
+import { instance, authInstance } from '../axios';
 
 export const getPosts = async ({ pageParam }: { pageParam: number }) => {
   let params = {

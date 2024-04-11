@@ -1,4 +1,4 @@
-import ScoreMap from '@/api/kakao/ScoreMap';
+import ScoreMap from '@/components/scoreMap/ScoreKaKaoMap';
 import styled from 'styled-components';
 
 const Score = () => {

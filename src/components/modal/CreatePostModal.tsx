@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import KaKaoMap from '@/api/kakao/KaKaoMap';
+import KaKaoMap from '@/components/address/KaKaoMap';
 import styled from 'styled-components';
 import Modal from './Modal';
-import { BackIcon } from '@/utils/icons/icons';
-import UploadBox from './UploadBox';
+import { BackIcon } from '@/utils/icons';
+import UploadBox from '../uploadImg/UploadBox';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { createPost } from '@/api/axios/post';
+import { createPost } from '@/api/post';
 
 interface CreatePostProps {
   setIsAddPostModalOpen: React.Dispatch<React.SetStateAction<boolean>>;

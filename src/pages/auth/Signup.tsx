@@ -10,7 +10,7 @@ import {
   InfoSpan,
 } from '@pages/auth/authStyle';
 import Button from '@/components/button/Button';
-import { emailCheck, pwCheck, nicknameCheck } from '@/utils/regex/regex';
+import { emailCheck, pwCheck, nicknameCheck } from '@/utils/regex';
 import { useDebounce } from '@/hooks/useDebounce';
 import {
   nicknameDupCheck,
