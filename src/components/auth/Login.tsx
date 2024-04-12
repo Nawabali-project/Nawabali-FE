@@ -1,6 +1,6 @@
 import Modal from '../modal/Modal';
 import { useInput } from '@/hooks/useInput';
-import { login } from '@/api/auth';
+import { getUserInfo, login } from '@/api/auth';
 import {
   StyledLabel,
   AuthInput,
@@ -26,10 +26,18 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   const handleSubmit = async () => {
     const user = { email, password };
     try {
-      const data = await login(user);
+      const userToken = await login(user);
       resetInput();
       setIsModalOpen(false);
-      cookie.set('accessToken', data['authorization'].slice(7));
+      const token = userToken['authorization'].slice(7);
+      cookie.set('accessToken', token);
+      if (token) {
+        const userInfo = await getUserInfo();
+        localStorage.setItem('district', userInfo.district);
+        localStorage.setItem('email', userInfo.email);
+        localStorage.setItem('nickname', userInfo.nickname);
+        localStorage.setItem('profileImageUrl', userInfo.profileImageUrl);
+      }
     } catch (error) {
       console.error('로그인 오류:', error);
     }

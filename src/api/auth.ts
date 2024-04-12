@@ -8,6 +8,7 @@ import type {
 } from '@/interfaces/main/auth/auth.interface';
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
+import { UserInfo } from '@/interfaces/main/auth/auth.interface';
 
 export const signUp = async (user: SignUpUser) => {
   try {
@@ -28,6 +29,15 @@ export const login = async (user: LoginUser) => {
       const result = axiosError.response.data.status;
       return result;
     }
+  }
+};
+
+export const getUserInfo = async (): Promise<UserInfo> => {
+  try {
+    const response = await authInstance.get('/users/my-info');
+    return response.data;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
   }
 };
 
