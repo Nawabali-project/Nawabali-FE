@@ -6,7 +6,7 @@ import {
 } from 'react-icons/io5';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FaMapMarkerAlt } from 'react-icons/fa';
-import items from '../Items';
+import items from './Items';
 import { TransitionGroup } from 'react-transition-group';
 import './Carousel.css';
 

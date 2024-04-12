@@ -4,7 +4,7 @@ import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from 'react-icons/io5';
-import items from '../Items';
+import items from './Items';
 import { TransitionGroup } from 'react-transition-group';
 import './Carousel.css';
 

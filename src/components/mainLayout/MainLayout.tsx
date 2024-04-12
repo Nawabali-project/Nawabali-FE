@@ -17,7 +17,7 @@ import Feed from '../feedList/FeedList';
 import styled from 'styled-components';
 import { useState } from 'react';
 import CustomMap from '../customMap/CustomMap';
-import News from '../mainPage/news/News';
+import News from '../news/News';
 import Score from '../scoreMap/ScoreMap';
 
 // 반응형 구조 할 예정...
