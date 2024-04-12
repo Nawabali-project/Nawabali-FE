@@ -6,7 +6,7 @@ import { BackIcon } from '@/utils/icons';
 import UploadBox from '../uploadImg/UploadBox';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost } from '@/api/post';
 
 interface CreatePostProps {
@@ -54,8 +54,14 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   };
 
   // 게시글 생성 통신
+  const queryClient = useQueryClient();
+
   const createPostMutation = useMutation({
     mutationFn: createPost,
+    onSuccess: () => {
+      handleCloseModal();
+      queryClient.invalidateQueries('allPosts');
+    },
   });
 
   // 생성 form 제출
@@ -69,6 +75,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       longitude: data.longitude,
       district: data.district,
     };
+
     formData.append('requestDto', JSON.stringify(requestDto));
 
     let files: File[] = [];

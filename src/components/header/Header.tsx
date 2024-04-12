@@ -78,7 +78,7 @@ const Header: React.FC = () => {
             )}
           </SearchDiv>
 
-          {!useIsLoggedIn ? (
+          {useIsLoggedIn ? (
             <Items style={{ width: '150px' }}>
               <HiOutlineChatBubbleLeftRight
                 style={{
