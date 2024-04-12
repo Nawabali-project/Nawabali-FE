@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { logout } from '@/api/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface BalloonModalProps {
   isOpen: boolean;
@@ -8,15 +9,39 @@ interface BalloonModalProps {
 }
 
 const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  const navigate = useNavigate();
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
+
+  const goToMypage = () => {
+    navigate('/mypage');
+  };
 
   const handleLogout = async () => {
     await logout();
+    onClose();
   };
+
+  if (!isOpen) return null;
 
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
+      <ModalContainer ref={modalRef} onClick={(e) => e.stopPropagation()}>
         <div
           style={{
             display: 'flex',
@@ -24,7 +49,9 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
             alignItems: 'center',
           }}
         >
-          <span style={{ marginBottom: '10px' }}>마이페이지</span>
+          <span style={{ marginBottom: '10px' }} onClick={goToMypage}>
+            마이페이지
+          </span>
           <span onClick={handleLogout}>로그아웃</span>
         </div>
       </ModalContainer>

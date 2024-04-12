@@ -78,7 +78,7 @@ const Header: React.FC = () => {
             )}
           </SearchDiv>
 
-          {useIsLoggedIn ? (
+          {!useIsLoggedIn ? (
             <Items style={{ width: '150px' }}>
               <HeaderSpan onClick={handleLogin}>로그인</HeaderSpan>
               <div
@@ -87,40 +87,43 @@ const Header: React.FC = () => {
               <HeaderSpan onClick={handleSignup}>회원가입</HeaderSpan>
             </Items>
           ) : (
-            <Items style={{ width: '150px' }}>
-              <HiOutlineChatBubbleLeftRight
-                style={{
-                  fontSize: '25px',
-                  color: 'gray',
-                  margin: '8px',
-                  cursor: 'pointer',
-                }}
-              />
-              <GoBell
-                style={{
-                  fontSize: '25px',
-                  color: 'gray',
-                  margin: '8px',
-                  cursor: 'pointer',
-                }}
-              />
-              <ProfileContainer>
-                <Profile onClick={handleOpenInfoModal} />
-                {isMyInfoModalOpen && (
-                  <BalloonModal
-                    isOpen={isMyInfoModalOpen}
-                    onClose={handleCloseInfoModal}
-                  />
-                )}
-              </ProfileContainer>
-            </Items>
+            <>
+              <Items style={{ width: '150px' }}>
+                <HiOutlineChatBubbleLeftRight
+                  style={{
+                    fontSize: '25px',
+                    color: 'gray',
+                    margin: '8px',
+                    cursor: 'pointer',
+                  }}
+                />
+                <GoBell
+                  style={{
+                    fontSize: '25px',
+                    color: 'gray',
+                    margin: '8px',
+                    cursor: 'pointer',
+                  }}
+                />
+                <ProfileContainer>
+                  <Profile onClick={handleOpenInfoModal} />
+                  {isMyInfoModalOpen && (
+                    <BalloonModal
+                      isOpen={isMyInfoModalOpen}
+                      onClose={handleCloseInfoModal}
+                    />
+                  )}
+                </ProfileContainer>
+              </Items>
+
+              <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
+                <HeaderSpan style={{ margin: '0', color: 'white' }}>
+                  글쓰기
+                </HeaderSpan>
+                <FaRegEdit style={{ color: 'white' }} />
+              </WriteButton>
+            </>
           )}
-          <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
-            <HeaderSpan style={{ margin: '0', color: 'white' }}>
-              글쓰기
-            </HeaderSpan>
-            <FaRegEdit style={{ color: 'white' }} />
-          </WriteButton>
           {isAddPostModalOpen && (
             <CreatePostModal setIsAddPostModalOpen={setIsAddPostModalOpen} />
           )}
@@ -220,5 +223,5 @@ const Profile = styled.div`
   background-size: cover;
   cursor: pointer;
   margin: 0 8px;
-  background-image: url(${profileImg});
+  background-image: url(${localStorage.getItem(profileImg)});
 `;
