@@ -22,7 +22,7 @@ interface IFeature {
 
 const ScoreMap: React.FC = () => {
   const [isClicked, setIsClicked] = useState(false);
-  const [clickedName, setClickedName] = useState('');
+  const [, setClickedName] = useState('');
 
   useEffect(() => {
     const data: IFeature[] = geojson.features;

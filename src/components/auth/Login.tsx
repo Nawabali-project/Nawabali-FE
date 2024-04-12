@@ -81,6 +81,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
           src="/assets/images/kakaoLoginImg.png"
           style={{ cursor: 'pointer' }}
           onClick={handleKakaoLogin}
+          alt=""
         />
         <SideDiv>
           <span>로그인 유지</span>

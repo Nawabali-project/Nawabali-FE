@@ -22,7 +22,7 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
   const [, setPointAddr] = useState<string>('');
 
   console.log(AllPosts());
-  const data: any = AllPosts();
+  // const data: any = AllPosts();
 
   // 1. 카카오맵 불러오기 및 초기 지도 설정
   useEffect(() => {
@@ -93,16 +93,13 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
 
   // 4. 현재 위치 함수가 정상 작동하면 실행
   const getPosSuccess = (pos: GeolocationPosition) => {
-    // 현재 위치의 위도, 경도
     const currentPos = new window.kakao.maps.LatLng(
-      pos.coords.latitude, // 위도
-      pos.coords.longitude, // 경도
+      pos.coords.latitude,
+      pos.coords.longitude,
     );
 
-    // 지도를 현재 위치로 이동시킨다.
     map.panTo(currentPos);
 
-    // 기존 마커를 제거하고 새로운 마커를 넣는다.
     marker.setMap(null);
     marker.setPosition(currentPos);
     marker.setMap(map);
@@ -148,27 +145,6 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
     </Layout>
   );
 };
-
-// const CustomPost = styled.div`
-//   background-color: white;
-//   padding: 10px;
-//   border: 5px solid #fe6847;
-//   border-radius: 10px;
-//   width: 80px; /* 가로 크기 설정 */
-//   height: 64px; /* 세로 크기 설정 */
-//   overflow: hidden; /* 박스 바깥으로 나가는 이미지 숨김 */
-//   position: relative; /* 말풍선 뾰족한 부분을 위한 기준점 */
-//   display: flex; /* 내부 아이템(이미지) 가운데 정렬을 위해 */
-//   justify-content: center; /* 가로 방향 가운데 정렬 */
-//   align-items: center; /* 세로 방향 가운데 정렬 */
-
-//   img {
-//     width: 100%; /* 박스 가로 크기에 맞게 조정 */
-//     height: auto; /* 비율 유지 */
-//     min-height: 100%; /* 최소 세로 크기를 박스 세로 크기에 맞게 조정 */
-//     object-fit: cover; /* 비율 유지하면서 박스에 딱 맞게 조정, 필요시 잘림 */
-//   }
-// `;
 
 const Layout = styled.div`
   padding: 10px;
