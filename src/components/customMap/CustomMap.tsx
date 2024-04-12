@@ -21,8 +21,8 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
   const [marker, setMarker] = useState<any>();
   const [, setPointAddr] = useState<string>('');
 
-  console.log(AllPosts());
-  // const data: any = AllPosts();
+  const data: any = AllPosts();
+  console.log(data?.data?.content);
 
   // 1. 카카오맵 불러오기 및 초기 지도 설정
   useEffect(() => {
@@ -39,32 +39,40 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
     });
   }, []);
 
+  function getBorderColor(category: string) {
+    if (category === 'FOOD') {
+      return '#FE6847';
+    } else if (category === 'CAFE') {
+      return '#C17F28';
+    } else if (category === 'PHOTOZONE') {
+      return '#00A3FF';
+    }
+  }
+
   // 2. 지도 객체가 준비되면 커스텀 마커 추가
   useEffect(() => {
-    if (map) {
-      // 커스텀 오버레이 지도에 표시
-      const overlaysData = [
-        {
-          position: new window.kakao.maps.LatLng(37.556949, 126.970309),
-          imageUrl:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuKWVV9Np9SUIivOOCIJ-HKrArI7JBPzyrkg&s',
-        },
-        {
-          position: new window.kakao.maps.LatLng(37.556, 126.974),
-          imageUrl:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwbwHqa8d2QW3VhbN9JofOlpfvnsGhX_OZNQ&s',
-        },
-        {
-          position: new window.kakao.maps.LatLng(37.554949, 126.977309),
-          imageUrl:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgg9v8AXnoOPl3tNqhXZG49gy2I9DhJfB8tA&s',
-        },
-      ];
+    if (map && data?.data?.content.length) {
+      const overlaysData = data.data.content.map((post: any) => ({
+        nickname: post.nickname,
+        category: post.category,
+        position: new window.kakao.maps.LatLng(post.latitude, post.longitude),
+        imageUrl: post.imageUrls,
+        contents: post.contents,
+        likesCount: post.likesCount,
+        localLikesCount: post.localLikesCount,
+        commentCount: post.commentCount,
+        district: post.district,
+        modifiedAt: post.modifiedAt,
+        postId: post.postId,
+        userId: post.userId,
+      }));
 
-      overlaysData.forEach((data) => {
+      overlaysData.forEach((data: any) => {
+        let borderColor = getBorderColor(data?.category);
+
         let content = `
-          <div style="background-color: white; padding: 0px; border: 5px solid #fe6847; border-radius: 10px; width: 70px; height: 55px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
-            <img src="${data.imageUrl}" style="width: 100%; height: auto; min-height: 100%; object-fit: cover;" alt="" />
+          <div style="background-color: white; padding: 0px; border: 5px solid ${borderColor}; border-radius: 10px; width: 70px; height: 55px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+            <img src="${data.imageUrl[0]}" style="width: 100%; height: auto; min-height: 100%; object-fit: cover;" alt="" />
           </div>
         `;
 
@@ -73,10 +81,11 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
           content: content,
         });
 
+        console.log(data.position);
         customOverlay.setMap(map);
       });
     }
-  }, [map]);
+  }, [data?.data?.content, map]);
 
   // 3. 현재 위치 함수
   const getCurrentPosBtn = () => {
