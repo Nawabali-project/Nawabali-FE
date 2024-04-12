@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import geojson from '../../utils/geojson.json';
+import ScoreCircle from './ScoreCircle';
+
 const { kakao } = window;
 
 declare global {
@@ -19,6 +21,9 @@ interface IFeature {
 }
 
 const ScoreMap: React.FC = () => {
+  const [isClicked, setIsClicked] = useState(false);
+  const [clickedName, setClickedName] = useState('');
+
   useEffect(() => {
     const data: IFeature[] = geojson.features;
     let coordinates: number[][][] = [];
@@ -34,7 +39,6 @@ const ScoreMap: React.FC = () => {
       };
 
     let map = new kakao.maps.Map(mapContainer, mapOption);
-    let infowindow = new kakao.maps.InfoWindow({ removable: true });
 
     const displayArea = (coordinates: number[][][], name: string) => {
       let path: any = [];
@@ -87,25 +91,10 @@ const ScoreMap: React.FC = () => {
       });
 
       // 클릭하면 지역의 정보창
-      kakao.maps.event.addListener(
-        polygon,
-        'click',
-        function (mouseEvent: any) {
-          let content =
-            '<div class="info">' +
-            '   <div class="title">' +
-            name +
-            '</div>' +
-            '   <div class="size">총 점수 : ' +
-            Math.floor(polygon.getArea()) + // 이 부분에 우리 동네 점수 넣기
-            ' </div>' +
-            '</div>';
-
-          infowindow.setContent(content);
-          infowindow.setPosition(mouseEvent.latLng);
-          infowindow.setMap(map);
-        },
-      );
+      kakao.maps.event.addListener(polygon, 'click', () => {
+        setClickedName(name);
+        setIsClicked(true);
+      });
     };
 
     data.forEach((val) => {
@@ -122,6 +111,7 @@ const ScoreMap: React.FC = () => {
         className="map-content"
         style={{ width: '100%', height: '1000px' }}
       ></div>
+      {isClicked && <ScoreCircle />}
     </div>
   );
 };

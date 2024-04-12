@@ -103,7 +103,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               <ProfileBox>
                 <ProfileImg />
               </ProfileBox>
-              <NickName>{localStorage.getItem('username')}</NickName>
+              <NickName>test choi</NickName>
               <SubmitInput type="submit" value="업로드" />
             </ContentHeader>
             <ContentTextArea

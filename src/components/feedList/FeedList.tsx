@@ -27,10 +27,10 @@ const Feed = () => {
   } = useInfiniteQuery({
     queryKey: ['scrollPosts'],
     queryFn: getPosts,
-    initialPageParam: 1,
+    initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.data.content.length > 0) {
-        return allPages.length + 1;
+        return allPages.length;
       }
 
       return undefined;
