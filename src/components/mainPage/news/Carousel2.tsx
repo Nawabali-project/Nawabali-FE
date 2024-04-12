@@ -66,7 +66,7 @@ function Carousel2() {
               .concat(items)
               .slice(currentIndex, currentIndex + itemsPerPage)
               .map((item, idx) => (
-                <ImageContainer key={idx} isCenter={idx === 1}>
+                <ImageContainer key={idx} $isCenter={idx === 1}>
                   <StyledDiv backgroundImage={item.item} />
                   <p>파스타앤코</p>
                   <p style={{ fontSize: '13px' }}>
@@ -87,11 +87,11 @@ function Carousel2() {
 
 export default Carousel2;
 
-const ImageContainer = styled.div<{ isCenter?: boolean }>`
+const ImageContainer = styled.div<{ $isCenter?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: ${(props) => (props.isCenter ? '0 10px' : '0')};
+  margin: ${(props) => (props.$isCenter ? '0 10px' : '0')};
 
   p {
     text-decoration: none;

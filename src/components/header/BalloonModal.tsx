@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { logout } from '@/api/auth';
 
 interface BalloonModalProps {
   isOpen: boolean;
@@ -8,6 +9,10 @@ interface BalloonModalProps {
 
 const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -20,7 +25,7 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
           }}
         >
           <span style={{ marginBottom: '10px' }}>마이페이지</span>
-          <span>로그아웃</span>
+          <span onClick={handleLogout}>로그아웃</span>
         </div>
       </ModalContainer>
     </ModalOverlay>

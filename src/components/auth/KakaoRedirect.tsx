@@ -17,7 +17,7 @@ const KakaoRedirect = () => {
         },
       })
       .then((res) => {
-        window.localStorage.setItem('access_Token', res.data.Authorization);
+        window.localStorage.setItem('access_Token', res.headers.Authorization);
         navigate('/');
         console.log('카카오 로그인에 성공하였습니다.');
       })
