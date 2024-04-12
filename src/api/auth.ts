@@ -6,6 +6,8 @@ import type {
   LoginUser,
   VarifyCheck,
 } from '@/interfaces/main/auth/auth.interface';
+import { Cookies } from 'react-cookie';
+import useAuthStore from '@/store/AuthState';
 
 export const signUp = async (user: SignUpUser) => {
   try {
@@ -62,9 +64,13 @@ export const nicknameDupCheck = async (nickname: string) => {
 };
 
 export const logout = async () => {
+  const cookie = new Cookies();
   try {
-    const res = await authInstance.post(`/users/logout`);
-    return res;
+    const response = await authInstance.post('/users/logout');
+    if (response.status === 302) {
+      cookie.remove('accessToken', { path: '/' });
+      useAuthStore.getState().setLogoutState();
+    }
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
   }

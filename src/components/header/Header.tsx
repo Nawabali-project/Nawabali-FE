@@ -80,6 +80,14 @@ const Header: React.FC = () => {
 
           {useIsLoggedIn ? (
             <Items style={{ width: '150px' }}>
+              <HeaderSpan onClick={handleLogin}>로그인</HeaderSpan>
+              <div
+                style={{ width: '1px', height: '15px', background: 'gray' }}
+              />
+              <HeaderSpan onClick={handleSignup}>회원가입</HeaderSpan>
+            </Items>
+          ) : (
+            <Items style={{ width: '150px' }}>
               <HiOutlineChatBubbleLeftRight
                 style={{
                   fontSize: '25px',
@@ -98,7 +106,6 @@ const Header: React.FC = () => {
               />
               <ProfileContainer>
                 <Profile onClick={handleOpenInfoModal} />
-
                 {isMyInfoModalOpen && (
                   <BalloonModal
                     isOpen={isMyInfoModalOpen}
@@ -106,14 +113,6 @@ const Header: React.FC = () => {
                   />
                 )}
               </ProfileContainer>
-            </Items>
-          ) : (
-            <Items style={{ width: '150px' }}>
-              <HeaderSpan onClick={handleLogin}>로그인</HeaderSpan>
-              <div
-                style={{ width: '1px', height: '15px', background: 'gray' }}
-              />
-              <HeaderSpan onClick={handleSignup}>회원가입</HeaderSpan>
             </Items>
           )}
           <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
