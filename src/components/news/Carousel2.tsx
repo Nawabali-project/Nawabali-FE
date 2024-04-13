@@ -26,7 +26,7 @@ function Carousel2() {
     <>
       <div
         style={{
-          border: '1px solid pink',
+          // border: '1px solid pink',
           width: '720px',
           margin: '50px auto 0',
           display: 'flex',

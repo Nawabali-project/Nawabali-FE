@@ -28,7 +28,7 @@ function Carousel() {
     <>
       <div
         style={{
-          border: '1px solid pink',
+          // border: '1px solid pink',
           width: '860px',
           height: '300px',
           margin: '50px auto 0',

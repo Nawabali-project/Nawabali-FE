@@ -15,7 +15,6 @@ import useAuthStore from '@/store/AuthState';
 import DetailPostModal from '../modal/DetailPostModal';
 const profileImg = '/assets/images/cat.png';
 
-
 const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
