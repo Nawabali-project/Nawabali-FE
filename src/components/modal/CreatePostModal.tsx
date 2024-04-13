@@ -108,9 +108,9 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
           <ContentBox>
             <ContentHeader>
               <ProfileBox>
-                <ProfileImg />
+                <ProfileImg src="public\assets\images\cat.png" />
               </ProfileBox>
-              <NickName>test choi</NickName>
+              <NickName>{localStorage.getItem('nickname')}</NickName>
               <SubmitInput type="submit" value="업로드" />
             </ContentHeader>
             <ContentTextArea
@@ -247,19 +247,22 @@ const ContentHeader = styled.div`
 `;
 
 const ProfileBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 50px;
-  padding: 10px;
+  height: 40px;
+  padding: 15px 0px 0px 20px;
   border: none;
   border-radius: 100px;
 `;
 
-const ProfileImg = styled.div`
-  width: 13px;
-  height: 13px;
-  background-color: #f1f1f1;
-  padding: 20px;
+const ProfileImg = styled.img`
+  width: 45px;
+  height: 45px;
   border: none;
   border-radius: 100px;
+  object-fit: cover;
 `;
 
 const CategoryBox = styled.div`

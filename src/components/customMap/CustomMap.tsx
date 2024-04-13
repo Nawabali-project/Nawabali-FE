@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MyLocationIcon } from '@/utils/icons';
 import AllPosts from './AllPosts';
+import DetailPostModal from '../modal/DetailPostModal';
 
 declare global {
   interface Window {
@@ -20,6 +21,13 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
   const [, setPointAddr] = useState<string>('');
+  const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
+    useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const handlePostClick = (post: any) => {
+    setSelectedPost(post);
+    setIsDetailPostModalOpen(true);
+  };
 
   const data: any = AllPosts();
   console.log(data?.data?.content);
@@ -43,7 +51,7 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
     if (category === 'FOOD') {
       return '#FE6847';
     } else if (category === 'CAFE') {
-      return '#C17F28';
+      return '#FFB700';
     } else if (category === 'PHOTOZONE') {
       return '#00A3FF';
     }
@@ -81,7 +89,10 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
           content: content,
         });
 
-        console.log(data.position);
+        window.kakao.maps.event.addListener(customOverlay, 'click', () => {
+          handlePostClick(data);
+        });
+
         customOverlay.setMap(map);
       });
     }
@@ -144,14 +155,22 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
   }, [map]);
 
   return (
-    <Layout>
-      <MapContainer style={{ width, height }}>
-        <MapBox id="map" style={{ width: '100%', height: '100%' }}></MapBox>
-        <MyLocationBtn onClick={getCurrentPosBtn}>
-          <MyLocationIcon />
-        </MyLocationBtn>
-      </MapContainer>
-    </Layout>
+    <>
+      <Layout>
+        <MapContainer style={{ width, height }}>
+          <MapBox id="map" style={{ width: '100%', height: '100%' }}></MapBox>
+          <MyLocationBtn onClick={getCurrentPosBtn}>
+            <MyLocationIcon />
+          </MyLocationBtn>
+        </MapContainer>
+      </Layout>
+      {isDetailPostModalOpen && (
+        <DetailPostModal
+          post={selectedPost}
+          setIsDetailPostModalOpen={setIsDetailPostModalOpen}
+        />
+      )}
+    </>
   );
 };
 
