@@ -43,7 +43,7 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
     if (category === 'FOOD') {
       return '#FE6847';
     } else if (category === 'CAFE') {
-      return '#C17F28';
+      return '#FFB700';
     } else if (category === 'PHOTOZONE') {
       return '#00A3FF';
     }
