@@ -11,7 +11,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
 import BalloonModal from './BalloonModal';
 import useAuthStore from '@/store/AuthState';
-const profileImg = '/assets/images/basicImg.png';
+const profileImg = '/assets/images/cat.png';
 
 const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -223,5 +223,5 @@ const Profile = styled.div`
   background-size: cover;
   cursor: pointer;
   margin: 0 8px;
-  background-image: url(${localStorage.getItem(profileImg)});
+  background-image: url(${profileImg});
 `;

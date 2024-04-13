@@ -22,10 +22,8 @@ interface IFeature {
 }
 
 const ScoreMap: React.FC = () => {
-  const areaScore = ScoreCircle()?.data;
+  const areaScore = ScoreCircle();
   console.log('Area Score', areaScore);
-
-  let testNUmber = 7;
 
   useEffect(() => {
     const data: IFeature[] = geojson.features;

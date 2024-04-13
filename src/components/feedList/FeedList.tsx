@@ -60,7 +60,7 @@ const Feed = () => {
         page.data.content.map((post: any) => (
           <FeedTotalBox ref={ref} key={post.postId}>
             <UserInfoBox>
-              <UserImg src={post.profileImageUrl} />
+              <UserImg src="https://img.freepik.com/free-photo/kitty-with-monochrome-wall-her_23-2148955134.jpg?t=st=1712986129~exp=1712989729~hmac=54301ae24769efc751f61f9514bed0b431756c6ef930490e47da5b8aa97cf46c&w=740" />
               <UserName>{post.nickname}</UserName>
               <UserGrade>서교동 토박이</UserGrade>
             </UserInfoBox>
@@ -110,7 +110,9 @@ const UserInfoBox = styled.div`
 const UserImg = styled.img`
   width: 36px;
   height: 36px;
+  border-radius: 1000px;
   background-size: cover;
+  object-fit: cover;
 `;
 
 const UserName = styled.div`
