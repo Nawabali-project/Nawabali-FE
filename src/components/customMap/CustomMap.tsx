@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { MyLocationIcon } from '@/utils/icons';
 import AllPosts from './AllPosts';
 import DetailPostModal from '../modal/DetailPostModal';
+import { Post } from '@/interfaces/main/posts.interface';
 
 declare global {
   interface Window {
@@ -23,7 +24,7 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
   const [, setPointAddr] = useState<string>('');
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
-  const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const handlePostClick = (post: any) => {
     setSelectedPost(post);
     setIsDetailPostModalOpen(true);
@@ -164,9 +165,9 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
           </MyLocationBtn>
         </MapContainer>
       </Layout>
-      {isDetailPostModalOpen && (
+      {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
-          post={selectedPost}
+          postId={selectedPost.postId}
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
