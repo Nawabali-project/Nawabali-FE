@@ -1,60 +1,22 @@
-import styled from 'styled-components';
+import { useQuery } from '@tanstack/react-query';
+import { getAreaScore } from '@/api/post';
 
 const ScoreCircle = () => {
-  console.log('점수 원 동작');
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['areaScore'],
+    queryFn: getAreaScore,
+  });
 
-  return (
-    <>
-      <Layout>
-        <RegionBox>송파구</RegionBox>
-        <ScoreBox>578</ScoreBox>
-        <InfoBox>맛집 250개 + 카페 249개 + 사진스팟 79개</InfoBox>
-        <CommentBox>송파구는 맛집 동네예요:&#41;</CommentBox>
-      </Layout>
-    </>
-  );
+  console.log(data);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return <div>Error fetching data</div>;
+  }
+
+  return data;
 };
-
-const Layout = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 300px;
-  height: 300px;
-  background-color: white;
-  border-radius: 1000px;
-`;
-
-const RegionBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ScoreBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 70px;
-  font-weight: 900;
-`;
-
-const InfoBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px;
-  color: gray;
-  font-size: 13px;
-`;
-
-const CommentBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
-  padding-bottom: 10px;
-`;
 
 export default ScoreCircle;

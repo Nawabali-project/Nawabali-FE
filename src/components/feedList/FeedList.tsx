@@ -74,6 +74,7 @@ const Feed = () => {
               <CommentIcon />
               <CommentsCountBox>{post.commentCount}</CommentsCountBox>
             </LikeCommentBox>
+            <ContentsBox>{post.contents}</ContentsBox>
           </FeedTotalBox>
         )),
       )}
@@ -87,6 +88,13 @@ const Feed = () => {
     </>
   );
 };
+
+const ContentsBox = styled.div`
+  width: 295px;
+  padding: 5px 0px;
+  color: gray;
+  font-size: 13px;
+`;
 
 const FeedTotalBox = styled.div`
   width: 295px;

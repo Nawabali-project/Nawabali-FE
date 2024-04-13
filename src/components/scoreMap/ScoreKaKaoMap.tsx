@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import geojson from '../../utils/geojson.json';
 import ScoreCircle from './ScoreCircle';
 
@@ -8,6 +8,7 @@ const { kakao } = window;
 declare global {
   interface Window {
     kakao: any;
+    closeOverlay?: () => void;
   }
 }
 
@@ -21,8 +22,10 @@ interface IFeature {
 }
 
 const ScoreMap: React.FC = () => {
-  const [isClicked, setIsClicked] = useState(false);
-  const [, setClickedName] = useState('');
+  const areaScore = ScoreCircle()?.data;
+  console.log('Area Score', areaScore);
+
+  let testNUmber = 7;
 
   useEffect(() => {
     const data: IFeature[] = geojson.features;
@@ -39,6 +42,9 @@ const ScoreMap: React.FC = () => {
       };
 
     let map = new kakao.maps.Map(mapContainer, mapOption);
+    let overlay = new kakao.maps.CustomOverlay({
+      map: map,
+    });
 
     const displayArea = (coordinates: number[][][], name: string) => {
       let path: any = [];
@@ -90,11 +96,40 @@ const ScoreMap: React.FC = () => {
         polygon.setOptions({ strokeWeight: 2, fillOpacity: 0.7 });
       });
 
-      // 클릭하면 지역의 정보창
-      kakao.maps.event.addListener(polygon, 'click', () => {
-        setClickedName(name);
-        setIsClicked(true);
-      });
+      window.closeOverlay = () => {
+        overlay.setMap(null);
+      };
+
+      let content = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; height: 300px; background-color: white; border-radius: 150px; z-index: 200;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px">
+            ${name}
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; font-size: 70px; font-weight: 900;">
+              524
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; margin: 10px; color: gray; font-size: 13px;">
+              맛집 250개 + 카페 249개 + 사진스팟 79개
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; margin: 5px; padding-bottom: 10px;">
+              ${name} 맛집 동네예요 :)
+            </div>
+            <button onclick="window.closeOverlay()" style="margin: 5px 0px; padding: 5px 10px; border: none; background-color: #f55; color: white; border-radius: 5px; cursor: pointer;">닫기</button>
+          </div>
+        </div>
+      `;
+
+      // 지역 클릭시 커스텀 오버레이를 표시
+      kakao.maps.event.addListener(
+        polygon,
+        'click',
+        function (mouseEvent: any) {
+          overlay.setContent(content);
+          overlay.setPosition(mouseEvent.latLng);
+          overlay.setMap(map);
+        },
+      );
     };
 
     data.forEach((val) => {
@@ -111,7 +146,6 @@ const ScoreMap: React.FC = () => {
         className="map-content"
         style={{ width: '100%', height: '1000px' }}
       ></div>
-      {isClicked && <ScoreCircle />}
     </div>
   );
 };

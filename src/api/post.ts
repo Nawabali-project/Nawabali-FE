@@ -21,7 +21,7 @@ export const getPosts = async ({ pageParam }: { pageParam: number }) => {
 export const getAllPosts = async ({ pageParam }: { pageParam: number }) => {
   let params = {
     page: String(pageParam),
-    size: '100',
+    size: '1000',
     sort: ['string'],
   };
 
@@ -66,4 +66,10 @@ export const getPostsByFilter = async ({
 
   const response = await instance.get(`/posts/filtered?${pageable.toString()}`);
   return response.data.content;
+};
+
+export const getAreaScore = async () => {
+  const data = await authInstance.get('/posts/district');
+  console.log(data);
+  return data;
 };
