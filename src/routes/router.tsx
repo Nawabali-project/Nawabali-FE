@@ -14,7 +14,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const isLoggedIn = useIsLoggedIn();
-  return isLoggedIn ? <Navigate to="/" /> : children;
+  return isLoggedIn ? children : <Navigate to="/login" />;
 };
 
 export const router = createBrowserRouter([

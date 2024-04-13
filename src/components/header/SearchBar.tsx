@@ -1,36 +1,47 @@
-import { IoIosSearch } from 'react-icons/io';
-import { FaMapMarkerAlt } from 'react-icons/fa';
 import styled, { keyframes } from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useSearchedPosts } from '@/api/header';
 
 interface SearchBarProps {
-  address: string;
+  content: string;
   $isOpen: boolean;
+  onPostSelect: (postId: number) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ address, $isOpen }) => {
-  const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    setSearchbarOpen(!!address.trim());
-  }, [address]);
+interface Post {
+  id: string;
+  contents: string;
+  postId: number;
+}
+const SearchBar: React.FC<SearchBarProps> = ({
+  content,
+  $isOpen,
+  onPostSelect,
+}) => {
+  const { data: posts, isLoading, isError, error } = useSearchedPosts(content);
 
   return (
     <ModalDiv $isOpen={$isOpen}>
       <div>
-        <span>
-          <FaMapMarkerAlt />
-          서울특별시 성동구 성수동 1가
-        </span>
+        <StyledUl>
+          {isLoading ? (
+            <li>Loading...</li>
+          ) : isError ? (
+            <li>Error: {error.message}</li>
+          ) : (
+            posts &&
+            posts.length > 0 &&
+            posts.map((post: Post) => (
+              <li
+                style={{ cursor: 'pointer' }}
+                onMouseDown={() => onPostSelect(post.postId)}
+                key={post.id}
+              >
+                {post.contents}
+              </li>
+            ))
+          )}
+        </StyledUl>
       </div>
-      <div>
-        <p>
-          <IoIosSearch style={{ color: 'gray' }} />
-          성수 레이어
-        </p>
-        <span>서울특별시 성동구 뚝섬로9길 20 2층</span>
-      </div>
-      {isSearchbarOpen && <SearchInput />}
     </ModalDiv>
   );
 };
@@ -67,14 +78,9 @@ const slideDown = keyframes`
   }
 `;
 
-const SearchInput = styled.input.attrs({
-  type: 'text',
-  placeholder: '지역명, 상호 등으로 검색할 수 있어요!',
-})`
-  width: 100%;
-  border: none;
-  font-size: 13px;
-  &:focus {
-    outline: none;
+const StyledUl = styled.ul`
+  li {
+    list-style-type: none;
+    margin-bottom: 5px;
   }
 `;

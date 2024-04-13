@@ -3,7 +3,12 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import { IoIosArrowForward, IoIosSearch } from 'react-icons/io';
 import SideBar from './SideBar';
 import Button from '@/components/button/Button';
-import { checkPassWord, editUserInfo, useUserInfo } from '@/api/user';
+import {
+  checkPassWord,
+  editUserInfo,
+  useDeleteUser,
+  useUserInfo,
+} from '@/api/user';
 import { useInput } from '@/hooks/useInput';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Districts } from '../../utils/districts';
@@ -17,6 +22,7 @@ const profileImg = '/assets/images/basicImg.png';
 
 const EditUser: React.FC = () => {
   const { data } = useUserInfo();
+  const { mutate } = useDeleteUser();
 
   const [input, onChange, resetInput] = useInput({
     prevPassword: '',
@@ -282,7 +288,7 @@ const EditUser: React.FC = () => {
               </Col>
             </div>
             <div>
-              <span>
+              <span onClick={() => mutate()}>
                 회원 탈퇴하기
                 <IoIosArrowForward />
               </span>
