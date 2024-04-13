@@ -108,9 +108,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
           <ContentBox>
             <ContentHeader>
               <ProfileBox>
-                <ProfileImg
-                  src={localStorage.getItem('profileImageUrl') ?? ''}
-                />
+                <ProfileImg src="public\assets\images\cat.png" />
               </ProfileBox>
               <NickName>{localStorage.getItem('nickname')}</NickName>
               <SubmitInput type="submit" value="업로드" />
