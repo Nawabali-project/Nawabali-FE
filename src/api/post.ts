@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { instance, authInstance } from '../axios';
 
 export const getPosts = async ({ pageParam }: { pageParam: number }) => {
@@ -72,4 +73,16 @@ export const getAreaScore = async () => {
   const data = await authInstance.get('/posts/district');
   console.log(data);
   return data;
+};
+
+export const getDedetailPost = async (postId: number) => {
+  const data = await authInstance.get(`posts/${postId}`);
+  return data.data;
+};
+
+export const useGetDedetailPost = (postId: number) => {
+  return useQuery({
+    queryKey: [postId],
+    queryFn: () => getDedetailPost(postId),
+  });
 };

@@ -60,7 +60,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     mutationFn: createPost,
     onSuccess: () => {
       handleCloseModal();
-      queryClient.invalidateQueries('allPosts');
+      queryClient.invalidateQueries({ queryKey: ['allPosts'] });
     },
   });
 

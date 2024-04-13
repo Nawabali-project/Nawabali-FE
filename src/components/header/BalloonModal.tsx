@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { logout } from '@/api/auth';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 
 interface BalloonModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface BalloonModalProps {
 }
 
 const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
+  const cookie = new Cookies();
   const navigate = useNavigate();
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +36,7 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
 
   const handleLogout = async () => {
     await logout();
+    cookie.remove('accessToken');
     onClose();
   };
 

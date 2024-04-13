@@ -11,23 +11,28 @@ import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
 import BalloonModal from './BalloonModal';
 import useAuthStore from '@/store/AuthState';
+
+import DetailPostModal from '../modal/DetailPostModal';
 const profileImg = '/assets/images/cat.png';
+
 
 const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [isMyInfoModalOpen, setIsMyInfoModalOpen] = useState(false);
   const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
   const [isAddPostModalOpen, setIsAddPostModalOpen] = useState<boolean>(false);
   const [isSearchFocused, setSearchFocused] = useState<boolean>(false);
   const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
-  const debouncedAddress = useDebounce(address, 300);
+  const debouncedContent = useDebounce(content, 1000);
 
   useEffect(() => {
-    setSearchbarOpen(!!debouncedAddress.trim());
-  }, [debouncedAddress]);
+    setSearchbarOpen(!!debouncedContent.trim());
+  }, [debouncedContent]);
 
   const handleLogin = () => {
     setModalType('login');
@@ -59,6 +64,11 @@ const Header: React.FC = () => {
     setSearchFocused(false);
   };
 
+  const handleOpenDetailModal = (postId: number) => {
+    setSelectedPostId(postId);
+    setIsDetailModalOpen(true);
+  };
+
   return (
     <>
       <HeaderLayout>
@@ -66,15 +76,19 @@ const Header: React.FC = () => {
           <SearchDiv style={{ position: 'relative' }}>
             <IoIosSearch style={{ color: 'gray' }} />
             <input
-              value={address}
+              value={content}
               type="text"
-              placeholder="지역명, 상호 등으로 검색할 수 있어요!"
-              onChange={(e) => setAddress(e.target.value)}
+              placeholder="제목으로 검색할 수 있어요!"
+              onChange={(e) => setContent(e.target.value)}
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
             />
             {isSearchFocused && (
-              <SearchBar address={address} $isOpen={isSearchbarOpen} />
+              <SearchBar
+                content={content}
+                $isOpen={isSearchbarOpen}
+                onPostSelect={handleOpenDetailModal}
+              />
             )}
           </SearchDiv>
 
@@ -144,6 +158,12 @@ const Header: React.FC = () => {
             />
           )}
         </>
+      )}
+      {isDetailModalOpen && (
+        <DetailPostModal
+          postId={selectedPostId}
+          setIsDetailPostModalOpen={setIsDetailModalOpen}
+        />
       )}
     </>
   );

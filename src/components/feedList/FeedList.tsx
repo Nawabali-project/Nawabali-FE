@@ -6,10 +6,21 @@ import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
 import DetailPostModal from '../modal/DetailPostModal';
 
+interface Post {
+  postId: number;
+  profileImageUrl: string;
+  nickname: string;
+  imageUrls: string[];
+  category: string;
+  likesCount: number;
+  commentCount: number;
+  contents: string;
+}
+
 const Feed = () => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
-  const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const handlePostClick = (post: any) => {
     setSelectedPost(post);
     setIsDetailPostModalOpen(true);
@@ -78,9 +89,9 @@ const Feed = () => {
           </FeedTotalBox>
         )),
       )}
-      {isDetailPostModalOpen && (
+      {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
-          post={selectedPost}
+          postId={selectedPost.postId}
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}

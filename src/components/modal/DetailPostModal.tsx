@@ -6,18 +6,37 @@ import {
   LikeIcon,
   BookMarkIcon,
 } from '@/utils/icons';
+import { useGetDedetailPost } from '@/api/post';
 
 interface DetailPostProps {
-  post: any;
+  postId: number;
   setIsDetailPostModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DetailPostModal: React.FC<DetailPostProps> = (props: any) => {
+const DetailPostModal: React.FC<DetailPostProps> = ({
+  postId,
+  setIsDetailPostModalOpen,
+}) => {
+  const { data, isFetching, isError, error } = useGetDedetailPost(postId);
+
   const handleCloseModal = () => {
-    props.setIsDetailPostModalOpen(false);
+    setIsDetailPostModalOpen(false);
   };
 
-  console.log(props);
+  console.log('id: ', postId);
+  console.log('detail data: ', data);
+  if (isFetching) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    console.error(error);
+    return <p>Error loading the post details!</p>;
+  }
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <>
@@ -29,7 +48,7 @@ const DetailPostModal: React.FC<DetailPostProps> = (props: any) => {
         <MainLayout>
           <ImageBox>
             <img
-              src={props.post.imageUrls?.[0]}
+              src={data?.imageUrls?.[0]}
               alt=""
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
@@ -42,24 +61,22 @@ const DetailPostModal: React.FC<DetailPostProps> = (props: any) => {
               </ProfileBox>
               <div>
                 <NameAndIcon>
-                  <NickName>{props.post.nickname}</NickName>
+                  <NickName>{data?.nickname}</NickName>
                   <ThreePointIconBox>
                     <ThreePointIcon />
                   </ThreePointIconBox>
                 </NameAndIcon>
-                <ContentText>{props.post.contents}</ContentText>
+                <ContentText>{data?.contents}</ContentText>
               </div>
             </ContentHeader>
 
             <CommentBox>댓글창~</CommentBox>
             <ItemBox>
               <LikesBox>
-                <LocalLikesBox>
-                  주민추천 {props.post.localLikesCount}
-                </LocalLikesBox>
+                <LocalLikesBox>주민추천 {data?.localLikesCount}</LocalLikesBox>
                 <LikeIconBox>
                   <LikeIcon />
-                  <LikeCount>{props.post.likesCount}</LikeCount>
+                  <LikeCount>{data?.likesCount}</LikeCount>
                 </LikeIconBox>
               </LikesBox>
               <BookMarkIcon />
@@ -82,7 +99,7 @@ const BackBox = styled.div`
   top: 10px;
   padding: 5px 6px 3px 7px;
   border-radius: 100px;
-  z-index: 1;
+  z-index: 20;
   cursor: pointer;
 `;
 
