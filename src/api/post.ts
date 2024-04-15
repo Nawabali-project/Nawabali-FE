@@ -86,3 +86,13 @@ export const useGetDedetailPost = (postId: number) => {
     queryFn: () => getDedetailPost(postId),
   });
 };
+
+export const deletePost = async (postId: number) => {
+  try {
+    const response = await authInstance.delete(`/posts/${postId}`);
+    return response.data; // 백엔드에서 성공적으로 처리했다는 응답을 반환
+  } catch (error) {
+    console.error('Error deleting post', error);
+    throw error;
+  }
+};
