@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
-import KakaoRedirect from '@/components/auth/KakaoRedirect';
+// import KakaoRedirect from '@/components/auth/KakaoRedirect';
 import Myplace from '@/components/mypage/Myplace';
 import EditUser from '@/components/mypage/EditUser';
 import Mypage from '@/components/mypage/Mypage';
@@ -24,10 +24,6 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <Main />,
-      },
-      {
-        path: '/api/user/kakao/callback',
-        element: <KakaoRedirect />,
       },
       {
         path: '/myplace',

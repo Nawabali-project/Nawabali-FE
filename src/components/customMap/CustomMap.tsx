@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { MyLocationIcon } from '@/utils/icons';
 import AllPosts from './AllPosts';
 import DetailPostModal from '../modal/DetailPostModal';
+import { Post } from '@/interfaces/main/posts.interface';
 
 declare global {
   interface Window {
@@ -29,7 +30,7 @@ interface Post {
 }
 
 const CustomMap = ({ width, height }: KaKaoMapProps) => {
-  const [map, setMap] = useState<any>();
+  const [map, setMap] = useState<any>(null);
   const [marker, setMarker] = useState<any>();
   const [, setPointAddr] = useState<string>('');
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -45,18 +46,34 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
 
   // 1. 카카오맵 불러오기 및 초기 지도 설정
   useEffect(() => {
-    window.kakao.maps.load(() => {
-      const container = document.getElementById('map');
-      const options = {
-        center: new window.kakao.maps.LatLng(37.555949, 126.973309),
-        level: 3,
-      };
+    // Kakao Maps 스크립트가 이미 페이지에 로드되어 있는지 확인
+    if (window.kakao && window.kakao.maps) {
+      // 지도를 바로 로드
+      initMap();
+    } else {
+      // Kakao Maps 스크립트 로드
+      const script = document.createElement('script');
+      script.src =
+        '//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&autoload=true';
+      document.head.appendChild(script);
 
-      const initialMap = new window.kakao.maps.Map(container, options);
-      setMap(initialMap); // 지도 객체를 상태에 저장
-      setMarker(new window.kakao.maps.Marker()); // 마커 객체 초기화
-    });
+      script.onload = () => {
+        window.kakao.maps.load(initMap); // 스크립트 로드 후 지도 초기화
+      };
+    }
   }, []);
+
+  // 지도 초기화 함수
+  const initMap = () => {
+    const container = document.getElementById('map'); // 지도를 표시할 div
+    const options = {
+      center: new window.kakao.maps.LatLng(37.555949, 126.973309), // 지도의 중심 좌표
+      level: 3, // 지도의 확대 레벨
+    };
+    const createdMap = new window.kakao.maps.Map(container, options);
+    setMap(createdMap);
+    setMarker(new window.kakao.maps.Marker()); // 마커 객체 초기화
+  };
 
   function getBorderColor(category: string) {
     if (category === 'FOOD') {
@@ -175,7 +192,7 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
           </MyLocationBtn>
         </MapContainer>
       </Layout>
-      {isDetailPostModalOpen && (
+      {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
           postId={selectedPost!.postId}
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
