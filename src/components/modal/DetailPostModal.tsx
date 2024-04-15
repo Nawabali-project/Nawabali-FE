@@ -114,7 +114,9 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
               <div>
                 <NameAndIcon>
                   <NickName>{data?.nickname}</NickName>
-                  <DeleteButton>삭제</DeleteButton>
+                  <ThreePointIconBox>
+                    <ThreePointIcon />
+                  </ThreePointIconBox>
                 </NameAndIcon>
                 <ContentText>{data?.contents}</ContentText>
               </div>
@@ -280,17 +282,13 @@ const ContentText = styled.div`
   resize: none;
 `;
 
-const DeleteButton = styled.div`
+const ThreePointIconBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 50px;
-  padding: 5px;
+  padding-bottom: 10px;
   margin-right: 10px;
-  border-radius: 10px;
-  background-color: red;
-  color: white;
-  font-size: 13px;
 `;
 
 const CommentBox = styled.div`
