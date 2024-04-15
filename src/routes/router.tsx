@@ -26,10 +26,6 @@ export const router = createBrowserRouter([
         element: <Main />,
       },
       {
-        path: '/*',
-        element: <Main />,
-      },
-      {
         path: '/api/user/kakao/callback',
         element: <KakaoRedirect />,
       },
