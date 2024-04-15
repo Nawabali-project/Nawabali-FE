@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
         element: <Myplace />,
       },
       {
-        path: '/mypage/edit',
+        path: '/edit',
         element: <EditUser />,
       },
       {
