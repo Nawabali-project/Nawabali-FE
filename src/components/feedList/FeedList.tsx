@@ -11,7 +11,7 @@ const Feed = () => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const handlePostClick = (post: any) => {
+  const handlePostClick = (post: Post) => {
     setSelectedPost(post);
     setIsDetailPostModalOpen(true);
   };
@@ -67,7 +67,15 @@ const Feed = () => {
             </UserInfoBox>
             <ImgBox onClick={() => handlePostClick(post)}>
               <img src={post.imageUrls?.[0]} alt="Post Image" />
-              <PostType>{post.category}</PostType>
+              <PostType category={post.category}>
+                {post.category === 'FOOD'
+                  ? '맛집'
+                  : post.category === 'CAFE'
+                    ? '카페'
+                    : post.category === 'PHOTOZONE'
+                      ? '사진'
+                      : ' '}
+              </PostType>
             </ImgBox>
             <LikeCommentBox>
               <LikeIcon />
@@ -151,12 +159,23 @@ const ImgBox = styled.div`
   }
 `;
 
-const PostType = styled.div`
+const PostType = styled.div<{ category: string }>`
   position: absolute;
   top: 10px;
   right: 10px;
   padding: 3px 10px;
-  background-color: black;
+  background-color: ${(props) => {
+    switch (props.category) {
+      case 'FOOD':
+        return '#FE6847'; // 맛집 카테고리의 배경색
+      case 'CAFE':
+        return '#FFB700'; // 카페 카테고리의 배경색
+      case 'PHOTOZONE':
+        return '#2176AE'; // 사진 존 카테고리의 배경색
+      default:
+        return '#ccc'; // 기본 배경색
+    }
+  }};
   color: white;
   border-radius: 20px;
   font-size: 9px;

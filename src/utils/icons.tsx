@@ -77,6 +77,27 @@ export const FoodIcon = () => (
   </svg>
 );
 
+export const CloseIcon = () => (
+  <svg
+    width="48"
+    height="48"
+    viewBox="0 0 48 48"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g opacity="0.7">
+      <circle cx="24" cy="24" r="24" fill="black" />
+      <path
+        d="M18 30L30 18M18 18L30 30"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+  </svg>
+);
+
 export const CameraIcon2 = () => (
   <svg
     width="22"
@@ -453,94 +474,156 @@ export const BackIcon = () => (
   </svg>
 );
 
-export const SearchIcon = () => {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+export const SearchIcon = () => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M11 11L7.66667 7.66667M8.77778 4.88889C8.77778 5.39959 8.67719 5.90528 8.48175 6.3771C8.28632 6.84892 7.99987 7.27763 7.63875 7.63875C7.27763 7.99987 6.84892 8.28632 6.3771 8.48175C5.90528 8.67719 5.39959 8.77778 4.88889 8.77778C4.37819 8.77778 3.8725 8.67719 3.40068 8.48175C2.92885 8.28632 2.50015 7.99987 2.13903 7.63875C1.77791 7.27763 1.49146 6.84892 1.29602 6.3771C1.10059 5.90528 1 5.39959 1 4.88889C1 3.85749 1.40972 2.86834 2.13903 2.13903C2.86834 1.40972 3.85749 1 4.88889 1C5.92029 1 6.90944 1.40972 7.63875 2.13903C8.36806 2.86834 8.77778 3.85749 8.77778 4.88889Z"
+      stroke="#757575"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+export const LeftIcon = () => {};
+
+export const RightIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+  >
+    <polygon points="7.293 4.707 14.586 12 7.293 19.293 8.707 20.707 17.414 12 8.707 3.293 7.293 4.707" />
+  </svg>
+);
+
+export const RightTranslucentIcon = () => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g opacity="0.5">
+      <rect width="32" height="32" rx="16" fill="black" />
+      <path d="M13 10L19 16L13 22" fill="black" />
       <path
-        d="M11 11L7.66667 7.66667M8.77778 4.88889C8.77778 5.39959 8.67719 5.90528 8.48175 6.3771C8.28632 6.84892 7.99987 7.27763 7.63875 7.63875C7.27763 7.99987 6.84892 8.28632 6.3771 8.48175C5.90528 8.67719 5.39959 8.77778 4.88889 8.77778C4.37819 8.77778 3.8725 8.67719 3.40068 8.48175C2.92885 8.28632 2.50015 7.99987 2.13903 7.63875C1.77791 7.27763 1.49146 6.84892 1.29602 6.3771C1.10059 5.90528 1 5.39959 1 4.88889C1 3.85749 1.40972 2.86834 2.13903 2.13903C2.86834 1.40972 3.85749 1 4.88889 1C5.92029 1 6.90944 1.40972 7.63875 2.13903C8.36806 2.86834 8.77778 3.85749 8.77778 4.88889Z"
-        stroke="#757575"
+        d="M13 10L19 16L13 22"
+        stroke="white"
+        stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
-    </svg>
-  );
-};
+    </g>
+  </svg>
+);
 
-export const LeftIcon = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <polygon points="15.293 3.293 6.586 12 15.293 20.707 16.707 19.293 9.414 12 16.707 4.707 15.293 3.293" />
-    </svg>
-  );
-};
-
-export const RightIcon = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <polygon points="7.293 4.707 14.586 12 7.293 19.293 8.707 20.707 17.414 12 8.707 3.293 7.293 4.707" />
-    </svg>
-  );
-};
-
-export const MyLocationIcon = () => {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4 8L2 8"
-        stroke="#757575"
-        stroke-width="2"
-        stroke-linecap="round"
-      />
-      <path
-        d="M14 8L12 8"
-        stroke="#757575"
-        stroke-width="2"
-        stroke-linecap="round"
-      />
-      <path
-        d="M8 2V4"
-        stroke="#757575"
-        stroke-width="2"
-        stroke-linecap="round"
-      />
-      <path
-        d="M8 12V14"
-        stroke="#757575"
-        stroke-width="2"
-        stroke-linecap="round"
-      />
-      <rect x="7" y="7" width="2" height="2" rx="1" fill="#757575" />
+export const LeftTranslucentIcon = () => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g opacity="0.5">
       <rect
-        x="1"
-        y="1"
-        width="14"
-        height="14"
-        rx="7"
-        stroke="#757575"
-        stroke-width="2"
+        width="32"
+        height="32"
+        rx="16"
+        transform="matrix(-1 0 0 1 32 0)"
+        fill="black"
       />
-    </svg>
-  );
-};
+      <path d="M19 10L13 16L19 22" fill="black" />
+      <path
+        d="M19 10L13 16L19 22"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+  </svg>
+);
+
+export const LocationIcon = () => (
+  <svg
+    width="20"
+    height="26"
+    viewBox="0 0 20 26"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M10 26C10 26 20 19.76 20 10.4C20 4.65624 15.5228 0 10 0C4.47715 0 0 4.65624 0 10.4C0 18.72 10 26 10 26ZM10.0078 14.5602C12.217 14.5602 14.0078 12.6977 14.0078 10.4002C14.0078 8.10273 12.217 6.24023 10.0078 6.24023C7.79867 6.24023 6.00781 8.10273 6.00781 10.4002C6.00781 12.6977 7.79867 14.5602 10.0078 14.5602Z"
+      fill="#424242"
+    />
+  </svg>
+);
+
+export const LocationWhiteIcon = () => (
+  <svg
+    width="10"
+    height="14"
+    viewBox="0 0 10 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M5 13.25C5 13.25 10 10.25 10 5.75C10 2.98858 7.76142 0.75 5 0.75C2.23858 0.75 0 2.98858 0 5.75C0 9.75 5 13.25 5 13.25ZM5 7.75C6.10457 7.75 7 6.85457 7 5.75C7 4.64543 6.10457 3.75 5 3.75C3.89543 3.75 3 4.64543 3 5.75C3 6.85457 3.89543 7.75 5 7.75Z"
+      fill="white"
+    />
+  </svg>
+);
+
+export const MyLocationIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M4 8L2 8"
+      stroke="#757575"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+    <path
+      d="M14 8L12 8"
+      stroke="#757575"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+    <path d="M8 2V4" stroke="#757575" stroke-width="2" stroke-linecap="round" />
+    <path
+      d="M8 12V14"
+      stroke="#757575"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+    <rect x="7" y="7" width="2" height="2" rx="1" fill="#757575" />
+    <rect
+      x="1"
+      y="1"
+      width="14"
+      height="14"
+      rx="7"
+      stroke="#757575"
+      stroke-width="2"
+    />
+  </svg>
+);
