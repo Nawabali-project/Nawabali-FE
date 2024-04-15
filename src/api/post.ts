@@ -19,9 +19,9 @@ export const getPosts = async ({ pageParam }: { pageParam: number }) => {
   return response;
 };
 
-export const getAllPosts = async ({ pageParam }: { pageParam: number }) => {
+export const getAllPosts = async () => {
   let params = {
-    page: String(pageParam),
+    page: '0',
     size: '1000',
     sort: ['string'],
   };
