@@ -5,17 +5,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
 import DetailPostModal from '../modal/DetailPostModal';
-
-interface Post {
-  postId: number;
-  profileImageUrl: string;
-  nickname: string;
-  imageUrls: string[];
-  category: string;
-  likesCount: number;
-  commentCount: number;
-  contents: string;
-}
+import { Post } from '@/interfaces/main/posts.interface';
 
 const Feed = () => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
