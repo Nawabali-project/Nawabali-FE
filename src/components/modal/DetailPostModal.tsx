@@ -1,12 +1,16 @@
 import Modal from './Modal';
 import styled from 'styled-components';
 import {
-  BackIcon,
+  CloseIcon,
   ThreePointIcon,
   LikeIcon,
   BookMarkIcon,
+  LeftTranslucentIcon,
+  RightTranslucentIcon,
+  LocationWhiteIcon,
 } from '@/utils/icons';
 import { useGetDedetailPost } from '@/api/post';
+import { useState } from 'react';
 
 interface DetailPostProps {
   postId: number;
@@ -18,6 +22,17 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   setIsDetailPostModalOpen,
 }) => {
   const { data, isFetching, isError, error } = useGetDedetailPost(postId);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const goNextImg = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % data.imageUrls.length);
+  };
+  const goPrevImg = () => {
+    setCurrentIndex(
+      (prevIndex) =>
+        (prevIndex - 1 + data.imageUrls.length) % data.imageUrls.length,
+    );
+  };
 
   const handleCloseModal = () => {
     setIsDetailPostModalOpen(false);
@@ -41,18 +56,55 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   return (
     <>
       <Modal>
-        <BackBox onClick={handleCloseModal}>
-          <BackIcon />
-        </BackBox>
+        <CloseBox onClick={handleCloseModal}>
+          <CloseIcon />
+        </CloseBox>
+        <LocationBox>
+          <LocationWhiteIcon />
+          &nbsp;{data.district}
+        </LocationBox>
 
         <MainLayout>
           <ImageBox>
             <img
-              src={data?.imageUrls?.[0]}
+              src={data?.imageUrls[currentIndex]}
               alt=""
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
+            {data.imageUrls.length > 1 && (
+              <>
+                <LeftIconBox
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goPrevImg();
+                  }}
+                >
+                  <LeftTranslucentIcon />
+                </LeftIconBox>
+
+                <RightIconBox
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goNextImg();
+                  }}
+                >
+                  <RightTranslucentIcon />
+                </RightIconBox>
+                <DotsBox>
+                  {data.imageUrls.map((_: null, index: number) => (
+                    <Dot key={index} active={currentIndex === index} />
+                  ))}
+                </DotsBox>
+              </>
+            )}
           </ImageBox>
+          <DotsBox>
+            {data.imageUrls.map((_: null, index: number) => {
+              <Dot key={index} active={currentIndex === index} />;
+            })}
+          </DotsBox>
 
           <ContentBox>
             <ContentHeader>
@@ -93,10 +145,66 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   );
 };
 
-const BackBox = styled.div`
+const LocationBox = styled.div`
   position: absolute;
-  left: 10px;
-  top: 10px;
+  left: 21.5%;
+  top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  color: white;
+  background-color: #000000;
+  opacity: 0.6;
+  border-radius: 100px;
+  font-size: 13px;
+`;
+
+const LeftIconBox = styled.button`
+  position: absolute;
+  top: 270px;
+  left: 5px;
+  width: 32px;
+  height: 32px;
+  z-index: 2;
+  border: none;
+  border-radius: 100px;
+  background-color: transparent;
+  cursor: pointer;
+`;
+
+const RightIconBox = styled.button`
+  position: absolute;
+  top: 270px;
+  right: 495px;
+  width: 32px;
+  height: 32px;
+  z-index: 2;
+  border: none;
+  border-radius: 100px;
+  background-color: transparent;
+  cursor: pointer;
+`;
+
+const DotsBox = styled.div`
+  position: absolute;
+  bottom: 10px;
+  left: 23%;
+`;
+
+const Dot = styled.span<{ active: boolean }>`
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 3px;
+  background-color: ${(props) => (props.active ? '#ffffff' : '#b7b7b7')};
+  border-radius: 100%;
+`;
+
+const CloseBox = styled.div`
+  position: absolute;
+  left: 45%;
+  bottom: -80px;
   padding: 5px 6px 3px 7px;
   border-radius: 100px;
   z-index: 20;
@@ -175,7 +283,12 @@ const ContentText = styled.div`
 `;
 
 const ThreePointIconBox = styled.div`
-  padding: 15px 40px 25px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  padding-bottom: 10px;
+  margin-right: 10px;
 `;
 
 const CommentBox = styled.div`

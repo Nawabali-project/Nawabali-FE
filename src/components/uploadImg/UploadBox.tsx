@@ -1,4 +1,8 @@
-import { CameraIcon, LeftIcon, RightIcon } from '@/utils/icons';
+import {
+  CameraIcon,
+  LeftTranslucentIcon,
+  RightTranslucentIcon,
+} from '@/utils/icons';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -92,7 +96,7 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
                 goToPreviousImage();
               }}
             >
-              <LeftIcon />
+              <LeftTranslucentIcon />
             </LeftIconBox>
 
             <RightIconBox
@@ -102,8 +106,13 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
                 goToNextImage();
               }}
             >
-              <RightIcon />
+              <RightTranslucentIcon />
             </RightIconBox>
+            <DotsBox>
+              {uploadedImages.map((_, index) => (
+                <Dot key={index} active={currentIndex === index} />
+              ))}
+            </DotsBox>
           </div>
         </>
       )}
@@ -127,21 +136,36 @@ const LeftIconBox = styled.button`
   z-index: 2;
   border: none;
   border-radius: 100px;
-  background-color: white;
+  background-color: transparent;
   cursor: pointer;
 `;
 
 const RightIconBox = styled.button`
   position: absolute;
   top: 270px;
-  right: 480px;
+  right: 495px;
   width: 32px;
   height: 32px;
   z-index: 2;
   border: none;
   border-radius: 100px;
-  background-color: white;
+  background-color: transparent;
   cursor: pointer;
+`;
+
+const DotsBox = styled.div`
+  position: absolute;
+  bottom: 10px;
+  left: 22%;
+`;
+
+const Dot = styled.span<{ active: boolean }>`
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 3px;
+  background-color: ${(props) => (props.active ? '#000' : '#e1dddd')};
+  border-radius: 100%;
 `;
 
 export default UploadBox;

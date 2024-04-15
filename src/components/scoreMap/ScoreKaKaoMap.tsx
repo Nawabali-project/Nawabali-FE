@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import geojson from '../../utils/geojson.json';
 import ScoreCircle from './ScoreCircle';
+import { getAreaScore } from '@/api/post';
 
 const { kakao } = window;
 
@@ -22,8 +23,18 @@ interface IFeature {
 }
 
 const ScoreMap: React.FC = () => {
-  const areaScore = ScoreCircle();
-  console.log('Area Score', areaScore);
+  const areaScore: any = ScoreCircle();
+  console.log('Area Score', areaScore?.data);
+
+  const [areaData, setAreaData] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchAreaData = async () => {
+      const response = await getAreaScore();
+      setAreaData(response.data);
+    };
+
+    fetchAreaData();
+  }, []);
 
   useEffect(() => {
     const data: IFeature[] = geojson.features;
@@ -98,6 +109,8 @@ const ScoreMap: React.FC = () => {
         overlay.setMap(null);
       };
 
+      const districtData = areaData.find((d) => d.district === name);
+
       let content = `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; height: 300px; background-color: white; border-radius: 150px; z-index: 200;">
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
@@ -105,10 +118,10 @@ const ScoreMap: React.FC = () => {
             ${name}
             </div>
             <div style="display: flex; align-items: center; justify-content: center; font-size: 70px; font-weight: 900;">
-              524
+              ${districtData ? districtData.totalPost * 100 + districtData.totalLocalLike : 0}
             </div>
             <div style="display: flex; align-items: center; justify-content: center; margin: 10px; color: gray; font-size: 13px;">
-              맛집 250개 + 카페 249개 + 사진스팟 79개
+              총 게시물 수 ${districtData ? districtData.totalPost : 0} + 주민추천 수 ${districtData ? districtData.totalLocalLike : 0} 
             </div>
             <div style="display: flex; align-items: center; justify-content: center; margin: 5px; padding-bottom: 10px;">
               ${name} 맛집 동네예요 :)
@@ -136,7 +149,7 @@ const ScoreMap: React.FC = () => {
 
       displayArea(coordinates, name);
     });
-  }, []);
+  }, [areaData]);
 
   return (
     <div id="pollution-map">

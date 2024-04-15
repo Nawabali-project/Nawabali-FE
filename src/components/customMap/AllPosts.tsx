@@ -4,7 +4,7 @@ import { getAllPosts } from '@/api/post';
 const AllPosts = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['allPosts'],
-    queryFn: () => getAllPosts({ pageParam: 1 }),
+    queryFn: getAllPosts,
   });
 
   if (isLoading) {
