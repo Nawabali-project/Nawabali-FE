@@ -1,6 +1,6 @@
 import Modal from '../modal/Modal';
 import { useInput } from '@/hooks/useInput';
-import { getUserInfo, login } from '@/api/auth';
+import { getUserInfo, login as apiLogin } from '@/api/auth';
 import {
   StyledLabel,
   AuthInput,
@@ -10,6 +10,7 @@ import {
 } from '@/components/auth/authStyle';
 import Button from '@/components/button/Button';
 import { Cookies } from 'react-cookie';
+import useAuthStore from '@/store/AuthState';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,21 +23,19 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     email: '',
     password: '',
   });
+  const { login } = useAuthStore();
 
   const handleSubmit = async () => {
     const user = { email, password };
     try {
-      const userToken = await login(user);
+      const userToken = await apiLogin(user);
       resetInput();
       setIsModalOpen(false);
       const token = userToken['authorization'].slice(7);
       cookie.set('accessToken', token);
       if (token) {
         const userInfo = await getUserInfo();
-        localStorage.setItem('district', userInfo.district);
-        localStorage.setItem('email', userInfo.email);
-        localStorage.setItem('nickname', userInfo.nickname);
-        localStorage.setItem('profileImageUrl', userInfo.profileImageUrl);
+        login(userInfo);
       }
     } catch (error) {
       console.error('로그인 오류:', error);
@@ -80,7 +79,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             placeholder="비밀번호"
           />
         </AuthDiv>
-        <Button size="large" color="dark" onClick={handleSubmit}>
+        <Button color="blue" onClick={handleSubmit}>
           로그인
         </Button>
         <img

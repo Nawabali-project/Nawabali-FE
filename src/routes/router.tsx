@@ -35,6 +35,10 @@ export const router = createBrowserRouter([
       },
       {
         path: '/mypage',
+        element: <Mypage />,
+      },
+      {
+        path: '/mypage2',
         element: (
           <ProtectedRoute>
             <Mypage />

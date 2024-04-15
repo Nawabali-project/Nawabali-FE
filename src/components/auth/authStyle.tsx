@@ -6,10 +6,10 @@ export const StyledLabel = styled.label`
 
 export const AuthInput = styled.input`
   margin: 0;
-  padding: 0;
-  height: 35px;
-  width: 100%;
-  border: 1px solid gray;
+  padding: 0 10px;
+  height: 33px;
+  width: 92%;
+  border: 1px solid #d9d9d9;
   border-radius: 5px;
 `;
 

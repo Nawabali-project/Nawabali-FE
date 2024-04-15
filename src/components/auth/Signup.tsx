@@ -211,7 +211,7 @@ const Signup: React.FC<SignupProps> = (props) => {
       <form onSubmit={handleSubmit}>
         <span onClick={() => props.setIsModalOpen(false)}>X</span>
         <h1>회원가입</h1>
-        <Button type="button" size="large" color="dark">
+        <Button type="button" size="default" color="blue">
           카카오로 3초만에 시작하기
         </Button>
         <StyledLabel>이메일</StyledLabel>
@@ -292,7 +292,7 @@ const Signup: React.FC<SignupProps> = (props) => {
             ))}
           </div>
         )}
-        <Button type="submit" size="large" color="dark">
+        <Button type="submit" size="default" color="blue">
           회원가입하기
         </Button>
       </form>

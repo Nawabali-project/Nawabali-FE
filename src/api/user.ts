@@ -30,7 +30,7 @@ export const editUserInfo = async (userInfo: UserInfo) => {
 
 export const checkPassWord = async (password: string) => {
   try {
-    const response = await authInstance.post('users/check-myPassword', {
+    const response = await authInstance.post('/users/check-myPassword', {
       password: password,
     });
     return response.data;
@@ -44,7 +44,7 @@ export const checkPassWord = async (password: string) => {
 };
 
 export const deleteUser = async () => {
-  await authInstance.delete('users/my-info');
+  await authInstance.delete('/users/my-info');
 };
 
 export const useDeleteUser = () => {
@@ -70,3 +70,36 @@ function clearCookies() {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
   }
 }
+
+export const deletePhoto = async () => {
+  await authInstance.delete('/profileImage');
+};
+
+export const useDeletePhoto = () => {
+  return useMutation({
+    mutationFn: deletePhoto,
+    onError: (error) => {
+      console.error('프로필이미지 삭제 중 에러 발생: ', error);
+    },
+  });
+};
+
+export const updatePhoto = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  await authInstance.patch('/profileImage', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+export const useUpdatePhoto = () => {
+  return useMutation({
+    mutationFn: (file: File) => updatePhoto(file),
+    onError: (error) => {
+      console.error('프로필 이미지 업데이트 중 에러 발생:', error);
+    },
+  });
+};
