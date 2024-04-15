@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components';
 
 type ButtonStyleProps = {
   type?: string;
-  size: 'small' | 'medium' | 'large';
-  color: 'light' | 'dark';
+  size?: 'small' | 'medium' | 'default';
+  color?: 'blue' | 'default';
 };
 
 interface ButtonProps extends ButtonStyleProps {
@@ -31,37 +31,43 @@ const StyledButton = styled.button<ButtonStyleProps>`
   align-items: center;
   cursor: pointer;
 
-  ${(props) => buttonSize[props.size]}
-  ${(props) => buttonType[props.color]}
+  ${(props) => buttonSize[props.size ?? 'default']}
+  ${(props) => buttonType[props.color ?? 'default']}
 `;
 
 const buttonSize = {
   small: css`
-    width: 120px;
+    border-radius: 25px;
+    height: 25px;
+    color: #757575;
+    border: 2px solid #757575;
+    font-weight: 600;
   `,
   medium: css`
     width: 250px;
   `,
-  large: css`
+  default: css`
     width: 100%;
   `,
 };
 
 const buttonType = {
-  light: css`
-    background-color: #dadada;
-    color: black;
+  blue: css`
+    background-color: #00a3ff;
+    color: white;
+    border: none;
     &:hover {
-      background-color: #a8a8a8;
-      color: black;
+      background-color: white;
+      color: #00a3ff;
+      border: 1px solid #00a3ff;
     }
   `,
-  dark: css`
-    background-color: #585656;
-    color: white;
+  default: css`
+    background-color: white;
+    color: #757575;
     &:hover {
-      background-color: grey;
-      color: black;
+      background-color: #757575;
+      color: white;
     }
   `,
 };

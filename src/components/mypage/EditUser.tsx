@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { IoIosArrowForward, IoIosSearch } from 'react-icons/io';
-import SideBar from './SideBar';
 import Button from '@/components/button/Button';
 import {
   checkPassWord,
   editUserInfo,
+  useDeletePhoto,
   useDeleteUser,
+  useUpdatePhoto,
   useUserInfo,
 } from '@/api/user';
 import { useInput } from '@/hooks/useInput';
@@ -17,12 +18,14 @@ import { AuthInput, WarnSpan } from '../auth/authStyle';
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ImCamera } from 'react-icons/im';
+import DeleteAccountModal from './DeleteAccountModal';
 
-const profileImg = '/assets/images/basicImg.png';
+const profileImg = localStorage.getItem('profileImageUrl');
+const basicImg = '/assets/images/basicImg.png';
 
 const EditUser: React.FC = () => {
   const { data } = useUserInfo();
-  const { mutate } = useDeleteUser();
 
   const [input, onChange, resetInput] = useInput({
     prevPassword: '',
@@ -51,16 +54,51 @@ const EditUser: React.FC = () => {
     input.writtenConfirmPassword,
     500,
   );
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [imageAction, setImageAction] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const { mutate: deletePhotoMutate } = useDeletePhoto();
+  const { mutate: updatePhotoMutate } = useUpdatePhoto();
+  const { mutate: deleteAccount } = useDeleteUser();
+
+  // 프로필이미지 수정
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      setProfileImage(file);
+      setImageAction('modify');
+      console.log('이미지 수정: ', file);
+    }
+  };
+
+  const handleEditPhoto = () => {
+    const fileInput = document.getElementById('profileImageInput');
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
+
+  const handleImageClick = () => {
+    setShowModal(true);
+  };
+
+  const handleDeletePhoto = () => {
+    setProfileImage(null);
+    setImageAction('delete');
+    setShowModal(false);
+  };
 
   // 비밀번호 수정
   const handleChangePwClick = () => {
     setShowEditPwInput(true);
   };
 
-  const prevPwMutation = useMutation({
+  const prevPwMutation = useMutation<boolean, AxiosError, void>({
     mutationFn: () => checkPassWord(input.prevPassword),
-    onSuccess: (data) => {
-      if (data) {
+    onSuccess: (isValid) => {
+      if (isValid) {
         setPrevPwValidityMessage('');
       } else {
         setPrevPwValidityMessage('기존 비밀번호와 일치하지 않습니다.');
@@ -122,9 +160,11 @@ const EditUser: React.FC = () => {
 
   // 지역 검색 결과 업데이트
   useEffect(() => {
-    if (debouncedDistrict.trim() !== '' && !selectedDistrict) {
+    if (debouncedDistrict.trim() === '' && !selectedDistrict) {
+      setResults(Districts);
+    } else if (debouncedDistrict.trim() != '' && !selectedDistrict) {
       const filteredResults = Districts.filter((district) =>
-        district.includes(debouncedDistrict),
+        district.toLowerCase().includes(debouncedDistrict.toLowerCase()),
       );
       setResults(filteredResults);
     } else {
@@ -150,7 +190,22 @@ const EditUser: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
+      if (profileImage && imageAction === 'modify') {
+        updatePhotoMutate(profileImage);
+        const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+        currentUser.profileImageUrl =
+          URL.createObjectURL(profileImage).slice(5);
+        localStorage.setItem('user', JSON.stringify(currentUser));
+      } else if (imageAction === 'delete') {
+        deletePhotoMutate();
+        setProfileImage(null);
+        const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+        currentUser.profileImageUrl = '';
+        localStorage.setItem('user', JSON.stringify(currentUser));
+      }
+
       await editUserInfo({
         nickname: input.writtenNickname,
         password: input.writtenPassword,
@@ -158,147 +213,234 @@ const EditUser: React.FC = () => {
         city: '서울특별시',
         district: input.district,
       });
+      useUserInfo;
       resetInput();
+      alert('회원 정보가 성공적으로 업데이트 되었습니다.');
     } catch (error) {
       console.error('Update error:', error);
+      alert('회원 정보 업데이트에 실패했습니다.');
     }
   };
 
-  const showSearchResults =
-    input.district && !input.selectedDistrict && results.length > 0;
+  const handleDeleteUser = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirmed = () => {
+    deleteAccount();
+    setShowDeleteModal(false);
+  };
+
+  const showSearchResults = !selectedDistrict && results.length > 0;
 
   return (
     <Container>
-      <SideBar />
       <form onSubmit={handleSubmit}>
-        <Col style={{ width: '700px' }}>
-          <Col style={{ width: '500px', margin: '0 auto' }}>
-            <Row>
-              <Profile />
-              <Col>
-                <Col>
-                  <TitleSpan>아이디</TitleSpan>
+        <Col style={{ width: '700px', margin: '0 auto' }}>
+          <h2>프로필 편집</h2>
+          <Row style={{ padding: '20px' }}>
+            <ProfileImageContainer onClick={handleImageClick}>
+              <ProfileImage
+                src={
+                  profileImage
+                    ? `${URL.createObjectURL(profileImage).slice(5)}?${new Date().getTime()}`
+                    : profileImg || basicImg
+                }
+                alt="Profile"
+              />
+              <ProfileImageIcon>
+                <ImCamera />
+              </ProfileImageIcon>
+            </ProfileImageContainer>
+
+            {showModal && (
+              <Modal>
+                <button onClick={() => setShowModal(false)}>Close</button>
+                <span onClick={handleEditPhoto}>수정</span>
+                <span onClick={handleDeletePhoto}>삭제</span>
+              </Modal>
+            )}
+
+            <ProfileImageInput
+              type="file"
+              id="profileImageInput"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
+            <Col>
+              <Row
+                style={{
+                  width: '400px',
+                  justifyContent: 'space-between',
+                  margin: '15px 0',
+                }}
+              >
+                <TitleSpan>이메일</TitleSpan>
+                <Row style={{ width: '300px' }}>
                   <span>{data?.email}</span>
-                </Col>
-                <Col>
-                  <TitleSpan>비밀번호</TitleSpan>
-                  <Row>
+                </Row>
+              </Row>
+              <Row
+                style={{
+                  width: '400px',
+                  justifyContent: 'space-between',
+                  margin: '15px 0',
+                }}
+              >
+                <TitleSpan>비밀번호</TitleSpan>
+                {!showEditPwInput && (
+                  <Row
+                    style={{ width: '300px', justifyContent: 'space-between' }}
+                  >
                     <span>********</span>
                     <Button
                       type="button"
                       size="small"
-                      color="light"
                       onClick={handleChangePwClick}
                     >
                       비밀번호 변경
                     </Button>
                   </Row>
-                  {showEditPwInput && (
-                    <Col>
+                )}
+                {showEditPwInput && (
+                  <Col>
+                    <Col style={{ width: '300px' }}>
                       <Row>
                         <span>현재 비밀번호</span>
-                        <AuthInput
-                          type="password"
-                          name="prevPassword"
-                          value={input.prevPassword}
-                          onChange={onChange}
-                        />
+                        <WarnSpan>{prevPwValidityMessage}</WarnSpan>
                       </Row>
-                      <WarnSpan>{prevPwValidityMessage}</WarnSpan>
+                      <AuthInput
+                        type="password"
+                        name="prevPassword"
+                        value={input.prevPassword}
+                        onChange={onChange}
+                      />
+                    </Col>
+
+                    <Col style={{ width: '300px' }}>
                       <Row>
                         <span>신규 비밀번호</span>
-                        <AuthInput
-                          type="password"
-                          name="writtenPassword"
-                          value={input.writtenPassword}
-                          onChange={onChange}
-                        />
+                        <WarnSpan>{pwValidityMessage}</WarnSpan>
                       </Row>
-                      <WarnSpan>{pwValidityMessage}</WarnSpan>
-                      <Row>
-                        <span>비밀번호 확인</span>
-                        <AuthInput
-                          type="password"
-                          name="writtenConfirmPassword"
-                          value={input.writtenConfirmPassword}
-                          onChange={onChange}
-                        />
-                      </Row>
-                      <WarnSpan>{pwConfirmMessage}</WarnSpan>
+                      <AuthInput
+                        type="password"
+                        name="writtenPassword"
+                        value={input.writtenPassword}
+                        onChange={onChange}
+                      />
                     </Col>
-                  )}
-                </Col>
-                <Col>
-                  <TitleSpan>닉네임</TitleSpan>
-                  <Row>
+
+                    <Col style={{ width: '300px' }}>
+                      <Row>
+                        <span>신규 비밀번호 확인</span>
+                        <WarnSpan>{pwConfirmMessage}</WarnSpan>
+                      </Row>
+                      <AuthInput
+                        type="password"
+                        name="writtenConfirmPassword"
+                        value={input.writtenConfirmPassword}
+                        onChange={onChange}
+                      />
+                    </Col>
+                  </Col>
+                )}
+              </Row>
+              <Row
+                style={{ justifyContent: 'space-between', margin: '15px 0' }}
+              >
+                <TitleSpan>닉네임</TitleSpan>
+                {!showNicknameInput && (
+                  <Row
+                    style={{
+                      width: '290px',
+                      justifyContent: 'space-between',
+                      paddingRight: '10px',
+                    }}
+                  >
                     <span>{data?.nickname}</span>
                     <Button
                       type="button"
                       size="small"
-                      color="light"
                       onClick={handleChangeNicknameClick}
                     >
                       닉네임 변경
                     </Button>
-                    {showNicknameInput && (
-                      <>
-                        <AuthInput
-                          type="text"
-                          name="writtenNickname"
-                          value={input.writtenNickname}
-                          onChange={onChange}
-                        />
-                        <WarnSpan>{nicknameValidityMessage}</WarnSpan>
-                      </>
-                    )}
                   </Row>
-                </Col>
-              </Col>
-            </Row>
-            <div>
-              <Col>
-                <TitleSpan>동네 설정</TitleSpan>
-                <Row>
-                  <FaMapMarkerAlt />
-                  <span>서울특별시 {data?.district}</span>
-                </Row>
-              </Col>
-              <Col>
-                <SearchDiv>
-                  <IoIosSearch style={{ color: 'gray' }} />
-                  <AuthInput
-                    value={input.district}
-                    type="text"
-                    placeholder="지역구 검색 또는 아래에서 선택해주세요."
-                    onChange={handleSearchDistrictChange}
-                  />
-                </SearchDiv>
-                {showSearchResults && (
-                  <div>
-                    {results.map((result, index) => (
-                      <div
-                        key={index}
-                        onClick={() => handleResultClick(result)}
-                      >
-                        {result}
-                      </div>
-                    ))}
-                  </div>
                 )}
-              </Col>
-            </div>
-            <div>
-              <span onClick={() => mutate()}>
-                회원 탈퇴하기
-                <IoIosArrowForward />
-              </span>
-              <Button type="submit" size="large" color="dark">
-                수정완료
-              </Button>
-            </div>
-          </Col>
+                {showNicknameInput && (
+                  <>
+                    <Row style={{ width: '300px' }}>
+                      <AuthInput
+                        type="text"
+                        name="writtenNickname"
+                        value={input.writtenNickname}
+                        onChange={onChange}
+                      />
+                      <WarnSpan>{nicknameValidityMessage}</WarnSpan>
+                    </Row>
+                  </>
+                )}
+              </Row>
+            </Col>
+          </Row>
+          <div>
+            <Col>
+              <h2>동네 설정</h2>
+              <Row>
+                <FaMapMarkerAlt color="#00a3ff" />
+                <span style={{ fontSize: '18px', fontWeight: '600' }}>
+                  서울특별시 {data?.district}
+                </span>
+              </Row>
+            </Col>
+            <StyledCol>
+              <SearchDiv>
+                <IoIosSearch style={{ fontSize: '1.5rem', color: 'grey' }} />
+                <AuthInput
+                  value={input.district}
+                  type="text"
+                  placeholder="지역구 검색 또는 아래에서 선택해주세요."
+                  onChange={handleSearchDistrictChange}
+                />
+              </SearchDiv>
+              {showSearchResults && (
+                <ResultDiv>
+                  {results.map((result, index) => (
+                    <div key={index} onClick={() => handleResultClick(result)}>
+                      {result}
+                    </div>
+                  ))}
+                </ResultDiv>
+              )}
+            </StyledCol>
+          </div>
+          <div style={{ marginTop: '40px' }}>
+            <span
+              style={{
+                display: 'block',
+                fontSize: '11px',
+                color: '#424242',
+                cursor: 'pointer',
+                marginBottom: '10px',
+              }}
+              onClick={handleDeleteUser}
+            >
+              회원 탈퇴하기
+              <IoIosArrowForward />
+            </span>
+            <Button type="submit" color="blue">
+              수정완료
+            </Button>
+          </div>
         </Col>
       </form>
+      {showDeleteModal && (
+        <DeleteAccountModal
+          onClose={() => setShowDeleteModal(false)}
+          onDeleteConfirmed={handleDeleteConfirmed}
+        />
+      )}
     </Container>
   );
 };
@@ -310,12 +452,12 @@ const Container = styled.div`
   margin: 100px auto 0;
   justify-content: center;
   display: flex;
-  border: 1px solid pink;
+  /* border: 1px solid pink; */
 `;
 
 const Row = styled.div`
   display: flex;
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   border-radius: 10px;
 `;
 
@@ -323,17 +465,7 @@ const Col = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  border: 1px solid red;
-`;
-
-const Profile = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-size: cover;
-  cursor: pointer;
-  margin: 0 8px;
-  background-image: url(${profileImg});
+  /* border: 1px solid red; */
 `;
 
 const TitleSpan = styled.span`
@@ -342,15 +474,23 @@ const TitleSpan = styled.span`
   margin-right: 10px;
 `;
 
+const StyledCol = styled(Col)`
+  height: 220px;
+  background-color: #f9f9f9;
+  margin-top: 20px;
+`;
+
 const SearchDiv = styled.div`
   border: 1px solid gray;
-  border-radius: 15px;
-  height: 30px;
-  width: 90%;
+  border-radius: 20px;
+  height: 35px;
+  width: 650px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 0 10px;
+  margin: 20px auto 10px;
+  background-color: white;
 
   input {
     width: 90%;
@@ -360,4 +500,68 @@ const SearchDiv = styled.div`
       outline: none;
     }
   }
+`;
+
+const ResultDiv = styled.div`
+  height: 120px;
+  overflow: auto;
+  padding: 10px 20px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 15px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+  }
+
+  div {
+    margin: 5px 0;
+    font-size: 15px;
+    color: #424242;
+  }
+`;
+
+const ProfileImageContainer = styled.div`
+  position: relative;
+  margin-bottom: 20px;
+`;
+
+const ProfileImage = styled.img`
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+`;
+
+const ProfileImageInput = styled.input`
+  display: none;
+`;
+
+const ProfileImageIcon = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-color: #3d3d3de6;
+  color: white;
+  opacity: 50%;
+  border-radius: 50%;
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
 `;

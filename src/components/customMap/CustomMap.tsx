@@ -10,12 +10,10 @@ declare global {
     handlePostClick: (postId: number) => void;
   }
 }
-
 interface KaKaoMapProps {
   width: string;
   height: string;
 }
-
 interface Post {
   postId: number;
   profileImageUrl: string;
@@ -26,7 +24,6 @@ interface Post {
   commentCount: number;
   contents: string;
 }
-
 const CustomMap = ({ width, height }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
@@ -70,7 +67,6 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
             <img src="${post.imageUrls[0]}" style="width: 100%; height: auto; min-height: 100%; object-fit: cover; pointer-events: none;" alt="" />
           </div>
         `;
-
         let customOverlay = new window.kakao.maps.CustomOverlay({
           position: new window.kakao.maps.LatLng(post.latitude, post.longitude),
           content: content,
@@ -130,22 +126,18 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
     </>
   );
 };
-
 const Layout = styled.div`
   padding: 10px;
 `;
-
 const MapContainer = styled.div`
   position: relative;
   border-radius: 20px;
   overflow: hidden;
 `;
-
 const MapBox = styled.div`
   width: 100%;
   height: 100%;
 `;
-
 const MyLocationBtn = styled.div`
   position: absolute;
   left: 15px;
@@ -156,10 +148,8 @@ const MyLocationBtn = styled.div`
   background: white;
   z-index: 1;
   cursor: pointer;
-
   &:hover {
     background-color: #f1f1f1;
   }
 `;
-
 export default CustomMap;

@@ -79,7 +79,7 @@ export const logout = async () => {
     const response = await authInstance.post('/users/logout');
     if (response.status === 302) {
       cookie.remove('accessToken', { path: '/' });
-      useAuthStore.getState().setLogoutState();
+      useAuthStore.getState().logout();
     }
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
