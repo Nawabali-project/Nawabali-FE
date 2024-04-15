@@ -17,13 +17,24 @@ interface KaKaoMapProps {
   height: string;
 }
 
+interface Post {
+  postId: number;
+  profileImageUrl: string;
+  nickname: string;
+  imageUrls: string[];
+  category: string;
+  likesCount: number;
+  commentCount: number;
+  contents: string;
+}
+
 const CustomMap = ({ width, height }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
   const [, setPointAddr] = useState<string>('');
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
-  const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const handlePostClick = (post: any) => {
     setSelectedPost(post);
     setIsDetailPostModalOpen(true);
@@ -166,7 +177,7 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
       </Layout>
       {isDetailPostModalOpen && (
         <DetailPostModal
-          post={selectedPost}
+          postId={selectedPost!.postId}
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
