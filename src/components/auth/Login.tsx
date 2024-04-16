@@ -28,11 +28,17 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   const handleSubmit = async () => {
     const user = { email, password };
     try {
-      const userToken = await apiLogin(user);
+      const resUserInfo = await apiLogin(user);
+      if (!resUserInfo || typeof resUserInfo === 'number') {
+        throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
+      }
+      const userToken = resUserInfo.headers;
+      const userId = resUserInfo.data.id;
       resetInput();
       setIsModalOpen(false);
       const token = userToken['authorization'].slice(7);
       cookie.set('accessToken', token);
+      localStorage.setItem('userId', userId);
       if (token) {
         const userInfo = await getUserInfo();
         login(userInfo);

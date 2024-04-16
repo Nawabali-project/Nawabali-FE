@@ -10,6 +10,7 @@ interface User {
 
 interface AuthState {
   isLoggedIn: boolean;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
   user: User | null;
   login: (user: User) => void;
   logout: () => void;
@@ -38,10 +39,15 @@ const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem('nickname');
     localStorage.removeItem('district');
     localStorage.removeItem('profileImageUrl');
+    localStorage.removeItem('userId');
     set({
       isLoggedIn: false,
       user: null,
     });
+  },
+
+  setIsLoggedIn: (isLoggedIn: boolean) => {
+    set({ isLoggedIn });
   },
 }));
 
