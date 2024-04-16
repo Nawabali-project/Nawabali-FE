@@ -118,7 +118,7 @@ const ScoreMap: React.FC = () => {
             ${name}
             </div>
             <div style="display: flex; align-items: center; justify-content: center; font-size: 70px; font-weight: 900;">
-              ${districtData ? districtData.totalPost * 100 + districtData.totalLocalLike : 0}
+              ${districtData ? districtData.totalPost * 10 + districtData.totalLocalLike : 0}
             </div>
             <div style="display: flex; align-items: center; justify-content: center; margin: 10px; color: gray; font-size: 13px;">
               총 게시물 수 ${districtData ? districtData.totalPost : 0} + 주민추천 수 ${districtData ? districtData.totalLocalLike : 0} 

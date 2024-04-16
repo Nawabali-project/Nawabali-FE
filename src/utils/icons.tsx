@@ -246,6 +246,24 @@ export const BookMarkIcon = () => (
   </svg>
 );
 
+export const BookMarkFilledIcon = () => (
+  <svg
+    width="18"
+    height="22"
+    viewBox="0 0 16 20"
+    fill="#757575"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M1 3C1 2.46957 1.21071 1.96086 1.58579 1.58579C1.96086 1.21071 2.46957 1 3 1H13C13.5304 1 14.0391 1.21071 14.4142 1.58579C14.7893 1.96086 15 2.46957 15 3V19L8 15.5L1 19V3Z"
+      stroke="#757575"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
 export const BottomArrowIcon = () => (
   <svg
     width="16"
@@ -437,6 +455,21 @@ export const LikeIcon = () => (
       stroke="black"
       stroke-linecap="round"
       stroke-linejoin="round"
+    />
+  </svg>
+);
+
+export const LikeFilledIcon = () => (
+  <svg
+    width="22"
+    height="20"
+    viewBox="0 0 22 20"
+    fill="red"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M2.46448 2.54417C2.00018 3.03373 1.63188 3.61492 1.38061 4.25456C1.12933 4.89419 1 5.57976 1 6.2721C1 6.96444 1.12933 7.65 1.38061 8.28964C1.63188 8.92928 2.00018 9.51047 2.46448 10L11 19L19.5355 10C20.4732 9.01132 21 7.67034 21 6.2721C21 4.87385 20.4732 3.53288 19.5355 2.54417C18.5978 1.55546 17.3261 1.00001 16 1.00001C14.6739 1.00001 13.4021 1.55546 12.4644 2.54417L11 4.0883L9.53557 2.54417C9.07128 2.05461 8.52008 1.66627 7.91345 1.40132C7.30682 1.13637 6.65664 1 6.00003 1C5.34341 1 4.69323 1.13637 4.0866 1.40132C3.47997 1.66627 2.92877 2.05461 2.46448 2.54417Z"
+      fill="red"
     />
   </svg>
 );
