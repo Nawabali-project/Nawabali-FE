@@ -2,28 +2,20 @@ import {
   DonutIcon,
   GlobalIcon,
   ListIcon,
-  MapIcon,
   StarIcon,
   BottomArrowIcon,
-  // BottomArrowGrayIcon,
   FoodIcon,
   CameraIcon2,
   MapBlackIcon,
-  ListBlackIcon,
-  GlobalBlackIcon,
-  StarBlackIcon,
 } from '@/utils/icons';
-import Feed from '../feedList/FeedList';
 import styled from 'styled-components';
 import { useState } from 'react';
-import CustomMap from '../customMap/CustomMap';
-import News from '../news/News';
-import Score from '../scoreMap/ScoreMap';
+import CustomMap from '@/components/customMap/CustomMap';
+import { useNavigate } from 'react-router-dom';
 
-// 반응형 구조 할 예정...
-const MainLayout = () => {
-  const [clickedCategory, setClickedCategory] = useState<string>('map');
+const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleKindClick = (kind: string) => {
     setClickedKind(clickedKind === kind ? null : kind);
@@ -63,55 +55,32 @@ const MainLayout = () => {
         </ThreeKindBox>
 
         <ThreeComponentBox>
-          <FourCategory
-            isSelected={clickedCategory === 'map'}
-            onClick={() => setClickedCategory('map')}
-          >
-            {clickedCategory === 'map' ? <MapBlackIcon /> : <MapIcon />}
-            &nbsp;지도
-            {/* &nbsp;
-            {clickedCategory === 'map' ? (
-              <BottomArrowIcon />
-            ) : (
-              <BottomArrowGrayIcon />
-            )} */}
+          <FourCategory>
+            <MapBlackIcon />
+            <SelectedPageComment>&nbsp;지도</SelectedPageComment>
           </FourCategory>
-          <FourCategory
-            isSelected={clickedCategory === 'feeds'}
-            onClick={() => setClickedCategory('feeds')}
-          >
-            {clickedCategory === 'feeds' ? <ListBlackIcon /> : <ListIcon />}
+          <FourCategory onClick={() => navigate('/listpage')}>
+            <ListIcon />
             &nbsp;리스트
           </FourCategory>
-          <FourCategory
-            isSelected={clickedCategory === 'score'}
-            onClick={() => setClickedCategory('score')}
-          >
-            {clickedCategory === 'score' ? <GlobalBlackIcon /> : <GlobalIcon />}
-            &nbsp;동네별 점수
+          <FourCategory onClick={() => navigate('/scorepage')}>
+            <GlobalIcon />
+            &nbsp;동네별 활동점수
           </FourCategory>
-          <FourCategory
-            isSelected={clickedCategory === 'news'}
-            onClick={() => setClickedCategory('news')}
-          >
-            {clickedCategory === 'news' ? <StarBlackIcon /> : <StarIcon />}
+          <FourCategory onClick={() => navigate('/newspage')}>
+            <StarIcon />
             &nbsp;동네소식
           </FourCategory>
         </ThreeComponentBox>
       </CategoryBox>
-      {clickedCategory === 'score' && <Score />}
-      {clickedCategory === 'map' && <CustomMap width="100%" height="811px" />}
-      {clickedCategory === 'feeds' && (
-        <FeedsBox>
-          <Feed />
-        </FeedsBox>
-      )}
-      {clickedCategory === 'news' && <News />}
+      <CustomMap width="100%" height="811px" />
     </Layout>
   );
 };
 
-const Layout = styled.div``;
+const Layout = styled.div`
+  padding-top: 61.25px;
+`;
 
 const AreaBox = styled.div`
   display: flex;
@@ -167,21 +136,18 @@ const ThreeComponentBox = styled.div`
   cursor: pointer;
 `;
 
-const FourCategory = styled.div<{ isSelected: boolean }>`
+const FourCategory = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   margin-right: 15px;
-  color: ${(props) => (props.isSelected ? 'black' : '#a1a1a1')};
+  color: #a1a1a1;
   font-weight: bold;
   cursor: pointer;
 `;
 
-const FeedsBox = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 5px;
+const SelectedPageComment = styled.div`
+  color: black;
 `;
 
-export default MainLayout;
+export default MapPage;

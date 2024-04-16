@@ -1,12 +1,14 @@
 import { ReactNode } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
-// import KakaoRedirect from '@/components/auth/KakaoRedirect';
 import Myplace from '@/components/mypage/Myplace';
 import EditUser from '@/components/mypage/EditUser';
 import Mypage from '@/components/mypage/Mypage';
-import Main from '@/pages/Main';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
+import ListPage from '@/pages/ListPage';
+import MapPage from '@/pages/MapPage';
+import NewsPage from '@/pages/NewsPage';
+import ScorePage from '@/pages/ScorePage';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -23,7 +25,19 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Main />,
+        element: <MapPage />,
+      },
+      {
+        path: '/listpage',
+        element: <ListPage />,
+      },
+      {
+        path: '/newspage',
+        element: <NewsPage />,
+      },
+      {
+        path: '/scorepage',
+        element: <ScorePage />,
       },
       {
         path: '/myplace',
