@@ -2,7 +2,7 @@
 import KaKaoMap from '@/components/address/KaKaoMap';
 import styled from 'styled-components';
 import Modal from './Modal';
-import { BackIcon } from '@/utils/icons';
+import { CloseIcon } from '@/utils/icons';
 import UploadBox from '../uploadImg/UploadBox';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -98,9 +98,10 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   return (
     <Modal>
       <form onSubmit={handleSubmit(onSubmitHandler)}>
-        <BackBox onClick={handleCloseModal}>
-          <BackIcon />
-        </BackBox>
+        <CloseBox onClick={handleCloseModal}>
+          <CloseIcon />
+        </CloseBox>
+
         <MainLayout>
           <ImageBox>
             <UploadBox onImagesChange={handleImagesChange} />
@@ -134,7 +135,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
                 isSelected={watch('category') === 'CAFE'}
                 onClick={() => handleCategoryClick('CAFE')}
               >
-                감성카페
+                카페
               </CategoryButton>
               <CategoryButton
                 type="button"
@@ -156,13 +157,13 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     </Modal>
   );
 };
-const BackBox = styled.div`
+const CloseBox = styled.div`
   position: absolute;
-  left: 10px;
-  top: 10px;
+  left: 45%;
+  bottom: -80px;
   padding: 5px 6px 3px 7px;
   border-radius: 100px;
-  z-index: 1;
+  z-index: 20;
   cursor: pointer;
 `;
 

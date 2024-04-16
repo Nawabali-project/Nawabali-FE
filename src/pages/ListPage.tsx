@@ -73,6 +73,7 @@ const ListPage = () => {
           </FourCategory>
         </ThreeComponentBox>
       </CategoryBox>
+
       <FeedsBox>
         <Feed />
       </FeedsBox>
