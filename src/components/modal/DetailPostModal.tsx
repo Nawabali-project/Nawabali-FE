@@ -8,9 +8,14 @@ import {
   LeftTranslucentIcon,
   RightTranslucentIcon,
   LocationWhiteIcon,
+  LikeFilledIcon,
+  BookMarkFilledIcon,
 } from '@/utils/icons';
 import { useGetDedetailPost } from '@/api/post';
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { checkLike, checkLocalLike } from '@/api/likeBookmark';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface DetailPostProps {
   postId: number;
@@ -22,8 +27,13 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   setIsDetailPostModalOpen,
 }) => {
   const { data, isFetching, isError, error } = useGetDedetailPost(postId);
-
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isLocalLiked, setIsLocalLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const queryClient = useQueryClient();
+
+  // 여러 사진 미리보기 동작
   const goNextImg = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % data.imageUrls.length);
   };
@@ -34,8 +44,35 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     );
   };
 
+  // 모달 닫기
   const handleCloseModal = () => {
     setIsDetailPostModalOpen(false);
+  };
+
+  // 좋아요 클릭 동작
+  const checkLikeMutation = useMutation({
+    mutationFn: checkLike,
+    onSuccess: async () => {
+      queryClient.invalidateQueries();
+    },
+  });
+
+  const handleLikeClick = (postId: number) => {
+    setIsLiked(!isLiked);
+    checkLikeMutation.mutate(postId);
+  };
+
+  // 주민추천 클릭 동작
+  const checkLocalLikeMutation = useMutation({
+    mutationFn: checkLocalLike,
+    onSuccess: async () => {
+      queryClient.invalidateQueries();
+    },
+  });
+
+  const handleLocalLikeClick = (postId: number) => {
+    setIsLocalLiked(!isLocalLiked);
+    checkLocalLikeMutation.mutate(postId);
   };
 
   console.log('id: ', postId);
@@ -125,13 +162,19 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
             <CommentBox>댓글창~</CommentBox>
             <ItemBox>
               <LikesBox>
-                <LocalLikesBox>주민추천 {data?.localLikesCount}</LocalLikesBox>
-                <LikeIconBox>
-                  <LikeIcon />
+                <LocalLikesBox
+                  onClick={() => handleLocalLikeClick(data?.postId)}
+                >
+                  주민추천 {data?.localLikesCount}
+                </LocalLikesBox>
+                <LikeIconBox onClick={() => handleLikeClick(data?.postId)}>
+                  {isLiked ? <LikeFilledIcon /> : <LikeIcon />}
                   <LikeCount>{data?.likesCount}</LikeCount>
                 </LikeIconBox>
               </LikesBox>
-              <BookMarkIcon />
+              <div onClick={() => setIsBookmarked(!isBookmarked)}>
+                {isBookmarked ? <BookMarkFilledIcon /> : <BookMarkIcon />}
+              </div>
             </ItemBox>
 
             <MyCommentBox>
@@ -308,6 +351,7 @@ const ItemBox = styled.div`
 
 const LikesBox = styled.div`
   display: flex;
+  cursor: pointer;
 `;
 
 const LikeCount = styled.div`
