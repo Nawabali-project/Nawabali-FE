@@ -30,9 +30,9 @@ export const editUserInfo = async (userInfo: UserInfo) => {
 
 export const checkPassWord = async (password: string) => {
   try {
-    const response = await authInstance.post('/users/check-myPassword', {
-      password: password,
-    });
+    const response = await authInstance.get(
+      `/users/check-myPassword?inputPassword=${password}`,
+    );
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError<ErrorResponse>;

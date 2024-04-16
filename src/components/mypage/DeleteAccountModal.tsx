@@ -21,7 +21,7 @@ function DeleteAccountModal({
       const isValid = await checkPassWord(password); // checkPassword는 API 호출 함수
       if (isValid) {
         if (window.confirm('정말로 계정을 삭제하시겠습니까?')) {
-          onDeleteConfirmed(); // 회원 삭제 API 호출
+          onDeleteConfirmed();
         }
       } else {
         alert('비밀번호가 일치하지 않습니다.');

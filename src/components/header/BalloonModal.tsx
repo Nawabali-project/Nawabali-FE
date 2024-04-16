@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { logout } from '@/api/auth';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
+import useAuthStore from '@/store/AuthState';
 
 interface BalloonModalProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
   const handleLogout = async () => {
     await logout();
     cookie.remove('accessToken');
+    useAuthStore.getState().logout();
     onClose();
   };
 
