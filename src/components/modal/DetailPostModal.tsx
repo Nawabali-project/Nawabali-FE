@@ -11,10 +11,11 @@ import {
   LikeFilledIcon,
   BookMarkFilledIcon,
 } from '@/utils/icons';
-import { useGetDedetailPost } from '@/api/post';
-import { useState, useEffect } from 'react';
+import { deletePost, useGetDedetailPost } from '@/api/post';
+import { useState, useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { checkBookmark, checkLike, checkLocalLike } from '@/api/likeBookmark';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface DetailPostProps {
   postId: number;
@@ -32,6 +33,26 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   const [isLocalLiked, setIsLocalLiked] = useState(false);
   const [localLikesCount, setLocalLikesCount] = useState(0);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+
+  // 수정, 삭제 토글창
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
 
   // 해당 게시물 (좋아요, 주민추천, 북마크) 초기값 세팅
   useEffect(() => {
@@ -58,6 +79,26 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   // 모달 닫기
   const handleCloseModal = () => {
     setIsDetailPostModalOpen(false);
+  };
+
+  // 게시글 삭제 클릭 동작
+  const deletePostMutation = useMutation({
+    mutationFn: deletePost,
+    onSuccess: async () => {
+      setIsDetailPostModalOpen(false);
+      queryClient.invalidateQueries();
+      alert('게시글을 삭제하였습니다.');
+    },
+    onError: () => {
+      alert('게시글 삭제 실패ㅠㅠ');
+    },
+  });
+
+  const handleDeletePostClick = (postId: number) => {
+    if (isBookmarked) {
+      checkBookMarkMUtation.mutate(postId);
+    }
+    deletePostMutation.mutate(postId);
   };
 
   // 주민추천 클릭 동작
@@ -193,9 +234,26 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
               <div>
                 <NameAndIcon>
                   <NickName>{data?.nickname}</NickName>
-                  <ThreePointIconBox>
-                    <ThreePointIcon />
-                  </ThreePointIconBox>
+                  {data?.userId == localStorage.getItem('userId') ? (
+                    <ThreePointIconBox
+                      onClick={toggleDropdown}
+                      ref={dropdownRef}
+                    >
+                      <ThreePointIcon />
+                      {showDropdown && (
+                        <ToggleLayout>
+                          <EditBox>수정</EditBox>
+                          <EditBox
+                            onClick={() => handleDeletePostClick(data?.postId)}
+                          >
+                            삭제
+                          </EditBox>
+                        </ToggleLayout>
+                      )}
+                    </ThreePointIconBox>
+                  ) : (
+                    <></>
+                  )}
                 </NameAndIcon>
                 <ContentText>{data?.contents}</ContentText>
               </div>
@@ -229,6 +287,25 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     </>
   );
 };
+
+const ToggleLayout = styled.div`
+  position: absolute;
+  right: -90px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 100;
+`;
+
+const EditBox = styled.div`
+  padding: 5px 15px;
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+  }
+`;
 
 const BookMarkBox = styled.div`
   cursor: pointer;
@@ -378,6 +455,7 @@ const ThreePointIconBox = styled.div`
   width: 50px;
   padding-bottom: 10px;
   margin-right: 10px;
+  cursor: pointer;
 `;
 
 const CommentBox = styled.div`

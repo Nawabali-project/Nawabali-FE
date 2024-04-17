@@ -60,7 +60,14 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     mutationFn: createPost,
     onSuccess: () => {
       handleCloseModal();
-      queryClient.invalidateQueries({ queryKey: ['allPosts'] });
+      // queryClient.invalidateQueries({ queryKey: ['allPosts'] });
+      alert('게시물 추가 성공 :)');
+      queryClient.invalidateQueries();
+    },
+    onError: (error: any) => {
+      if (error.response.status === 400) {
+        alert('게시물 형식을 모두 작성해주세요 :)');
+      }
     },
   });
 
@@ -157,9 +164,10 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     </Modal>
   );
 };
+
 const CloseBox = styled.div`
   position: absolute;
-  left: 45%;
+  left: 48%;
   bottom: -80px;
   padding: 5px 6px 3px 7px;
   border-radius: 100px;
