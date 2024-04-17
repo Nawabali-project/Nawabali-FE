@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import styled from 'styled-components';
 import {
   IoArrowBackCircleOutline,
@@ -6,22 +8,34 @@ import {
 } from 'react-icons/io5';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FaMapMarkerAlt } from 'react-icons/fa';
-import items from './Items';
-import { TransitionGroup } from 'react-transition-group';
-import './Carousel.css';
+import { useGetAllPostsByDistrict } from '@/api/news';
+import { useCallback, useRef } from 'react';
 
 function Carousel2() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerPage = 3;
-  const totalItems = items.length;
+  // const { data } = useGetAllPostsByDistrict(district);
+  const { data } = useGetAllPostsByDistrict('중구');
+  const slickRef = useRef<Slider | null>(null);
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalItems);
-  };
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalItems) % totalItems);
-  };
+  const previous = useCallback(() => {
+    if (slickRef.current) {
+      slickRef.current.slickPrev();
+    }
+  }, []);
 
+  const next = useCallback(() => {
+    if (slickRef.current) {
+      slickRef.current.slickNext();
+    }
+  }, []);
+
+  let settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: false,
+  };
   return (
     <>
       <div
@@ -35,7 +49,9 @@ function Carousel2() {
           justifyContent: 'space-between',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div
+          style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
+        >
           <div>일주일간 사람들이 많이 찾은 곳이에요!</div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
@@ -50,37 +66,30 @@ function Carousel2() {
               </span>
             </div>
             <Arrows>
-              <IoArrowBackCircleOutline onClick={handlePrev} />
-              <IoArrowForwardCircleOutline onClick={handleNext} />
+              <IoArrowBackCircleOutline onClick={previous} />
+
+              <IoArrowForwardCircleOutline onClick={next} />
             </Arrows>
           </div>
-          <TransitionGroup
-            component="div"
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}
-          >
-            {items
-              .concat(items)
-              .slice(currentIndex, currentIndex + itemsPerPage)
-              .map((item, idx) => (
-                <ImageContainer key={idx} $isCenter={idx === 1}>
-                  <StyledDiv backgroundImage={item.item} />
-                  <p>파스타앤코</p>
-                  <p style={{ fontSize: '13px' }}>
-                    서울특별시 연남동 48-7 1층
-                    <FaMapMarkerAlt />
-                  </p>
-                  <p style={{ fontSize: '10px', textDecoration: 'underLine' }}>
-                    게시물 보러가기
-                  </p>
-                </ImageContainer>
-              ))}
-          </TransitionGroup>
         </div>
       </div>
+      <StyledSlider ref={slickRef} {...settings}>
+        {data?.content
+          .concat(data.content)
+          .map((item: PostItem, idx: number) => (
+            <ImageContainer key={idx} $isCenter={idx === 1}>
+              <Post $backgroundImage={item.imageUrls[0]} />
+              <p>파스타앤코</p>
+              <p style={{ fontSize: '13px' }}>
+                서울특별시 연남동 48-7 1층
+                <FaMapMarkerAlt />
+              </p>
+              <p style={{ fontSize: '10px', textDecoration: 'underLine' }}>
+                게시물 보러가기
+              </p>
+            </ImageContainer>
+          ))}
+      </StyledSlider>
     </>
   );
 }
@@ -91,7 +100,6 @@ const ImageContainer = styled.div<{ $isCenter?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: ${(props) => (props.$isCenter ? '0 10px' : '0')};
 
   p {
     text-decoration: none;
@@ -100,14 +108,25 @@ const ImageContainer = styled.div<{ $isCenter?: boolean }>`
   }
 `;
 
-export const StyledDiv = styled.div<{
-  backgroundImage: string;
+const StyledSlider = styled(Slider)`
+  margin: 0 auto;
+  height: 300px;
+  width: 722px;
+  .slick-prev::before,
+  .slick-next::before {
+    opacity: 0;
+    display: none;
+  }
+`;
+
+export const Post = styled.div<{
+  $backgroundImage: string;
 }>`
-  background-image: url(${(props) => props.backgroundImage});
+  background-image: url(${(props) => props.$backgroundImage});
   background-size: cover;
   background-position: center;
   width: 234px;
-  height: 270px;
+  height: 234px;
   display: block;
   border-radius: 20px 0 20px 0;
 `;

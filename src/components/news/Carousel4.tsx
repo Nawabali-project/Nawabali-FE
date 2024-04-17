@@ -6,12 +6,10 @@ import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from 'react-icons/io5';
-import { IoIosArrowDown } from 'react-icons/io';
-import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useGetAllPostsByDistrict } from '@/api/news';
 import { useCallback, useRef } from 'react';
 
-function Carousel3() {
+function Carousel4() {
   // const { data } = useGetAllPostsByDistrict(district);
   const { data } = useGetAllPostsByDistrict('중구');
   const slickRef = useRef<Slider | null>(null);
@@ -36,6 +34,7 @@ function Carousel3() {
     slidesToScroll: 1,
     arrows: false,
   };
+
   return (
     <>
       <div
@@ -49,49 +48,53 @@ function Carousel3() {
           justifyContent: 'space-between',
         }}
       >
-        <div
-          style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
-        >
-          <div>다른동네의 인기글을 구경해보세요!</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>
-              전체
-              <IoIosArrowDown />
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div>
+              <span style={{ fontSize: '10px' }}>우리동네 대표 카테고리</span>
+              <p>
+                서교동은 카페가
+                <br />
+                활성화 된 동네예요!
+              </p>
+            </div>
+            <span style={{ fontSize: '9px' }}>
+              한 달간 작성된 게시물을 분석한 결과
+            </span>
+            <span style={{ fontSize: '9px', fontWeight: '500' }}>
+              맛집 184개 | 카페 324개 | 사진스팟 89개
+            </span>
+            <span style={{ fontSize: '9px' }}>의 게시물이 올라왔어요!</span>
+            <span style={{ fontSize: '9px', textDecoration: 'underLine' }}>
+              게시물 보러가기
             </span>
             <Arrows>
               <IoArrowBackCircleOutline onClick={previous} />
               <IoArrowForwardCircleOutline onClick={next} />
             </Arrows>
           </div>
+          <StyledSlider ref={slickRef} {...settings}>
+            {data?.content
+              .concat(data.content)
+              .map((item: PostItem, idx: number) => (
+                <ImageContainer key={idx}>
+                  <Post $backgroundImage={item.imageUrls[0]} />
+                </ImageContainer>
+              ))}
+          </StyledSlider>
         </div>
       </div>
-      <StyledSlider ref={slickRef} {...settings}>
-        {data?.content
-          .concat(data.content)
-          .map((item: PostItem, idx: number) => (
-            <ImageContainer key={idx}>
-              <Post $backgroundImage={item.imageUrls[0]} />
-              <p>파스타앤코</p>
-              <p style={{ fontSize: '13px' }}>
-                서울특별시 연남동 48-7 1층
-                <FaMapMarkerAlt />
-              </p>
-              <p style={{ fontSize: '10px', textDecoration: 'underLine' }}>
-                게시물 보러가기
-              </p>
-            </ImageContainer>
-          ))}
-      </StyledSlider>
     </>
   );
 }
 
-export default Carousel3;
+export default Carousel4;
 
-const ImageContainer = styled.div<{ $isCenter?: boolean }>`
+const ImageContainer = styled.div<{ isCenter?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin: ${(props) => (props.isCenter ? '0 10px' : '0')};
 
   p {
     text-decoration: none;
@@ -103,7 +106,7 @@ const ImageContainer = styled.div<{ $isCenter?: boolean }>`
 const StyledSlider = styled(Slider)`
   margin: 0 auto;
   height: 400px;
-  width: 722px;
+  width: 550px;
   .slick-prev::before,
   .slick-next::before {
     opacity: 0;
@@ -117,10 +120,10 @@ export const Post = styled.div<{
   background-image: url(${(props) => props.$backgroundImage});
   background-size: cover;
   background-position: center;
-  width: 234px;
-  height: 234px;
+  width: 180px;
+  height: 240px;
   display: block;
-  border-radius: 20px 0 20px 0;
+  border-radius: 20px;
 `;
 
 const Arrows = styled.div`

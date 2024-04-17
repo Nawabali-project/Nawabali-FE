@@ -6,12 +6,16 @@ import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from 'react-icons/io5';
-import { IoIosArrowDown } from 'react-icons/io';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useGetAllPostsByDistrict } from '@/api/news';
 import { useCallback, useRef } from 'react';
 
-function Carousel3() {
+interface Carousel5Props {
+  iconCategory: string;
+  category: string;
+}
+
+function Carousel5({ iconCategory, category }: Carousel5Props) {
   // const { data } = useGetAllPostsByDistrict(district);
   const { data } = useGetAllPostsByDistrict('중구');
   const slickRef = useRef<Slider | null>(null);
@@ -52,16 +56,34 @@ function Carousel3() {
         <div
           style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
         >
-          <div>다른동네의 인기글을 구경해보세요!</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            <div>
+              <img
+                src={`/assets/svgs/${iconCategory}Icon.svg`}
+                alt={`${iconCategory} Icon`}
+                style={{ height: '30px', verticalAlign: 'middle' }}
+              />
+              <span>{category}의 중심</span>
+            </div>
+            <p>중구 {category} 구경하기</p>
             <span>
-              전체
-              <IoIosArrowDown />
+              중구는 한 달간 {category} 게시물이 798개 작성되어 {category}{' '}
+              동네로 선정되었어요!
             </span>
-            <Arrows>
-              <IoArrowBackCircleOutline onClick={previous} />
-              <IoArrowForwardCircleOutline onClick={next} />
-            </Arrows>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>
+                <span>게시글 전체보기</span>
+                <img
+                  src="/assets/svgs/arrowIcon.svg"
+                  alt="Arrow Icon"
+                  style={{ height: '6px', marginBottom: '6px' }}
+                />
+              </div>
+              <Arrows>
+                <IoArrowBackCircleOutline onClick={previous} />
+                <IoArrowForwardCircleOutline onClick={next} />
+              </Arrows>
+            </div>
           </div>
         </div>
       </div>
@@ -86,9 +108,9 @@ function Carousel3() {
   );
 }
 
-export default Carousel3;
+export default Carousel5;
 
-const ImageContainer = styled.div<{ $isCenter?: boolean }>`
+const ImageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;

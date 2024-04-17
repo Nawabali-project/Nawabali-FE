@@ -6,12 +6,11 @@ import {
 } from 'react-icons/io5';
 import items from './Items';
 import { TransitionGroup } from 'react-transition-group';
-import './Carousel.css';
 import { useGetAllPostsByDistrict } from '@/api/news';
 
 function Carousel() {
-  // const { data } = useGetAllPostsByDistrict(user.district);
-  const { data } = useGetAllPostsByDistrict('중구');
+  const district = localStorage.getItem('district');
+  const { data } = useGetAllPostsByDistrict(district || '중구');
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 3;
