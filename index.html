@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="public/assets/images/cat.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/images/cat.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- 카카오맵 SDK: 필요한 라이브러리만 포함 -->
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
@@ -12,6 +12,10 @@
     ></script>
     <!-- 다음 우편번호 서비스 -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- global객체 정의 -->
+    <script>
+      var global = global || window;
+    </script>
     <title>동네방네</title>
   </head>
   <body>
