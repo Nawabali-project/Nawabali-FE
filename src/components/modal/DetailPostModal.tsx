@@ -15,7 +15,6 @@ import { useGetDedetailPost } from '@/api/post';
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { checkBookmark, checkLike, checkLocalLike } from '@/api/likeBookmark';
-import { useQueryClient } from '@tanstack/react-query';
 
 interface DetailPostProps {
   postId: number;
@@ -29,16 +28,19 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   const { data, isFetching, isError, error } = useGetDedetailPost(postId);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
   const [isLocalLiked, setIsLocalLiked] = useState(false);
+  const [localLikesCount, setLocalLikesCount] = useState(0);
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const queryClient = useQueryClient();
 
-  // 해당 게시물 (좋아요, 주민추천, 북마크) 여부 세팅
+  // 해당 게시물 (좋아요, 주민추천, 북마크) 초기값 세팅
   useEffect(() => {
     if (data) {
       setIsLiked(data.likeStatus);
       setIsLocalLiked(data.localLikeStatus);
       setIsBookmarked(data.bookmarkStatus);
+      setLikesCount(data.likesCount);
+      setLocalLikesCount(data.localLikesCount);
     }
   }, [data]);
 
@@ -61,11 +63,10 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   // 주민추천 클릭 동작
   const checkLocalLikeMutation = useMutation({
     mutationFn: checkLocalLike,
-    onSuccess: async () => {
-      queryClient.invalidateQueries();
-    },
+    onSuccess: async () => {},
     onError: (error: any) => {
       setIsLocalLiked(!isLocalLiked);
+      setLocalLikesCount(localLikesCount - 1);
       if (error.response.status === 500) {
         alert('주민추천은 로그인 후 이용 가능합니다 :)');
       } else if (error.response.status === 400) {
@@ -76,17 +77,17 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
 
   const handleLocalLikeClick = (postId: number) => {
     setIsLocalLiked(!isLocalLiked);
+    setLocalLikesCount((count) => (isLocalLiked ? count - 1 : count + 1));
     checkLocalLikeMutation.mutate(postId);
   };
 
   // 좋아요 클릭 동작
   const checkLikeMutation = useMutation({
     mutationFn: checkLike,
-    onSuccess: async () => {
-      queryClient.invalidateQueries();
-    },
+    onSuccess: async () => {},
     onError: (error: any) => {
       setIsLiked(!isLiked);
+      setLikesCount(likesCount - 1);
       if (error.response.status === 500) {
         alert('좋아요는 로그인 후 이용 가능합니다 :)');
       }
@@ -95,15 +96,14 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
 
   const handleLikeClick = (postId: number) => {
     setIsLiked(!isLiked);
+    setLikesCount((count) => (isLiked ? count - 1 : count + 1));
     checkLikeMutation.mutate(postId);
   };
 
   // 북마크 클릭 동작
   const checkBookMarkMUtation = useMutation({
     mutationFn: checkBookmark,
-    onSuccess: async () => {
-      queryClient.invalidateQueries();
-    },
+    onSuccess: async () => {},
     onError: (error: any) => {
       setIsBookmarked(!isBookmarked);
       if (error.response.status === 500) {
@@ -207,11 +207,11 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
                 <LocalLikesBox
                   onClick={() => handleLocalLikeClick(data?.postId)}
                 >
-                  주민추천 {data?.localLikesCount}
+                  주민추천 {localLikesCount}
                 </LocalLikesBox>
                 <LikeIconBox onClick={() => handleLikeClick(data?.postId)}>
                   {isLiked ? <LikeFilledIcon /> : <LikeIcon />}
-                  <LikeCount>{data?.likesCount}</LikeCount>
+                  <LikeCount>{likesCount}</LikeCount>
                 </LikeIconBox>
               </LikesBox>
               <BookMarkBox onClick={() => handleBookMarkClick(data?.postId)}>
