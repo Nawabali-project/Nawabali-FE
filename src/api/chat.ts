@@ -1,0 +1,96 @@
+import { authInstance } from '@/axios';
+import { MessageForm } from '@/interfaces/chat/chat.interface';
+import { AxiosError } from 'axios';
+import { ErrorResponse } from 'react-router-dom';
+import { Client } from '@stomp/stompjs';
+import { Cookies } from 'react-cookie';
+
+export const getChatRooms = async (): Promise<any[]> => {
+  try {
+    const response = await authInstance.get('/chat/rooms');
+    console.log('chatrooms res: ', response);
+    return response.data.content;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};
+
+export const createRoom = async (userNickname: string): Promise<number> => {
+  try {
+    const response = await authInstance.post(
+      `/chat/room?roomName=${userNickname}&type=PERSONAL`,
+    );
+    console.log('chat createRoom: ', response);
+    return response.data.roomId;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};
+
+export const searchChatRoom = async (userNickname: string): Promise<any[]> => {
+  try {
+    const response = await authInstance.get(
+      `/chat/room/found?roomName=${userNickname}`,
+    );
+    return response.data;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};
+
+export const enterChatRoom = (ws: any, messageForm: string[]) => {
+  try {
+    ws.send(
+      JSON.stringify({
+        destination: '/pub/chat/enter/message',
+        body: JSON.stringify(messageForm),
+      }),
+    );
+  } catch (error) {
+    console.error('입장 실패', error);
+  }
+};
+
+export const sendMessage = (client: Client, messageForm: MessageForm) => {
+  const accessToken = new Cookies().get('accessToken');
+  try {
+    if (client && client.active) {
+      client.publish({
+        destination: '/pub/chat/message',
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify(messageForm),
+      });
+    } else {
+      console.error('WebSocket connection is not active.');
+    }
+  } catch (error) {
+    console.error('Failed to send message', error);
+  }
+};
+
+export const showChat = async (roomId: number) => {
+  try {
+    const response = await authInstance.get(`/chat/room/${roomId}/message`);
+    return response.data;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};
+
+export const editChat = async (content: string) => {
+  try {
+    const response = await authInstance.patch(`/chat/message`, content);
+    return response.data;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};
+
+export const deleteChat = async () => {
+  try {
+    const response = await authInstance.delete(`/chat/message`);
+    return response.data;
+  } catch (error) {
+    throw error as AxiosError<ErrorResponse>;
+  }
+};

@@ -21,6 +21,7 @@ const useAuthStore = create<AuthState>((set) => ({
   user: null,
 
   login: (user: User) => {
+    localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('email', JSON.stringify(user.email));
     localStorage.setItem('nickname', JSON.stringify(user.nickname));
     localStorage.setItem('district', JSON.stringify(user.district));
@@ -35,15 +36,15 @@ const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
+    set({
+      isLoggedIn: false,
+      user: null,
+    });
     localStorage.removeItem('email');
     localStorage.removeItem('nickname');
     localStorage.removeItem('district');
     localStorage.removeItem('profileImageUrl');
     localStorage.removeItem('userId');
-    set({
-      isLoggedIn: false,
-      user: null,
-    });
   },
 
   setIsLoggedIn: (isLoggedIn: boolean) => {
