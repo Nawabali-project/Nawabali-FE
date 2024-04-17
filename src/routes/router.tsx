@@ -9,6 +9,7 @@ import ListPage from '@/pages/ListPage';
 import MapPage from '@/pages/MapPage';
 import NewsPage from '@/pages/NewsPage';
 import ScorePage from '@/pages/ScorePage';
+import ChatMain from '@/components/chat/ChatMain';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -51,6 +52,11 @@ export const router = createBrowserRouter([
         path: '/mypage',
         element: <Mypage />,
       },
+      {
+        path: '/chat',
+        element: <ChatMain />,
+      },
+
       {
         path: '/mypage2',
         element: (
