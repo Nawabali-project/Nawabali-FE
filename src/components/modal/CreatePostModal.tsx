@@ -61,6 +61,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     onSuccess: () => {
       handleCloseModal();
       // queryClient.invalidateQueries({ queryKey: ['allPosts'] });
+      alert('게시물 추가 성공 :)');
       queryClient.invalidateQueries();
     },
     onError: (error: any) => {
