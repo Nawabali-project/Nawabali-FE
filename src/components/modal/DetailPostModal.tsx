@@ -12,9 +12,9 @@ import {
   BookMarkFilledIcon,
 } from '@/utils/icons';
 import { useGetDedetailPost } from '@/api/post';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { checkLike, checkLocalLike } from '@/api/likeBookmark';
+import { checkBookmark, checkLike, checkLocalLike } from '@/api/likeBookmark';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface DetailPostProps {
@@ -33,6 +33,15 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const queryClient = useQueryClient();
 
+  // 해당 게시물 (좋아요, 주민추천, 북마크) 여부 세팅
+  useEffect(() => {
+    if (data) {
+      setIsLiked(data.likeStatus);
+      setIsLocalLiked(data.localLikeStatus);
+      setIsBookmarked(data.bookmarkStatus);
+    }
+  }, [data]);
+
   // 여러 사진 미리보기 동작
   const goNextImg = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % data.imageUrls.length);
@@ -49,11 +58,38 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     setIsDetailPostModalOpen(false);
   };
 
+  // 주민추천 클릭 동작
+  const checkLocalLikeMutation = useMutation({
+    mutationFn: checkLocalLike,
+    onSuccess: async () => {
+      queryClient.invalidateQueries();
+    },
+    onError: (error: any) => {
+      setIsLocalLiked(!isLocalLiked);
+      if (error.response.status === 500) {
+        alert('주민추천은 로그인 후 이용 가능합니다 :)');
+      } else if (error.response.status === 400) {
+        alert('해당 게시물 동네주민만 누를 수 있어요!');
+      }
+    },
+  });
+
+  const handleLocalLikeClick = (postId: number) => {
+    setIsLocalLiked(!isLocalLiked);
+    checkLocalLikeMutation.mutate(postId);
+  };
+
   // 좋아요 클릭 동작
   const checkLikeMutation = useMutation({
     mutationFn: checkLike,
     onSuccess: async () => {
       queryClient.invalidateQueries();
+    },
+    onError: (error: any) => {
+      setIsLiked(!isLiked);
+      if (error.response.status === 500) {
+        alert('좋아요는 로그인 후 이용 가능합니다 :)');
+      }
     },
   });
 
@@ -62,17 +98,23 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     checkLikeMutation.mutate(postId);
   };
 
-  // 주민추천 클릭 동작
-  const checkLocalLikeMutation = useMutation({
-    mutationFn: checkLocalLike,
+  // 북마크 클릭 동작
+  const checkBookMarkMUtation = useMutation({
+    mutationFn: checkBookmark,
     onSuccess: async () => {
       queryClient.invalidateQueries();
     },
+    onError: (error: any) => {
+      setIsBookmarked(!isBookmarked);
+      if (error.response.status === 500) {
+        alert('북마크는 로그인 후 이용 가능합니다 :)');
+      }
+    },
   });
 
-  const handleLocalLikeClick = (postId: number) => {
-    setIsLocalLiked(!isLocalLiked);
-    checkLocalLikeMutation.mutate(postId);
+  const handleBookMarkClick = (postId: number) => {
+    setIsBookmarked(!isBookmarked);
+    checkBookMarkMUtation.mutate(postId);
   };
 
   console.log('id: ', postId);
@@ -172,9 +214,9 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
                   <LikeCount>{data?.likesCount}</LikeCount>
                 </LikeIconBox>
               </LikesBox>
-              <div onClick={() => setIsBookmarked(!isBookmarked)}>
+              <BookMarkBox onClick={() => handleBookMarkClick(data?.postId)}>
                 {isBookmarked ? <BookMarkFilledIcon /> : <BookMarkIcon />}
-              </div>
+              </BookMarkBox>
             </ItemBox>
 
             <MyCommentBox>
@@ -187,6 +229,10 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     </>
   );
 };
+
+const BookMarkBox = styled.div`
+  cursor: pointer;
+`;
 
 const LocationBox = styled.div`
   position: absolute;
