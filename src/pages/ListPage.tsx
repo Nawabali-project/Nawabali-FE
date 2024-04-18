@@ -82,7 +82,7 @@ const ListPage = () => {
       </CategoryBox>
 
       <FeedsBox>
-        <Feed clickedCategory={clickedKind} />
+        <Feed />
       </FeedsBox>
     </Layout>
   );

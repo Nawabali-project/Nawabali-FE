@@ -7,11 +7,7 @@ import { useState, useEffect } from 'react';
 import DetailPostModal from '../modal/DetailPostModal';
 import { Post } from '@/interfaces/main/posts.interface';
 
-interface FeedListProps {
-  clickedCategory: string | null;
-}
-
-const FeedList = ({ clickedCategory }: FeedListProps) => {
+const FeedList = () => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
