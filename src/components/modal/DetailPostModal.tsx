@@ -16,6 +16,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { checkBookmark, checkLike, checkLocalLike } from '@/api/likeBookmark';
 import { useQueryClient } from '@tanstack/react-query';
+import CommentInput from '../comment/CommentInput';
+import CommentList from '../comment/CommentList';
 
 interface DetailPostProps {
   postId: number;
@@ -259,7 +261,8 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
               </div>
             </ContentHeader>
 
-            <CommentBox>댓글창~</CommentBox>
+            <CommentList postId={data?.postId} />
+
             <ItemBox>
               <LikesBox>
                 <LocalLikesBox
@@ -277,10 +280,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
               </BookMarkBox>
             </ItemBox>
 
-            <MyCommentBox>
-              <MyProfile></MyProfile>
-              <MyCommentInput placeholder="댓글 달기"></MyCommentInput>
-            </MyCommentBox>
+            <CommentInput postId={data?.postId} />
           </ContentBox>
         </MainLayout>
       </Modal>
@@ -458,13 +458,6 @@ const ThreePointIconBox = styled.div`
   cursor: pointer;
 `;
 
-const CommentBox = styled.div`
-  width: 420px;
-  height: 220px;
-  padding: 12px 60px;
-  border-bottom: 1px solid #f1f1f1;
-`;
-
 const ItemBox = styled.div`
   display: flex;
   align-items: center;
@@ -497,31 +490,6 @@ const LikeIconBox = styled.div`
   justify-content: center;
   align-items: center;
   padding: 7px 20px;
-`;
-
-const MyCommentBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-`;
-
-const MyProfile = styled.div`
-  width: 13px;
-  height: 13px;
-  background-color: #f1f1f1;
-  padding: 20px;
-  margin: 0px 10px;
-  border: none;
-  border-radius: 100px;
-`;
-
-const MyCommentInput = styled.input`
-  width: 280px;
-  height: 20px;
-  padding: 12px 20px;
-  border: 1px solid #d9d9d9;
-  border-radius: 60px;
 `;
 
 export default DetailPostModal;

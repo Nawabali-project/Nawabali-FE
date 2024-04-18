@@ -1,5 +1,5 @@
 import {
-  DonutIcon,
+  CafeIcon,
   GlobalIcon,
   ListIcon,
   StarIcon,
@@ -7,6 +7,9 @@ import {
   FoodIcon,
   CameraIcon2,
   MapBlackIcon,
+  FoodFilledIcon,
+  CameraFilledIcon,
+  CafeFilledIcon,
 } from '@/utils/icons';
 import styled from 'styled-components';
 import { useState } from 'react';
@@ -29,27 +32,31 @@ const MapPage = () => {
         </AreaBox>
         <ThreeKindBox>
           <KindBox
-            kind="맛집"
-            isSelected={clickedKind === '맛집'}
-            onClick={() => handleKindClick('맛집')}
+            kind="FOOD"
+            isSelected={clickedKind === 'FOOD'}
+            onClick={() => handleKindClick('FOOD')}
           >
-            <FoodIcon />
+            {clickedKind === 'FOOD' ? <FoodIcon /> : <FoodFilledIcon />}
             &nbsp;맛집
           </KindBox>
           <KindBox
-            kind="카페"
-            isSelected={clickedKind === '카페'}
-            onClick={() => handleKindClick('카페')}
+            kind="CAFE"
+            isSelected={clickedKind === 'CAFE'}
+            onClick={() => handleKindClick('CAFE')}
           >
-            <DonutIcon />
+            {clickedKind === 'CAFE' ? <CafeIcon /> : <CafeFilledIcon />}
             &nbsp;카페
           </KindBox>
           <KindBox
-            kind="사진스팟"
-            isSelected={clickedKind === '사진스팟'}
-            onClick={() => handleKindClick('사진스팟')}
+            kind="PHOTOZONE"
+            isSelected={clickedKind === 'PHOTOZONE'}
+            onClick={() => handleKindClick('PHOTOZONE')}
           >
-            <CameraIcon2 />
+            {clickedKind === 'PHOTOZONE' ? (
+              <CameraIcon2 />
+            ) : (
+              <CameraFilledIcon />
+            )}
             &nbsp;사진스팟
           </KindBox>
         </ThreeKindBox>
@@ -73,7 +80,8 @@ const MapPage = () => {
           </FourCategory>
         </ThreeComponentBox>
       </CategoryBox>
-      <CustomMap width="100%" height="811px" />
+
+      <CustomMap width="100%" height="811px" clickedCategory={clickedKind} />
     </Layout>
   );
 };
@@ -113,12 +121,12 @@ const KindBox = styled.div<{ isSelected?: boolean; kind: string }>`
   background-color: ${(props) => {
     if (!props.isSelected) {
       return 'none';
-    } else if (props.kind == '맛집') {
+    } else if (props.kind == 'FOOD') {
       return '#FE6847';
-    } else if (props.kind == '카페') {
-      return '#FFB700';
-    } else if (props.kind == '사진스팟') {
-      return '#2176AE';
+    } else if (props.kind == 'CAFE') {
+      return '#9BCF53';
+    } else if (props.kind == 'PHOTOZONE') {
+      return '#00A3FF';
     }
   }};
   color: ${(props) => (props.isSelected ? 'white' : 'none')};

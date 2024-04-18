@@ -10,10 +10,13 @@ declare global {
     handlePostClick: (postId: number) => void;
   }
 }
+
 interface KaKaoMapProps {
   width: string;
   height: string;
+  clickedCategory: string | null;
 }
+
 interface Post {
   postId: number;
   profileImageUrl: string;
@@ -23,27 +26,58 @@ interface Post {
   likesCount: number;
   commentCount: number;
   contents: string;
+  latitude: number;
+  longitude: number;
 }
-const CustomMap = ({ width, height }: KaKaoMapProps) => {
+
+interface CustomOverlay {
+  setMap: (map: any | null) => void;
+}
+
+const CustomMap = ({ width, height, clickedCategory }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
+  const [overlays, setOverlays] = useState<CustomOverlay[]>([]);
   const data: any = AllPosts();
 
+  // 맨 처음 지도 내 위치로 렌더링
   useEffect(() => {
     window.kakao.maps.load(() => {
-      const container = document.getElementById('map');
-      const options = {
-        center: new window.kakao.maps.LatLng(37.555949, 126.973309),
-        level: 3,
-      };
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const coords = new window.kakao.maps.LatLng(
+            pos.coords.latitude,
+            pos.coords.longitude,
+          );
 
-      const initialMap = new window.kakao.maps.Map(container, options);
-      setMap(initialMap);
-      setMarker(new window.kakao.maps.Marker());
+          const container = document.getElementById('map');
+          const options = {
+            center: coords,
+            level: 4,
+          };
+
+          const createdMap = new window.kakao.maps.Map(container, options);
+          setMap(createdMap);
+
+          const newMarker = new window.kakao.maps.Marker({
+            position: coords,
+            zIndex: 300,
+          });
+          newMarker.setMap(createdMap);
+          setMarker(newMarker);
+        },
+        () => {
+          alert('위치 정보 가져오기 실패');
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 30000,
+          timeout: 27000,
+        },
+      );
     });
   }, []);
 
@@ -51,19 +85,30 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
     if (category === 'FOOD') {
       return '#FE6847';
     } else if (category === 'CAFE') {
-      return '#FFB700';
+      return '#9BCF53';
     } else if (category === 'PHOTOZONE') {
       return '#00A3FF';
     }
   }
+
+  // 지도에 커스텀 오버레이
   useEffect(() => {
     if (map && data?.data?.content.length) {
-      data.data.content.forEach((post: any) => {
-        let borderColor = getBorderColor(post.category);
+      overlays.forEach((overlay) => overlay.setMap(null));
+      setOverlays([]);
 
+      const filteredPosts =
+        clickedCategory === null
+          ? data.data.content
+          : data.data.content.filter(
+              (post: Post) => post.category === clickedCategory,
+            );
+
+      const newOverlays = filteredPosts.map((post: Post) => {
+        let borderColor = getBorderColor(post.category);
         let content = `
-          <div style="cursor: pointer; background-color: white; padding: 0px; border: 5px solid ${borderColor}; border-radius: 10px; width: 70px; height: 55px; overflow: hidden; display: flex; justify-content: center; align-items: center;"
-              onclick="handlePostClick(${post.postId})">
+          <div style="box-shadow: 3px 3px 6px rgba(86, 86, 86, 0.5); cursor: pointer; border: 3px solid ${borderColor}; border-radius: 10px; width: 60px; height: 60px; overflow: hidden; display: flex; justify-content: center; align-items: center;"
+              onclick="window.handlePostClick(${post.postId})">
             <img src="${post.imageUrls[0]}" style="width: 100%; height: auto; min-height: 100%; object-fit: cover; pointer-events: none;" alt="" />
           </div>
         `;
@@ -71,11 +116,13 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
           position: new window.kakao.maps.LatLng(post.latitude, post.longitude),
           content: content,
         });
-
         customOverlay.setMap(map);
+        return customOverlay;
       });
+
+      setOverlays(newOverlays);
     }
-  }, [data?.data?.content, map]);
+  }, [data?.data?.content, map, clickedCategory]);
 
   // 전역 함수로 클릭시 상세보기 모달 띄움
   window.handlePostClick = (postId: number) => {
@@ -86,6 +133,7 @@ const CustomMap = ({ width, height }: KaKaoMapProps) => {
     }
   };
 
+  // 현재 위치 마커로 찍기
   const getCurrentPosBtn = () => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
