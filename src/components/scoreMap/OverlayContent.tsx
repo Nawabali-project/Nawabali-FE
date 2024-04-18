@@ -70,6 +70,7 @@ const NameBox = styled.div`
   margin-top: 10px;
   color: #00a3ff;
   font-weight: bold;
+  font-size: 22px;
 `;
 
 const ScoreBox = styled.div`
