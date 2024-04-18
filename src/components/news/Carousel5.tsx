@@ -9,6 +9,7 @@ import {
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useGetAllPostsByDistrict } from '@/api/news';
 import { useCallback, useRef } from 'react';
+import { PostItem } from '@/interfaces/main/news.interface';
 
 interface Carousel5Props {
   iconCategory: string;

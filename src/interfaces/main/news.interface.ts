@@ -1,4 +1,4 @@
-interface PostItem {
+export interface PostItem {
   userId: number;
   postId: number;
   nickname: string;
@@ -15,7 +15,7 @@ interface PostItem {
   commentCount: number;
 }
 
-interface ApiResponse {
+export interface ApiResponse {
   content: PostItem[];
   pageable: {
     pageNumber: number;
@@ -40,4 +40,10 @@ interface ApiResponse {
   first: boolean;
   last: boolean;
   empty: boolean;
+}
+
+export interface GetRecentPostsParams {
+  category: number;
+  district: string;
+  period: string;
 }
