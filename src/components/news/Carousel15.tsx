@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useGetAllPostsByDistrict } from '@/api/news';
+import * as s from './CasouselStyle';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -8,6 +9,7 @@ import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from 'react-icons/io5';
+import { PostItem } from '@/interfaces/main/news.interface';
 
 function Carousel() {
   const { data } = useGetAllPostsByDistrict('중구');
@@ -20,27 +22,38 @@ function Carousel() {
     slidesToShow: 3,
     slidesToScroll: 1,
     centerMode: true,
-    beforeChange: (current: number, next: number) => setCenterSlideIndex(next),
+    beforeChange: (current: number, next: number) => {
+      console.log(`Changing slide from ${current} to ${next}`);
+      setCenterSlideIndex(next);
+    },
     arrows: false,
     centerPadding: '0px',
   };
 
   const slickRef = useRef<Slider | null>(null);
+  const next = useCallback(() => {
+    if (slickRef.current && data) {
+      const nextIndex = (centerSlideIndex + 1) % data.content.length;
+      console.log(`Moving to next slide: ${nextIndex}`);
+      slickRef.current.slickGoTo(nextIndex);
+    }
+  }, [slickRef, centerSlideIndex, data]);
 
   const previous = useCallback(() => {
-    if (slickRef.current) {
-      slickRef.current.slickPrev();
+    if (slickRef.current && data) {
+      const previousIndex =
+        (centerSlideIndex - 1 + data.content.length) % data.content.length;
+      console.log(`Moving to previous slide: ${previousIndex}`);
+      slickRef.current.slickGoTo(previousIndex);
     }
-  }, [slickRef]);
-
-  const next = useCallback(() => {
-    if (slickRef.current) {
-      slickRef.current.slickNext();
-    }
-  }, [slickRef]);
+  }, [slickRef, centerSlideIndex, data]);
 
   return (
     <CarouselContainer>
+      <s.Col>
+        <s.TitleSpan>이번주 우리동네</s.TitleSpan>
+        <s.TitleSpan>인기글을 모아봤어요!</s.TitleSpan>
+      </s.Col>
       <StyledSlider ref={slickRef} {...settings}>
         {data?.content.map((item: PostItem, idx: number) => (
           <ImageContainer key={idx}>
@@ -54,21 +67,24 @@ function Carousel() {
                     : 'center'
               }
             >
+              {/* 중앙이 아닌 슬라이드에 대해 처리 */}
               {idx !== centerSlideIndex && (
                 <>
-                  {idx < centerSlideIndex && (
-                    <TextContainer $position="top">
-                      <div>
-                        <LeftDivSpan>이번주 우리동네</LeftDivSpan>
-                        <LeftDivSpan>인기글을 모아봤어요!</LeftDivSpan>
-                      </div>
-                    </TextContainer>
-                  )}
-                  {idx > centerSlideIndex && (
+                  {/* 오른쪽 화살표가 나타나야 할 조건 */}
+                  {idx > centerSlideIndex ||
+                  (idx === 0 &&
+                    centerSlideIndex === data.content.length - 1) ? (
                     <TextContainer $position="bottom">
                       <div>
                         <IoArrowBackCircleOutline onClick={previous} />
                         <IoArrowForwardCircleOutline onClick={next} />
+                      </div>
+                    </TextContainer>
+                  ) : (
+                    <TextContainer $position="top">
+                      <div>
+                        <LeftDivSpan>이번주 우리동네</LeftDivSpan>
+                        <LeftDivSpan>인기글을 모아봤어요!</LeftDivSpan>
                       </div>
                     </TextContainer>
                   )}
