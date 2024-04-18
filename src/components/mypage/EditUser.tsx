@@ -21,7 +21,7 @@ import { AxiosError } from 'axios';
 import { ImCamera } from 'react-icons/im';
 import DeleteAccountModal from './DeleteAccountModal';
 
-const profileImg = localStorage.getItem('profileImageUrl');
+const profileImg = localStorage.getItem('profileImageUrl')?.split('"')[1];
 const basicImg = '/assets/images/basicImg.png';
 
 const EditUser: React.FC = () => {
@@ -238,6 +238,14 @@ const EditUser: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <Col style={{ width: '700px', margin: '0 auto' }}>
           <h2>프로필 편집</h2>
+          <div
+            style={{
+              width: '680px',
+              height: '1px',
+              backgroundColor: '#C1C1C1',
+              margin: '10px 0',
+            }}
+          />
           <Row style={{ padding: '20px' }}>
             <ProfileImageContainer onClick={handleImageClick}>
               <ProfileImage
@@ -268,7 +276,7 @@ const EditUser: React.FC = () => {
               onChange={handleFileChange}
               style={{ display: 'none' }}
             />
-            <Col>
+            <Col style={{ marginLeft: '50px' }}>
               <Row
                 style={{
                   width: '400px',
@@ -531,9 +539,10 @@ const ProfileImageContainer = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 130px;
-  height: 130px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
+  border: 1px solid #e7e7e7;
 `;
 
 const ProfileImageInput = styled.input`
@@ -541,12 +550,12 @@ const ProfileImageInput = styled.input`
 `;
 
 const ProfileImageIcon = styled.div`
-  position: absolute;
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-  bottom: 0px;
-  right: 10px;
+  top: 290px;
+  left: 270px;
   width: 40px;
   height: 40px;
   background-color: #3d3d3de6;

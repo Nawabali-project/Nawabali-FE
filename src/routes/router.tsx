@@ -10,6 +10,7 @@ import MapPage from '@/pages/MapPage';
 import NewsPage from '@/pages/NewsPage';
 import ScorePage from '@/pages/ScorePage';
 import ChatMain from '@/components/chat/ChatMain';
+import GlobalStyles from '@/styles/GlobalStyle';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -22,7 +23,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 export const router = createBrowserRouter([
   {
-    element: <App />,
+    element: (
+      <>
+        <GlobalStyles />
+        <App />
+      </>
+    ),
     children: [
       {
         path: '/',
