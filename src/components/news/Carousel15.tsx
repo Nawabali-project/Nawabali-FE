@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useGetAllPostsByDistrict } from '@/api/news';
+import * as s from './CasouselStyle';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -49,6 +50,10 @@ function Carousel() {
 
   return (
     <CarouselContainer>
+      <s.Col>
+        <s.TitleSpan>이번주 우리동네</s.TitleSpan>
+        <s.TitleSpan>인기글을 모아봤어요!</s.TitleSpan>
+      </s.Col>
       <StyledSlider ref={slickRef} {...settings}>
         {data?.content.map((item: PostItem, idx: number) => (
           <ImageContainer key={idx}>
