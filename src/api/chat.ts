@@ -38,14 +38,14 @@ export const searchChatRoom = async (userNickname: string): Promise<any[]> => {
   }
 };
 
-export const enterChatRoom = (ws: any, messageForm: string[]) => {
+export const enterChatRoom = (client: Client, messageForm: MessageForm) => {
+  const accessToken = new Cookies().get('accessToken');
   try {
-    ws.send(
-      JSON.stringify({
-        destination: '/pub/chat/enter/message',
-        body: JSON.stringify(messageForm),
-      }),
-    );
+    client.publish({
+      destination: '/pub/chat/enter/message',
+      headers: { Authorization: `Bearer ${accessToken}` },
+      body: JSON.stringify(messageForm),
+    });
   } catch (error) {
     console.error('입장 실패', error);
   }
@@ -55,11 +55,14 @@ export const sendMessage = (client: Client, messageForm: MessageForm) => {
   const accessToken = new Cookies().get('accessToken');
   try {
     if (client && client.active) {
+      console.log('Sending message:', messageForm);
+      console.log('Using accessToken:', accessToken);
       client.publish({
         destination: '/pub/chat/message',
         headers: { Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(messageForm),
       });
+      console.log('Message sent successfully');
     } else {
       console.error('WebSocket connection is not active.');
     }

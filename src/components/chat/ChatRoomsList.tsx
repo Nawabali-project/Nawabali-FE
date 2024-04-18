@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { getChatRooms, createRoom } from '@/api/chat';
+import { getChatRooms, createRoom, enterChatRoom } from '@/api/chat';
 import { IoIosSearch } from 'react-icons/io';
 import styled from 'styled-components';
-import { ChatRoom, ChatRoomProps } from '@/interfaces/chat/chat.interface';
+import {
+  ChatRoom,
+  ChatRoomProps,
+  MessageType,
+} from '@/interfaces/chat/chat.interface';
+import { Client } from '@stomp/stompjs';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
-}> = ({ onRoomSelect }) => {
+  client: Client | null;
+}> = ({ onRoomSelect, client }) => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const [userNickname, setUserNickname] = useState('');
   const [searchWord, setSearchWord] = useState<string>('');
@@ -40,8 +46,19 @@ export const ChatRoomsList: React.FC<{
   };
 
   const handleRoomClick = (roomId: number) => {
-    setSelectedRoomId(roomId);
-    onRoomSelect(roomId);
+    if (client) {
+      const messageForm = {
+        sender: localStorage.getItem('nickname')!,
+        message: '',
+        userId: parseInt(localStorage.getItem('userId')!),
+        roomId: roomId,
+        type: MessageType.ENTER,
+      };
+      setSelectedRoomId(roomId);
+      onRoomSelect(roomId);
+      enterChatRoom(client, messageForm);
+      console.log('채팅방 입장');
+    }
   };
 
   return (
