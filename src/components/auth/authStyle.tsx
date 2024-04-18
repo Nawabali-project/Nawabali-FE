@@ -8,7 +8,7 @@ export const AuthInput = styled.input`
   margin: 0;
   padding: 0 10px;
   height: 33px;
-  width: 92%;
+  width: 100%;
   border: 1px solid #d9d9d9;
   border-radius: 5px;
 `;

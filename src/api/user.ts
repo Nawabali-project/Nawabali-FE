@@ -27,7 +27,6 @@ export const editUserInfo = async (userInfo: UserInfo) => {
     return '';
   }
 };
-
 export const checkPassWord = async (password: string) => {
   try {
     const response = await authInstance.get(
@@ -102,4 +101,11 @@ export const useUpdatePhoto = () => {
       console.error('프로필 이미지 업데이트 중 에러 발생:', error);
     },
   });
+};
+
+export const checkDuplicateNickname = async (nickname: string) => {
+  const response = await authInstance.get(
+    `/users/check-nickname?nickname=${nickname}`,
+  );
+  return response.data;
 };

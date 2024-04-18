@@ -1,8 +1,10 @@
 import styled from 'styled-components';
+import * as c from '@/styles/CommonSytle';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { IoIosArrowForward, IoIosSearch } from 'react-icons/io';
 import Button from '@/components/button/Button';
 import {
+  checkDuplicateNickname,
   checkPassWord,
   editUserInfo,
   useDeletePhoto,
@@ -15,17 +17,33 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Districts } from '../../utils/districts';
 import { pwCheck, nicknameCheck } from '@/utils/regex';
 import { AuthInput, WarnSpan } from '../auth/authStyle';
-import { useEffect, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import { useEffect, useRef, useState } from 'react';
 import { ImCamera } from 'react-icons/im';
 import DeleteAccountModal from './DeleteAccountModal';
+import { ChangedData } from '@/interfaces/user/user.interface';
+// import { useNavigate } from 'react-router-dom';
 
 const profileImg = localStorage.getItem('profileImageUrl')?.split('"')[1];
 const basicImg = '/assets/images/basicImg.png';
 
 const EditUser: React.FC = () => {
-  const { data } = useUserInfo();
+  // const navigate = useNavigate();
+  const { data, isLoading } = useUserInfo();
+  useEffect(() => {
+    if (!isLoading && data) {
+      localStorage.setItem('district', data.district);
+      localStorage.setItem('nickname', data.nickname);
+    }
+  }, [data, isLoading]);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  const [initialData, setInitialData] = useState({
+    prevPassword: '',
+    writtenPassword: '',
+    writtenConfirmPassword: '',
+    writtenNickname: '',
+    district: '',
+  });
 
   const [input, onChange, resetInput] = useInput({
     prevPassword: '',
@@ -37,18 +55,19 @@ const EditUser: React.FC = () => {
 
   const [results, setResults] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState('');
-  const debouncedDistrict = useDebounce(input.district, 500);
   const [prevPwValidityMessage, setPrevPwValidityMessage] =
     useState<string>('');
   const [pwValidityMessage, setPwValidityMessage] = useState<string>('');
   const [pwConfirmMessage, setPwConfirmMessage] = useState<string>('');
   const [nicknameValidityMessage, setNicknameValidityMessage] =
     useState<string>('');
+  const [nicknameDupMessage, setNicknameDupMessage] = useState<string>('');
 
   const [showNicknameInput, setShowNicknameInput] = useState(false);
   const [showEditPwInput, setShowEditPwInput] = useState(false);
 
-  const debouncedPrevPassword = useDebounce(input.PrevPassword, 800);
+  const debouncedPrevPassword = useDebounce(input.prevPassword, 800);
+  const debouncedDistrict = useDebounce(input.district, 500);
   const debouncedWrittenPassword = useDebounce(input.writtenPassword, 500);
   const debouncedWrittenConfirmPassword = useDebounce(
     input.writtenConfirmPassword,
@@ -59,9 +78,38 @@ const EditUser: React.FC = () => {
   const [imageAction, setImageAction] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const [previewImageUrl, setPreviewImageUrl] = useState<string>(
+    profileImg || basicImg,
+  );
+
   const { mutate: deletePhotoMutate } = useDeletePhoto();
   const { mutate: updatePhotoMutate } = useUpdatePhoto();
   const { mutate: deleteAccount } = useDeleteUser();
+
+  useEffect(() => {
+    if (data) {
+      setInitialData({
+        prevPassword: '',
+        writtenPassword: '',
+        writtenConfirmPassword: '',
+        writtenNickname: data.nickname || '',
+        district: data.district || '',
+      });
+    }
+  }, [data]);
+
+  const handleCloseModal = (event: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      setShowModal(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleCloseModal);
+    return () => {
+      document.removeEventListener('mousedown', handleCloseModal);
+    };
+  }, []);
 
   // 프로필이미지 수정
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +118,9 @@ const EditUser: React.FC = () => {
       setProfileImage(file);
       setImageAction('modify');
       console.log('이미지 수정: ', file);
+
+      const fileURL = URL.createObjectURL(file);
+      setPreviewImageUrl(fileURL);
     }
   };
 
@@ -95,25 +146,25 @@ const EditUser: React.FC = () => {
     setShowEditPwInput(true);
   };
 
-  const prevPwMutation = useMutation<boolean, AxiosError, void>({
-    mutationFn: () => checkPassWord(input.prevPassword),
-    onSuccess: (isValid) => {
-      if (isValid) {
-        setPrevPwValidityMessage('');
-      } else {
-        setPrevPwValidityMessage('기존 비밀번호와 일치하지 않습니다.');
-      }
-    },
-    onError: (error: AxiosError) => {
-      console.error('Error:', error.message);
-    },
-  });
-
   useEffect(() => {
-    if (debouncedPrevPassword) {
-      prevPwMutation.mutate();
-    }
-  }, [debouncedPrevPassword, prevPwMutation]);
+    const validatePassword = async () => {
+      if (debouncedPrevPassword) {
+        try {
+          const response = await checkPassWord(debouncedPrevPassword);
+          setPrevPwValidityMessage(
+            response ? '' : '기존 비밀번호와 일치하지 않습니다.',
+          );
+        } catch (error) {
+          console.error('비밀번호 검증 오류:', error);
+          setPrevPwValidityMessage(
+            '서버 오류로 비밀번호를 검증할 수 없습니다.',
+          );
+        }
+      }
+    };
+
+    validatePassword();
+  }, [debouncedPrevPassword]);
 
   // 비밀번호 유효성 검사
   useEffect(() => {
@@ -123,7 +174,10 @@ const EditUser: React.FC = () => {
           ? ''
           : '비밀번호는 영문, 숫자, 특수문자 포함 8~15자 입니다.',
       );
-    } else if (input.prevPassword === input.writtenPassword) {
+    } else if (
+      input.prevPassword === input.writtenPassword &&
+      input.prevPassword != ''
+    ) {
       setPwValidityMessage('이전 비밀번호는 사용할 수 없습니다.');
     } else {
       setPwValidityMessage('');
@@ -155,6 +209,10 @@ const EditUser: React.FC = () => {
       );
     } else {
       setNicknameValidityMessage('');
+    }
+    const response = checkDuplicateNickname(input.writtenNickname);
+    if (!response) {
+      setNicknameDupMessage('이미 사용중인 닉네임이에요');
     }
   }, [input.writtenNickname]);
 
@@ -188,8 +246,48 @@ const EditUser: React.FC = () => {
     }
   };
 
+  //회원정보 저장
+  const getChangedData = (): ChangedData => {
+    const changedData: ChangedData = {
+      nickname: localStorage.getItem('nickname')?.split('"')[1] || '',
+      district: localStorage.getItem('district')?.split('"')[1] || '',
+      city: '서울특별시',
+    };
+
+    if (
+      initialData.writtenPassword !== input.writtenPassword &&
+      input.writtenPassword
+    ) {
+      changedData.password = input.writtenPassword;
+    }
+    if (
+      initialData.writtenConfirmPassword !== input.writtenConfirmPassword &&
+      input.writtenConfirmPassword
+    ) {
+      changedData.confirmPassword = input.writtenConfirmPassword;
+    }
+    if (
+      initialData.writtenNickname !== input.writtenNickname &&
+      input.writtenNickname
+    ) {
+      changedData.nickname = input.writtenNickname;
+    }
+    if (initialData.district !== input.district && input.district) {
+      changedData.district = input.district.replace('서울특별시 ', '');
+    }
+
+    return changedData;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const changedData = getChangedData();
+
+    if (Object.keys(changedData).length === 0) {
+      alert('변경 사항이 없습니다. 정보를 수정한 후에 제출해주세요.');
+      return;
+    }
 
     try {
       if (profileImage && imageAction === 'modify') {
@@ -206,16 +304,10 @@ const EditUser: React.FC = () => {
         localStorage.setItem('user', JSON.stringify(currentUser));
       }
 
-      await editUserInfo({
-        nickname: input.writtenNickname,
-        password: input.writtenPassword,
-        confirmPassword: input.writtenConfirmPassword,
-        city: '서울특별시',
-        district: input.district,
-      });
-      useUserInfo;
+      await editUserInfo(changedData);
       resetInput();
       alert('회원 정보가 성공적으로 업데이트 되었습니다.');
+      // navigate('/mypage');
     } catch (error) {
       console.error('Update error:', error);
       alert('회원 정보 업데이트에 실패했습니다.');
@@ -231,41 +323,39 @@ const EditUser: React.FC = () => {
     setShowDeleteModal(false);
   };
 
+  useEffect(() => {
+    return () => {
+      if (previewImageUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewImageUrl);
+      }
+    };
+  }, [previewImageUrl]);
+
   const showSearchResults = !selectedDistrict && results.length > 0;
 
   return (
     <Container>
       <form onSubmit={handleSubmit}>
         <Col style={{ width: '700px', margin: '0 auto' }}>
-          <h2>프로필 편집</h2>
-          <div
-            style={{
-              width: '680px',
-              height: '1px',
-              backgroundColor: '#C1C1C1',
-              margin: '10px 0',
-            }}
-          />
+          <c.Title>프로필 편집</c.Title>
+          <Line />
           <Row style={{ padding: '20px' }}>
             <ProfileImageContainer onClick={handleImageClick}>
-              <ProfileImage
-                src={
-                  profileImage
-                    ? `${URL.createObjectURL(profileImage).slice(5)}?${new Date().getTime()}`
-                    : profileImg || basicImg
-                }
-                alt="Profile"
-              />
+              <ProfileImage src={previewImageUrl} alt="Profile" />
               <ProfileImageIcon>
                 <ImCamera />
               </ProfileImageIcon>
             </ProfileImageContainer>
 
             {showModal && (
-              <Modal>
-                <button onClick={() => setShowModal(false)}>Close</button>
-                <span onClick={handleEditPhoto}>수정</span>
-                <span onClick={handleDeletePhoto}>삭제</span>
+              <Modal ref={modalRef}>
+                <span style={{ cursor: 'pointer' }} onClick={handleEditPhoto}>
+                  수정
+                </span>
+                <Line />
+                <span style={{ cursor: 'pointer' }} onClick={handleDeletePhoto}>
+                  삭제
+                </span>
               </Modal>
             )}
 
@@ -279,14 +369,13 @@ const EditUser: React.FC = () => {
             <Col style={{ marginLeft: '50px' }}>
               <Row
                 style={{
-                  width: '400px',
-                  justifyContent: 'space-between',
+                  width: '500px',
                   margin: '15px 0',
                 }}
               >
                 <TitleSpan>이메일</TitleSpan>
-                <Row style={{ width: '300px' }}>
-                  <span>{data?.email}</span>
+                <Row style={{ width: '300px', marginLeft: '50px' }}>
+                  <InnerSpan>{data?.email}</InnerSpan>
                 </Row>
               </Row>
               <Row
@@ -301,7 +390,7 @@ const EditUser: React.FC = () => {
                   <Row
                     style={{ width: '300px', justifyContent: 'space-between' }}
                   >
-                    <span>********</span>
+                    <InnerSpan>********</InnerSpan>
                     <Button
                       type="button"
                       size="small"
@@ -314,8 +403,14 @@ const EditUser: React.FC = () => {
                 {showEditPwInput && (
                   <Col>
                     <Col style={{ width: '300px' }}>
-                      <Row>
-                        <span>현재 비밀번호</span>
+                      <Row
+                        style={{
+                          width: '322px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <InnerSpan>현재 비밀번호</InnerSpan>
                         <WarnSpan>{prevPwValidityMessage}</WarnSpan>
                       </Row>
                       <AuthInput
@@ -327,8 +422,15 @@ const EditUser: React.FC = () => {
                     </Col>
 
                     <Col style={{ width: '300px' }}>
-                      <Row>
-                        <span>신규 비밀번호</span>
+                      <Row
+                        style={{
+                          width: '322px',
+                          marginTop: '10px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <InnerSpan>신규 비밀번호</InnerSpan>
                         <WarnSpan>{pwValidityMessage}</WarnSpan>
                       </Row>
                       <AuthInput
@@ -340,8 +442,15 @@ const EditUser: React.FC = () => {
                     </Col>
 
                     <Col style={{ width: '300px' }}>
-                      <Row>
-                        <span>신규 비밀번호 확인</span>
+                      <Row
+                        style={{
+                          width: '322px',
+                          marginTop: '10px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <InnerSpan>신규 비밀번호 확인</InnerSpan>
                         <WarnSpan>{pwConfirmMessage}</WarnSpan>
                       </Row>
                       <AuthInput
@@ -355,7 +464,11 @@ const EditUser: React.FC = () => {
                 )}
               </Row>
               <Row
-                style={{ justifyContent: 'space-between', margin: '15px 0' }}
+                style={{
+                  width: '400px',
+                  justifyContent: 'space-between',
+                  margin: '15px 0',
+                }}
               >
                 <TitleSpan>닉네임</TitleSpan>
                 {!showNicknameInput && (
@@ -363,10 +476,10 @@ const EditUser: React.FC = () => {
                     style={{
                       width: '290px',
                       justifyContent: 'space-between',
-                      paddingRight: '10px',
+                      paddingRight: '13px',
                     }}
                   >
-                    <span>{data?.nickname}</span>
+                    <InnerSpan>{data?.nickname}</InnerSpan>
                     <Button
                       type="button"
                       size="small"
@@ -378,15 +491,24 @@ const EditUser: React.FC = () => {
                 )}
                 {showNicknameInput && (
                   <>
-                    <Row style={{ width: '300px' }}>
+                    <Col style={{ width: '300px', position: 'relative' }}>
                       <AuthInput
                         type="text"
                         name="writtenNickname"
                         value={input.writtenNickname}
                         onChange={onChange}
                       />
+                      <WarnSpan
+                        style={{
+                          position: 'absolute',
+                          right: '-15px',
+                          top: '10px',
+                        }}
+                      >
+                        {nicknameDupMessage}
+                      </WarnSpan>
                       <WarnSpan>{nicknameValidityMessage}</WarnSpan>
-                    </Row>
+                    </Col>
                   </>
                 )}
               </Row>
@@ -415,7 +537,11 @@ const EditUser: React.FC = () => {
               {showSearchResults && (
                 <ResultDiv>
                   {results.map((result, index) => (
-                    <div key={index} onClick={() => handleResultClick(result)}>
+                    <div
+                      style={{ cursor: 'pointer' }}
+                      key={index}
+                      onClick={() => handleResultClick(result)}
+                    >
                       {result}
                     </div>
                   ))}
@@ -482,6 +608,11 @@ const TitleSpan = styled.span`
   margin-right: 10px;
 `;
 
+const InnerSpan = styled.span`
+  font-weight: 700;
+  font-size: 13px;
+`;
+
 const StyledCol = styled(Col)`
   height: 220px;
   background-color: #f9f9f9;
@@ -536,6 +667,7 @@ const ResultDiv = styled.div`
 const ProfileImageContainer = styled.div`
   position: relative;
   margin-bottom: 20px;
+  cursor: pointer;
 `;
 
 const ProfileImage = styled.img`
@@ -550,12 +682,12 @@ const ProfileImageInput = styled.input`
 `;
 
 const ProfileImageIcon = styled.div`
-  position: fixed;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 290px;
-  left: 270px;
+  top: 75px;
+  left: 75px;
   width: 40px;
   height: 40px;
   background-color: #3d3d3de6;
@@ -565,12 +697,22 @@ const ProfileImageIcon = styled.div`
 `;
 
 const Modal = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1050;
+  position: absolute;
+  width: 50px;
+  top: 330px;
+  left: 196px;
+  text-align: center;
+  z-index: 10;
   background: white;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+`;
+
+const Line = styled.div`
+  height: 1px;
+  background-color: #c1c1c1;
+  margin: 10px 0;
 `;
