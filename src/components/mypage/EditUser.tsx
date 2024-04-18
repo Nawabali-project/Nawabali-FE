@@ -249,8 +249,8 @@ const EditUser: React.FC = () => {
   //회원정보 저장
   const getChangedData = (): ChangedData => {
     const changedData: ChangedData = {
-      nickname: localStorage.getItem('nickname')?.split('"')[1] || '',
-      district: localStorage.getItem('district')?.split('"')[1] || '',
+      nickname: localStorage.getItem('nickname') || '',
+      district: localStorage.getItem('district') || '',
       city: '서울특별시',
     };
 

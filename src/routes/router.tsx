@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
-import Myplace from '@/components/mypage/Myplace';
 import EditUser from '@/components/mypage/EditUser';
 import Mypage from '@/components/mypage/Mypage';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
@@ -47,11 +46,7 @@ export const router = createBrowserRouter([
         element: <ScorePage />,
       },
       {
-        path: '/myplace',
-        element: <Myplace />,
-      },
-      {
-        path: '/edit',
+        path: '/mypage/edit',
         element: <EditUser />,
       },
       {
