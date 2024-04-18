@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
-import Myplace from '@/components/mypage/Myplace';
 import EditUser from '@/components/mypage/EditUser';
 import Mypage from '@/components/mypage/Mypage';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
@@ -10,6 +9,7 @@ import MapPage from '@/pages/MapPage';
 import NewsPage from '@/pages/NewsPage';
 import ScorePage from '@/pages/ScorePage';
 import ChatMain from '@/components/chat/ChatMain';
+import GlobalStyles from '@/styles/GlobalStyle';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -22,7 +22,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 export const router = createBrowserRouter([
   {
-    element: <App />,
+    element: (
+      <>
+        <GlobalStyles />
+        <App />
+      </>
+    ),
     children: [
       {
         path: '/',
@@ -41,11 +46,7 @@ export const router = createBrowserRouter([
         element: <ScorePage />,
       },
       {
-        path: '/myplace',
-        element: <Myplace />,
-      },
-      {
-        path: '/edit',
+        path: '/mypage/edit',
         element: <EditUser />,
       },
       {

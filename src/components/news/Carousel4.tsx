@@ -1,6 +1,7 @@
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import * as s from './CasouselStyle';
 import styled from 'styled-components';
 import {
   IoArrowBackCircleOutline,
@@ -8,6 +9,7 @@ import {
 } from 'react-icons/io5';
 import { useGetAllPostsByDistrict } from '@/api/news';
 import { useCallback, useRef } from 'react';
+import { PostItem } from '@/interfaces/main/news.interface';
 
 function Carousel4() {
   // const { data } = useGetAllPostsByDistrict(district);
@@ -37,26 +39,15 @@ function Carousel4() {
 
   return (
     <>
-      <div
-        style={{
-          // border: '1px solid pink',
-          width: '720px',
-          margin: '50px auto 0',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <s.Container>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <s.Col>
             <div>
               <span style={{ fontSize: '10px' }}>우리동네 대표 카테고리</span>
-              <p>
-                서교동은 카페가
-                <br />
-                활성화 된 동네예요!
-              </p>
+              <s.Col>
+                <s.TitleSpan>서교동은 카페가</s.TitleSpan>
+                <s.TitleSpan>활성화 된 동네예요!</s.TitleSpan>
+              </s.Col>
             </div>
             <span style={{ fontSize: '9px' }}>
               한 달간 작성된 게시물을 분석한 결과
@@ -72,7 +63,7 @@ function Carousel4() {
               <IoArrowBackCircleOutline onClick={previous} />
               <IoArrowForwardCircleOutline onClick={next} />
             </Arrows>
-          </div>
+          </s.Col>
           <StyledSlider ref={slickRef} {...settings}>
             {data?.content
               .concat(data.content)
@@ -83,7 +74,7 @@ function Carousel4() {
               ))}
           </StyledSlider>
         </div>
-      </div>
+      </s.Container>
     </>
   );
 }

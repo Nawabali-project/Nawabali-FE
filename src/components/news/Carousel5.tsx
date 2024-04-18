@@ -1,6 +1,7 @@
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import * as s from './CasouselStyle';
 import styled from 'styled-components';
 import {
   IoArrowBackCircleOutline,
@@ -9,6 +10,7 @@ import {
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useGetAllPostsByDistrict } from '@/api/news';
 import { useCallback, useRef } from 'react';
+import { PostItem } from '@/interfaces/main/news.interface';
 
 interface Carousel5Props {
   iconCategory: string;
@@ -42,17 +44,7 @@ function Carousel5({ iconCategory, category }: Carousel5Props) {
   };
   return (
     <>
-      <div
-        style={{
-          // border: '1px solid pink',
-          width: '720px',
-          margin: '50px auto 0',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <s.Container>
         <div
           style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
         >
@@ -65,28 +57,30 @@ function Carousel5({ iconCategory, category }: Carousel5Props) {
               />
               <span>{category}의 중심</span>
             </div>
-            <p>중구 {category} 구경하기</p>
-            <span>
-              중구는 한 달간 {category} 게시물이 798개 작성되어 {category}{' '}
-              동네로 선정되었어요!
-            </span>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div>
-                <span>게시글 전체보기</span>
-                <img
-                  src="/assets/svgs/arrowIcon.svg"
-                  alt="Arrow Icon"
-                  style={{ height: '6px', marginBottom: '6px' }}
-                />
+            <s.Col>
+              <s.TitleSpan>중구 {category} 구경하기</s.TitleSpan>
+              <span>
+                중구는 한 달간 {category} 게시물이 798개 작성되어 {category}{' '}
+                동네로 선정되었어요!
+              </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div>
+                  <span>게시글 전체보기</span>
+                  <img
+                    src="/assets/svgs/arrowIcon.svg"
+                    alt="Arrow Icon"
+                    style={{ height: '6px', marginBottom: '6px' }}
+                  />
+                </div>
+                <Arrows>
+                  <IoArrowBackCircleOutline onClick={previous} />
+                  <IoArrowForwardCircleOutline onClick={next} />
+                </Arrows>
               </div>
-              <Arrows>
-                <IoArrowBackCircleOutline onClick={previous} />
-                <IoArrowForwardCircleOutline onClick={next} />
-              </Arrows>
-            </div>
+            </s.Col>
           </div>
         </div>
-      </div>
+      </s.Container>
       <StyledSlider ref={slickRef} {...settings}>
         {data?.content
           .concat(data.content)

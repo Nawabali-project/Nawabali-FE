@@ -1,6 +1,7 @@
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import * as s from './CasouselStyle';
 import styled from 'styled-components';
 import {
   IoArrowBackCircleOutline,
@@ -10,6 +11,7 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useGetAllPostsByDistrict } from '@/api/news';
 import { useCallback, useRef } from 'react';
+import { PostItem } from '@/interfaces/main/news.interface';
 
 function Carousel3() {
   // const { data } = useGetAllPostsByDistrict(district);
@@ -38,21 +40,11 @@ function Carousel3() {
   };
   return (
     <>
-      <div
-        style={{
-          // border: '1px solid pink',
-          width: '720px',
-          margin: '50px auto 0',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <s.Container>
         <div
           style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
         >
-          <div>다른동네의 인기글을 구경해보세요!</div>
+          <s.TitleSpan>다른동네의 인기글을 구경해보세요!</s.TitleSpan>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>
               전체
@@ -64,7 +56,7 @@ function Carousel3() {
             </Arrows>
           </div>
         </div>
-      </div>
+      </s.Container>
       <StyledSlider ref={slickRef} {...settings}>
         {data?.content
           .concat(data.content)

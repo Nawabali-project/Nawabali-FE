@@ -7,6 +7,7 @@ import {
 import items from './Items';
 import { TransitionGroup } from 'react-transition-group';
 import { useGetAllPostsByDistrict } from '@/api/news';
+import { PostItem } from '@/interfaces/main/news.interface';
 
 function Carousel() {
   const district = localStorage.getItem('district');

@@ -2,6 +2,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styled from 'styled-components';
+import * as s from './CasouselStyle';
 import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
@@ -10,6 +11,7 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useGetAllPostsByDistrict } from '@/api/news';
 import { useCallback, useRef } from 'react';
+import { PostItem } from '@/interfaces/main/news.interface';
 
 function Carousel2() {
   // const { data } = useGetAllPostsByDistrict(district);
@@ -38,32 +40,23 @@ function Carousel2() {
   };
   return (
     <>
-      <div
-        style={{
-          // border: '1px solid pink',
-          width: '720px',
-          margin: '50px auto 0',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <s.Container>
         <div
           style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
         >
-          <div>일주일간 사람들이 많이 찾은 곳이에요!</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <s.TitleSpan>일주일간 사람들이 많이 찾은 곳이에요!</s.TitleSpan>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <div>
-              <span style={{ marginRight: '20px' }}>
-                <FaMapMarkerAlt />
-                서울특별시 서초구
-                <IoIosArrowDown />
-              </span>
-              <span>
-                전체
-                <IoIosArrowDown />
-              </span>
+              <FaMapMarkerAlt />
+              <s.InnerSpan>서울특별시 서초구</s.InnerSpan>
+              <IoIosArrowDown />
+              <s.InnerSpan>전체</s.InnerSpan>
+              <IoIosArrowDown />
             </div>
             <Arrows>
               <IoArrowBackCircleOutline onClick={previous} />
@@ -72,7 +65,7 @@ function Carousel2() {
             </Arrows>
           </div>
         </div>
-      </div>
+      </s.Container>
       <StyledSlider ref={slickRef} {...settings}>
         {data?.content
           .concat(data.content)
