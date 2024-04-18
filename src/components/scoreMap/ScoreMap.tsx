@@ -17,10 +17,10 @@ const MapContainer = styled.div`
   overflow: hidden;
   margin-top: 5px;
 
-  .map-content {
+  /* .map-content {
     transform: scale(0.815);
     transform-origin: top center;
-  }
+  } */
 `;
 
 export default Score;

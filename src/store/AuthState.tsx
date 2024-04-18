@@ -21,6 +21,7 @@ const useAuthStore = create<AuthState>((set) => ({
   user: null,
 
   login: (user: User) => {
+    localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('email', JSON.stringify(user.email));
     localStorage.setItem('nickname', JSON.stringify(user.nickname));
     localStorage.setItem('district', JSON.stringify(user.district));

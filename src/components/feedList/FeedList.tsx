@@ -7,7 +7,11 @@ import { useState, useEffect } from 'react';
 import DetailPostModal from '../modal/DetailPostModal';
 import { Post } from '@/interfaces/main/posts.interface';
 
-const Feed = () => {
+interface FeedListProps {
+  clickedCategory: string | null;
+}
+
+const FeedList = ({ clickedCategory }: FeedListProps) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -15,7 +19,6 @@ const Feed = () => {
     setSelectedPost(post);
     setIsDetailPostModalOpen(true);
   };
-
   const { ref, inView } = useInView();
 
   const {
@@ -33,7 +36,6 @@ const Feed = () => {
       if (lastPage.data.content.length > 0) {
         return allPages.length;
       }
-
       return undefined;
     },
   });
@@ -54,6 +56,15 @@ const Feed = () => {
   if (status === 'error') {
     return <p>Error: {error.message}</p>;
   }
+
+  /*
+  const filteredPost =
+    clickedCategory === null
+      ? data.data.content
+      : data.data.content.filter(
+          (post: Post) => post.category === clickedCategory,
+        );
+  */
 
   return (
     <>
@@ -169,9 +180,9 @@ const PostType = styled.div<{ category: string }>`
       case 'FOOD':
         return '#FE6847'; // 맛집 카테고리의 배경색
       case 'CAFE':
-        return '#FFB700'; // 카페 카테고리의 배경색
+        return '#9BCF53'; // 카페 카테고리의 배경색
       case 'PHOTOZONE':
-        return '#2176AE'; // 사진 존 카테고리의 배경색
+        return '#00A3FF'; // 사진 존 카테고리의 배경색
       default:
         return '#ccc'; // 기본 배경색
     }
@@ -196,4 +207,4 @@ const CommentsCountBox = styled.div`
   margin: 0px 20px 0px 5px;
 `;
 
-export default Feed;
+export default FeedList;
