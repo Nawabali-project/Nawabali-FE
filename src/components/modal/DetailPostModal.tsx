@@ -231,7 +231,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
           <ContentBox>
             <ContentHeader>
               <ProfileBox>
-                <ProfileImg />
+                <ProfileImg src={data?.profileImageUrl} />
               </ProfileBox>
               <div>
                 <NameAndIcon>
@@ -414,18 +414,19 @@ const ContentHeader = styled.div`
 
 const ProfileBox = styled.div`
   width: 50px;
-  padding: 10px 10px 10px 40px;
+  height: 50px;
+  margin: 10px 10px 10px 40px;
+  background-color: #f1f1f1;
   border: none;
   border-radius: 100px;
 `;
 
-const ProfileImg = styled.div`
-  width: 13px;
-  height: 13px;
-  background-color: #f1f1f1;
-  padding: 20px;
+const ProfileImg = styled.img`
+  width: 100%;
+  height: 100%;
   border: none;
   border-radius: 100px;
+  object-fit: cover;
 `;
 
 const NickName = styled.div`
