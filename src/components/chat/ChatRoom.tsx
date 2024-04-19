@@ -69,7 +69,7 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
     const chatMessage: MessageForm = {
       type: MessageType.TALK,
       message,
-      sender: localStorage.getItem('nickname')!.split('"')[1],
+      sender: localStorage.getItem('nickname')!,
       userId: parseInt(localStorage.getItem('userId')!),
       roomId: roomId,
     };

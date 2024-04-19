@@ -11,7 +11,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Mypage = () => {
   const navigate = useNavigate();
-  const nickname = localStorage.getItem('nickname');
+  const profileImg = localStorage.getItem('profileImageUrl') ?? undefined;
+  const nickname = localStorage.getItem('nickname') ?? 'Unknown';
   const [type, setType] = useState<string>('contents');
   const { ref, inView } = useInView();
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -74,7 +75,7 @@ const Mypage = () => {
         }}
       >
         <Row>
-          <ProfileImage />
+          <ProfileImage src={profileImg} alt="Profile" />
           <Col>
             <div>
               <span>{nickname}</span>
@@ -185,13 +186,10 @@ const Col = styled.div`
   flex-direction: column;
 `;
 
-const ProfileImage = styled.div`
+const ProfileImage = styled.img`
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  background-image: url(${localStorage.getItem('profileImageUrl')});
-  background-size: cover;
-  background-position: center;
   border: 1px solid #e7e7e7;
 `;
 

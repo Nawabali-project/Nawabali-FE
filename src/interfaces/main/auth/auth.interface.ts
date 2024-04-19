@@ -16,11 +16,3 @@ export interface VarifyCheck {
   email: string;
   code: number;
 }
-
-export interface UserInfo {
-  email: string;
-  district: string;
-  profileImageUrl: string;
-  nickname: string;
-  rank: string;
-}
