@@ -32,7 +32,7 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
   }, [onClose]);
 
   const goToMypage = () => {
-    navigate('/edit');
+    navigate('/mypage');
   };
 
   const handleLogout = async () => {

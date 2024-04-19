@@ -37,7 +37,7 @@ const Mypage = () => {
     queryKey: ['scrollPosts', type],
     queryFn: fetchFunction,
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.data.content.length > 0) {
+      if (lastPage.data.content.length > 0 && lastPage.data.hasNext) {
         return allPages.length;
       }
       return undefined;
