@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import ChatRoomsList from './ChatRoomsList';
-import ChatRoom from './ChatRoom';
+import ChatRoomsList from '../components/chat/ChatRoomsList';
+import ChatRoom from '../components/chat/ChatRoom';
 import SockJS from 'sockjs-client';
 import { Stomp, Client } from '@stomp/stompjs';
 

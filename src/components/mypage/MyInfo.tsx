@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import * as c from '@/styles/CommonSytle';
 import { TbApps } from 'react-icons/tb';
 import { IoBookmarkOutline } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
@@ -8,11 +9,14 @@ import { Post } from '@/interfaces/main/posts.interface';
 import DetailPostModal from '../modal/DetailPostModal';
 import { getMyBookMarks, getMyContents } from '@/api/mypage';
 import { useNavigate } from 'react-router-dom';
+import { BsFiles } from 'react-icons/bs';
 
-const Mypage = () => {
+const MyInfo = () => {
   const navigate = useNavigate();
   const profileImg = localStorage.getItem('profileImageUrl') ?? undefined;
   const nickname = localStorage.getItem('nickname') ?? 'Unknown';
+  const district = localStorage.getItem('district') ?? 'Unknown';
+  const rank = localStorage.getItem('rank') ?? 'Unknown';
   const [type, setType] = useState<string>('contents');
   const { ref, inView } = useInView();
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -66,81 +70,101 @@ const Mypage = () => {
 
   return (
     <div style={{ width: '1000px', margin: '0 auto' }}>
-      <div
+      <Row
         style={{
           width: '1000px',
           height: '160px',
           margin: '100px auto 10px',
-          border: '1px solid red',
+          // border: '1px solid red',
+          alignItems: 'center',
         }}
       >
-        <Row>
-          <ProfileImage src={profileImg} alt="Profile" />
+        <ProfileImage src={profileImg} alt="Profile" />
+        <Col style={{ marginLeft: '25px', justifyContent: 'center' }}>
+          <Row style={{ alignItems: 'center' }}>
+            <c.Title>{nickname}</c.Title>
+            <c.LightSpan
+              style={{
+                height: '13px',
+                padding: '5px 10px',
+                border: '1px solid #A1A1A1',
+                borderRadius: '15px',
+                cursor: 'pointer',
+                lineHeight: '13px',
+                fontSize: '12px',
+                marginLeft: '10px',
+              }}
+              onClick={() => {
+                navigate('/mypage/edit');
+              }}
+            >
+              프로필 편집
+            </c.LightSpan>
+          </Row>
           <Col>
-            <div>
-              <span>{nickname}</span>
-              <span
-                style={{
-                  height: '20px',
-                  padding: '5px 10px',
-                  border: '1px solid #A1A1A1',
-                  borderRadius: '15px',
-                  color: '#757575',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  navigate('/mypage/edit');
-                }}
-              >
-                프로필 편집
-              </span>
-            </div>
-            <span>서초구 토박이</span>
-            <span>
+            <c.MiddleTitle>
+              {district} {rank}
+            </c.MiddleTitle>
+            <c.LightSpan>
               다음등급인 터줏대감까지 게시물 3개 / 좋아요 23개 남았어요 :)
-            </span>
+            </c.LightSpan>
           </Col>
-        </Row>
-      </div>
-      <Row>
+        </Col>
+      </Row>
+
+      <Row style={{ marginBottom: '10px' }}>
         <Col>
-          <div
-            style={{ width: '500px', height: '2px', backgroundColor: 'black' }}
+          <StatusBar
+            style={{
+              backgroundColor: type === 'contents' ? 'black' : '#A1A1A1',
+            }}
           />
           <div
             style={{
               width: '500px',
-              margin: '0 auto',
+              height: '50px',
+              margin: '7px auto',
               cursor: 'pointer',
               textAlign: 'center',
+              lineHeight: '50px',
+              fontSize: '20px',
+              fontWeight: '700',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
             onClick={() => {
               handleShow('contents');
             }}
           >
-            <TbApps /> 게시물 6
+            <TbApps /> <span style={{ marginLeft: '5px' }}>게시물 6</span>
           </div>
         </Col>
         <Col>
-          <div
+          <StatusBar
             style={{
-              width: '500px',
-              height: '2px',
-              backgroundColor: '#A1A1A1',
+              backgroundColor: type === 'bookmarks' ? 'black' : '#A1A1A1',
             }}
           />
           <div
             style={{
               width: '500px',
-              margin: '0 auto',
+              margin: '7px auto',
               cursor: 'pointer',
               textAlign: 'center',
+              lineHeight: '50px',
+              fontSize: '20px',
+              fontWeight: '700',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
             onClick={() => {
               handleShow('bookmarks');
             }}
           >
-            <IoBookmarkOutline /> 저장됨
+            <IoBookmarkOutline />
+            <span style={{ marginLeft: '5px' }}>저장됨</span>
           </div>
         </Col>
       </Row>
@@ -150,15 +174,11 @@ const Mypage = () => {
             <FeedTotalBox ref={ref} key={post.postId}>
               <ImgBox onClick={() => handlePostClick(post)}>
                 <img src={post.imageUrls?.[0]} alt="Post Image" />
-                <PostType category={post.category}>
-                  {post.category === 'FOOD'
-                    ? '맛집'
-                    : post.category === 'CAFE'
-                      ? '카페'
-                      : post.category === 'PHOTOZONE'
-                        ? '사진'
-                        : ' '}
-                </PostType>
+                {post.imageUrls && post.imageUrls.length >= 2 && (
+                  <PostsIcon>
+                    <BsFiles size={'25px'} />
+                  </PostsIcon>
+                )}
               </ImgBox>
             </FeedTotalBox>
           )),
@@ -175,7 +195,7 @@ const Mypage = () => {
   );
 };
 
-export default Mypage;
+export default MyInfo;
 
 const Row = styled.div`
   display: flex;
@@ -216,25 +236,17 @@ const ImgBox = styled.div`
   }
 `;
 
-const PostType = styled.div<{ category: string }>`
+const PostsIcon = styled.div`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 0px;
   padding: 3px 10px;
-  background-color: ${(props) => {
-    switch (props.category) {
-      case 'FOOD':
-        return '#FE6847'; // 맛집 카테고리의 배경색
-      case 'CAFE':
-        return '#FFB700'; // 카페 카테고리의 배경색
-      case 'PHOTOZONE':
-        return '#2176AE'; // 사진 존 카테고리의 배경색
-      default:
-        return '#ccc'; // 기본 배경색
-    }
-  }};
   color: white;
-  border-radius: 20px;
   font-size: 9px;
   z-index: 5;
+`;
+
+const StatusBar = styled.div`
+  width: 500px;
+  height: 2px;
 `;

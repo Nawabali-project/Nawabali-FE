@@ -8,15 +8,42 @@ import {
   IoArrowForwardCircleOutline,
 } from 'react-icons/io5';
 import { IoIosArrowDown } from 'react-icons/io';
+
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useGetAllPostsByDistrict } from '@/api/news';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { PostItem } from '@/interfaces/main/news.interface';
+import NewsModal from '@/components/modal/NewsModal';
 
 function Carousel2() {
-  // const { data } = useGetAllPostsByDistrict(district);
-  const { data } = useGetAllPostsByDistrict('중구');
-  const slickRef = useRef<Slider | null>(null);
+  const userDistrict = localStorage.getItem('district')!;
+  const { data } = useGetAllPostsByDistrict(userDistrict);
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<string>(userDistrict);
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
+  const [openSelectModal, setOpenSelectModal] = useState(false);
+  const [modalType, setModalType] = useState<string>('');
+  const slickRef = useRef<Slider>(null);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     // 선택된 지역에 따라 데이터를 불러오는 로직
+  //     const newData = await useGetAllPostsByDistrict(selectedDistrict);
+  //     // 데이터 상태 업데이트 로직
+  //     setData(newData);
+  //   };
+
+  //   fetchData();
+  // }, [selectedDistrict]);
+
+  const handleOpenModal = (type: string) => {
+    setModalType(type);
+    setOpenSelectModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenSelectModal(false);
+  };
 
   const previous = useCallback(() => {
     if (slickRef.current) {
@@ -38,6 +65,7 @@ function Carousel2() {
     slidesToScroll: 1,
     arrows: false,
   };
+
   return (
     <>
       <s.Container>
@@ -45,44 +73,55 @@ function Carousel2() {
           style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
         >
           <s.TitleSpan>일주일간 사람들이 많이 찾은 곳이에요!</s.TitleSpan>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <FaMapMarkerAlt />
-              <s.InnerSpan>서울특별시 서초구</s.InnerSpan>
-              <IoIosArrowDown />
-              <s.InnerSpan>전체</s.InnerSpan>
-              <IoIosArrowDown />
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex' }}>
+              <div
+                style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
+                onClick={() => handleOpenModal('district')}
+              >
+                <FaMapMarkerAlt />
+                <s.InnerSpan>{selectedDistrict}</s.InnerSpan>
+                <IoIosArrowDown />
+              </div>
+              <div
+                style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
+                onClick={() => handleOpenModal('category')}
+              >
+                <s.InnerSpan>{selectedCategory}</s.InnerSpan>
+                <IoIosArrowDown />
+              </div>
             </div>
             <Arrows>
               <IoArrowBackCircleOutline onClick={previous} />
-
               <IoArrowForwardCircleOutline onClick={next} />
             </Arrows>
           </div>
         </div>
       </s.Container>
       <StyledSlider ref={slickRef} {...settings}>
-        {data?.content
-          .concat(data.content)
-          .map((item: PostItem, idx: number) => (
-            <ImageContainer key={idx} $isCenter={idx === 1}>
-              <Post $backgroundImage={item.imageUrls[0]} />
-              <p>파스타앤코</p>
-              <p style={{ fontSize: '13px' }}>
-                서울특별시 연남동 48-7 1층
-                <FaMapMarkerAlt />
-              </p>
-              <p style={{ fontSize: '10px', textDecoration: 'underLine' }}>
-                게시물 보러가기
-              </p>
-            </ImageContainer>
-          ))}
+        {data?.content.map((item: PostItem, idx: number) => (
+          <ImageContainer key={idx} $isCenter={idx === 1}>
+            <Post $backgroundImage={item.imageUrls[0]} />
+            <p>파스타앤코</p>
+            <p style={{ fontSize: '13px' }}>
+              서울특별시 연남동 48-7 1층
+              <FaMapMarkerAlt />
+            </p>
+            <p style={{ fontSize: '10px', textDecoration: 'underline' }}>
+              게시물 보러가기
+            </p>
+          </ImageContainer>
+        ))}
       </StyledSlider>
+      {openSelectModal && (
+        <NewsModal
+          open={openSelectModal}
+          type={modalType}
+          onClose={handleCloseModal}
+          setSelectedDistrict={setSelectedDistrict}
+          setSelectedCategory={setSelectedCategory}
+        />
+      )}
     </>
   );
 }

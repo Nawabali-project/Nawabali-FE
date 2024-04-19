@@ -2,7 +2,9 @@ import styled from 'styled-components';
 
 export const StyledLabel = styled.label`
   font-weight: 600;
-  margin: 10px 0;
+  margin: 10px 0 3px;
+  font-weight: 800;
+  font-size: 15px;
 `;
 
 export const AuthInput = styled.input`
@@ -12,6 +14,7 @@ export const AuthInput = styled.input`
   width: 100%;
   border: 1px solid #d9d9d9;
   border-radius: 5px;
+  font-size: 11px;
 `;
 
 export const AuthButton = styled.button`
@@ -36,6 +39,7 @@ export const SideDiv = styled.div`
 export const BottomDiv = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 export const WarnSpan = styled.span`

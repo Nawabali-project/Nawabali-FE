@@ -19,15 +19,15 @@ import { pwCheck, nicknameCheck } from '@/utils/regex';
 import { AuthInput, WarnSpan } from '../auth/authStyle';
 import { useEffect, useRef, useState } from 'react';
 import { ImCamera } from 'react-icons/im';
-import DeleteAccountModal from './DeleteAccountModal';
+import DeleteAccountModal from '../modal/DeleteAccountModal';
 import { ChangedData } from '@/interfaces/user/user.interface';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const profileImg = localStorage.getItem('profileImageUrl')?.split('"')[1];
 const basicImg = '/assets/images/basicImg.png';
 
 const EditUser: React.FC = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { data, isLoading } = useUserInfo();
   useEffect(() => {
     if (!isLoading && data) {
@@ -307,7 +307,7 @@ const EditUser: React.FC = () => {
       await editUserInfo(changedData);
       resetInput();
       alert('회원 정보가 성공적으로 업데이트 되었습니다.');
-      // navigate('/mypage');
+      navigate('/mypage');
     } catch (error) {
       console.error('Update error:', error);
       alert('회원 정보 업데이트에 실패했습니다.');

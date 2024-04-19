@@ -8,7 +8,7 @@ export const Col = styled.div`
 
 export const Container = styled.div`
   width: 720px;
-  margin: 50px auto 0;
+  margin: 130px auto 0;
   display: flex;
   flex-direction: row;
   align-items: center;

@@ -28,7 +28,7 @@ interface SignupProps {
   setModalType: (modalType: string) => void;
 }
 
-const Signup: React.FC<SignupProps> = (props) => {
+const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
   const [input, onChange, resetInput] = useInput({
     email: '',
     nickname: '',
@@ -197,9 +197,17 @@ const Signup: React.FC<SignupProps> = (props) => {
         district: input.district,
       });
       resetInput();
-      props.setIsModalOpen(false);
+      setIsModalOpen(false);
     } catch (error) {
-      console.error('Signup error:', error);
+      if (error instanceof AxiosError) {
+        console.error('회원가입 오류:', error.message);
+        alert(
+          '회원가입 실패: ' + (error.response?.data.message || error.message),
+        );
+      } else {
+        console.error('Unexpected error:', error);
+        alert('회원가입 실패: 알 수 없는 오류가 발생했습니다.');
+      }
     }
   };
 
@@ -207,16 +215,40 @@ const Signup: React.FC<SignupProps> = (props) => {
     input.district && !selectedDistrict && results.length > 0;
 
   return (
-    <Modal size="auth">
-      <form onSubmit={handleSubmit}>
+    <Modal size="auth" onClose={() => setIsModalOpen(false)}>
+      <form onSubmit={handleSubmit} style={{ marginTop: '-70px' }}>
+        <div
+          style={{
+            width: '80px',
+            height: '40px',
+            border: '1px solid black',
+            margin: '0 auto',
+            boxSizing: 'border-box',
+          }}
+        >
+          logo
+        </div>
         {/* <span onClick={() => props.setIsModalOpen(false)}>X</span> */}
         <p style={{ textAlign: 'center', fontWeight: '900', fontSize: '20px' }}>
           회원가입
         </p>
-        <Button type="button" size="default" color="blue">
-          카카오로 3초만에 시작하기
-        </Button>
-        <StyledLabel>이메일</StyledLabel>
+        <div
+          style={{
+            width: '260px',
+            margin: '10px',
+            border: '1px solid #F1F1F1',
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <StyledLabel>이메일</StyledLabel>
+          <WarnSpan>{emailValidityMessage}</WarnSpan>
+        </div>
         <div style={{ display: 'flex' }}>
           <AuthInput
             type="text"
@@ -225,11 +257,25 @@ const Signup: React.FC<SignupProps> = (props) => {
             onChange={onChange}
             placeholder="이메일"
           />
-          <button type="button" onClick={handleSendVerificationCodeClick}>
+          <Button
+            size="check"
+            color="blue"
+            type="button"
+            onClick={handleSendVerificationCodeClick}
+          >
             인증
-          </button>
+          </Button>
         </div>
-        <WarnSpan>{emailValidityMessage}</WarnSpan>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <StyledLabel>인증번호 입력</StyledLabel>
+          <WarnSpan>{validNumberValidityMessage}</WarnSpan>
+        </div>
         <div style={{ display: 'flex' }}>
           <AuthInput
             type="text"
@@ -238,12 +284,26 @@ const Signup: React.FC<SignupProps> = (props) => {
             onChange={onChange}
             placeholder="인증번호를 입력해주세요."
           />
-          <button type="button" onClick={handleCheckVerificationCodeClick}>
+          <Button
+            size="check"
+            color="blue"
+            type="button"
+            onClick={handleCheckVerificationCodeClick}
+          >
             확인
-          </button>
+          </Button>
         </div>
-        <WarnSpan>{validNumberValidityMessage}</WarnSpan>
-        <StyledLabel>비밀번호</StyledLabel>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <StyledLabel>비밀번호</StyledLabel>
+          <WarnSpan>{pwValidityMessage}</WarnSpan>
+        </div>
         <AuthDiv>
           <InfoSpan>
             영문, 숫자를 포함한 8자 이상의 비밀번호를 입력해주세요.
@@ -255,20 +315,38 @@ const Signup: React.FC<SignupProps> = (props) => {
           value={input.password}
           onChange={onChange}
           placeholder="비밀번호"
+          style={{ width: '277px' }}
         />
-        <WarnSpan>{pwValidityMessage}</WarnSpan>
-        <StyledLabel>비밀번호 확인</StyledLabel>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <StyledLabel>비밀번호 확인</StyledLabel>
+          <WarnSpan>{pwConfirmMessage}</WarnSpan>
+        </div>
         <AuthInput
           type="password"
           name="confirmPassword"
           value={input.confirmPassword}
           onChange={onChange}
           placeholder="비밀번호확인"
+          style={{ width: '277px' }}
         />
-        <WarnSpan>{pwConfirmMessage}</WarnSpan>
+
         <AuthDiv>
-          <StyledLabel>닉네임</StyledLabel>
-          <InfoSpan>다른 유저와 겹치지 않도록 입력해주세요. (3~10자)</InfoSpan>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <StyledLabel>닉네임</StyledLabel>
+            <WarnSpan>{nicknameValidityMessage}</WarnSpan>
+          </div>
         </AuthDiv>
         <AuthInput
           type="text"
@@ -276,14 +354,15 @@ const Signup: React.FC<SignupProps> = (props) => {
           value={input.nickname}
           onChange={onChange}
           placeholder="닉네임"
+          style={{ width: '277px', marginBottom: '10px' }}
         />
-        <WarnSpan>{nicknameValidityMessage}</WarnSpan>
         <StyledLabel>사는 곳</StyledLabel>
         <AuthInput
           name="district"
           value={input.district}
           onChange={handleSearchDistrictChange}
           placeholder="ㅇㅇ구로 검색하세요"
+          style={{ width: '277px' }}
         />
         {showSearchResults && (
           <div>
@@ -294,15 +373,29 @@ const Signup: React.FC<SignupProps> = (props) => {
             ))}
           </div>
         )}
-        <Button type="submit" size="default" color="blue">
-          회원가입하기
+        <div style={{ margin: ' 15px 0 5px' }}>
+          <Button type="submit" size="default" color="blue">
+            회원가입하기
+          </Button>
+        </div>
+        <Button type="button" size="default" color="yellow">
+          카카오로 3초만에 시작하기
         </Button>
       </form>
-      <BottomDiv>
-        <InfoSpan>이미 계정이 있으신가요?</InfoSpan>
+      <BottomDiv style={{ marginTop: '15px' }}>
+        <InfoSpan style={{ fontSize: '12px' }}>
+          이미 계정이 있으신가요?
+        </InfoSpan>
         <InfoSpan
-          style={{ fontSize: '0.8rem' }}
-          onClick={() => props.setModalType('login')}
+          style={{
+            marginLeft: '10px',
+            fontWeight: '700',
+            fontSize: '13px',
+            color: '#00a3ff',
+            cursor: 'pointer',
+            textDecoration: 'underLine',
+          }}
+          onClick={() => setModalType('login')}
         >
           로그인하기
         </InfoSpan>

@@ -6,15 +6,18 @@ import { IoIosSearch } from 'react-icons/io';
 import { FaRegEdit } from 'react-icons/fa';
 import { HiOutlineChatBubbleLeftRight } from 'react-icons/hi2';
 import { GoBell } from 'react-icons/go';
-import SearchBar from './SearchBar';
+import SearchBar from '../modal/SearchBarModal';
 import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
-import BalloonModal from './BalloonModal';
+import BalloonModal from '../modal/BalloonModal';
 import useAuthStore from '@/store/AuthState';
 
 import DetailPostModal from '../modal/DetailPostModal';
+import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -108,6 +111,9 @@ const Header: React.FC = () => {
                     margin: '8px',
                     cursor: 'pointer',
                   }}
+                  onClick={() => {
+                    navigate('/chat');
+                  }}
                 />
                 <GoBell
                   style={{
@@ -183,7 +189,7 @@ const HeaderLayout = styled.div`
   height: 60px;
   z-index: 900;
   background-color: white;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #a1a1a1;
   padding: 0 100px;
 `;
 
@@ -224,9 +230,9 @@ const WriteButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 15px;
-  background-color: gray;
-  padding: 2px 5px;
+  border-radius: 5px;
+  background-color: #00a3ff;
+  padding: 7px 10px;
   cursor: pointer;
 `;
 
@@ -241,6 +247,7 @@ const Profile = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  border: 1px solid #f3f3f3;
   background-size: cover;
   cursor: pointer;
   margin: 0 8px;
