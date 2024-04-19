@@ -18,7 +18,7 @@ function DeleteAccountModal({
 
   const handleConfirmClick = async () => {
     try {
-      const isValid = await checkPassWord(password); // checkPassword는 API 호출 함수
+      const isValid = await checkPassWord(password);
       if (isValid) {
         if (window.confirm('정말로 계정을 삭제하시겠습니까?')) {
           onDeleteConfirmed();
