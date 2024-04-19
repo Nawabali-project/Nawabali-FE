@@ -25,7 +25,7 @@ export const getComments = async ({
   params.sort.forEach((s) => pageable.append('sort', s));
 
   const response = await authInstance.get(
-    `comments/posts/${postId}?${pageable.toString()}`,
+    `comments/check/posts/${postId}?${pageable.toString()}`,
   );
   console.log('getComments api 댓글들 가져오기 response: ', response);
   return response;

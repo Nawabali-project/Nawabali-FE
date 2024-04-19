@@ -17,14 +17,24 @@ export interface ChangedData {
 export interface User {
   email: string;
   nickname: string;
+  imgUrl: string;
+  district: string;
+}
+
+export interface AuthUser {
+  id: string;
+  nickname: string;
   profileImageUrl: string;
   district: string;
+  rank: string;
+  totalLikesCount: number;
+  totalLocalLikesCount: number;
 }
 
 export interface AuthState {
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
-  user: User | null;
-  login: (user: User) => void;
+  user: AuthUser | null;
+  login: (user: AuthUser) => void;
   logout: () => void;
 }

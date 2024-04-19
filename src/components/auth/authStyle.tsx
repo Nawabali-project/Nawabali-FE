@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const StyledLabel = styled.label`
   font-weight: 600;
+  margin: 10px 0;
 `;
 
 export const AuthInput = styled.input`

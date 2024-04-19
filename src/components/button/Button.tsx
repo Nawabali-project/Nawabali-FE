@@ -23,7 +23,7 @@ export default Button;
 
 const StyledButton = styled.button<ButtonStyleProps>`
   border: 1px solid gray;
-  border-radius: 7px;
+  border-radius: 5px;
   padding: 5px;
   height: 35px;
   display: flex;

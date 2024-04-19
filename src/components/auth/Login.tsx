@@ -33,12 +33,10 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
         throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
       }
       const userToken = resUserInfo.headers;
-      const userId = resUserInfo.data.id;
       resetInput();
       setIsModalOpen(false);
       const token = userToken['authorization'].slice(7);
       cookie.set('accessToken', token);
-      localStorage.setItem('userId', userId);
       if (token) {
         const userInfo = await getUserInfo();
         login(userInfo);
@@ -61,28 +59,60 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   };
 
   return (
-    <Modal>
+    <Modal size="auth">
+      {/* <span
+        style={{ textAlign: 'right', margin: '-50px' }}
+        onClick={() => setIsModalOpen(false)}
+      >
+        X
+      </span> */}
+
       <div style={{ padding: '20px' }}>
-        <span onClick={() => setIsModalOpen(false)}>X</span>
-        <p>로그인</p>
+        <div
+          style={{
+            width: '80px',
+            height: '40px',
+            border: '1px solid black',
+            margin: '0 auto',
+            boxSizing: 'border-box',
+          }}
+        >
+          logo
+        </div>
+        <p style={{ textAlign: 'center', fontWeight: '900', fontSize: '20px' }}>
+          로그인
+        </p>
+        <div
+          style={{
+            width: '260px',
+            margin: '10px',
+            border: '1px solid #F1F1F1',
+          }}
+        />
         <AuthDiv>
-          <StyledLabel>이메일</StyledLabel>
+          <StyledLabel style={{ fontWeight: '800', fontSize: '15px' }}>
+            이메일
+          </StyledLabel>
           <AuthInput
             type="text"
             name="email"
             value={email}
             onChange={onInputChange}
             placeholder="이메일"
+            style={{ width: '238px' }}
           />
         </AuthDiv>
         <AuthDiv>
-          <StyledLabel>비밀번호</StyledLabel>
+          <StyledLabel style={{ fontWeight: '800', fontSize: '15px' }}>
+            비밀번호
+          </StyledLabel>
           <AuthInput
             type="password"
             name="password"
             value={password}
             onChange={onInputChange}
             placeholder="비밀번호"
+            style={{ width: '238px', marginBottom: '30px' }}
           />
         </AuthDiv>
         <Button color="blue" onClick={handleSubmit}>
@@ -90,17 +120,40 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
         </Button>
         <img
           src="/assets/images/kakaoLoginImg.png"
-          style={{ cursor: 'pointer' }}
+          style={{
+            cursor: 'pointer',
+            width: '260px',
+            height: '35px',
+            objectFit: 'cover',
+            borderRadius: '5px',
+            margin: '10px 0',
+          }}
           onClick={handleKakaoLogin}
-          alt=""
+          alt="kakao login"
         />
-        <SideDiv>
-          <span>로그인 유지</span>
-          <span>아이디/비밀번호 찾기</span>
+        <SideDiv
+          style={{
+            width: '260px',
+            height: '13px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          {/* <span>로그인 유지</span> */}
+          <span
+            style={{ fontSize: '13px', cursor: 'pointer', color: '#757575' }}
+          >
+            아이디 / 비밀번호 찾기
+          </span>
         </SideDiv>
-        <BottomDiv>
+        <BottomDiv style={{ marginTop: '120px', fontSize: '13px' }}>
           <span>함께 동네를 꾸며볼까요?</span>
-          <span onClick={handleSignupClick}>회원가입하기</span>
+          <span
+            style={{ marginLeft: '10px', color: '#00a3ff', cursor: 'pointer' }}
+            onClick={handleSignupClick}
+          >
+            회원가입하기
+          </span>
         </BottomDiv>
       </div>
     </Modal>

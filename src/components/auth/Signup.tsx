@@ -209,8 +209,10 @@ const Signup: React.FC<SignupProps> = (props) => {
   return (
     <Modal size="auth">
       <form onSubmit={handleSubmit}>
-        <span onClick={() => props.setIsModalOpen(false)}>X</span>
-        <h1>회원가입</h1>
+        {/* <span onClick={() => props.setIsModalOpen(false)}>X</span> */}
+        <p style={{ textAlign: 'center', fontWeight: '900', fontSize: '20px' }}>
+          회원가입
+        </p>
         <Button type="button" size="default" color="blue">
           카카오로 3초만에 시작하기
         </Button>

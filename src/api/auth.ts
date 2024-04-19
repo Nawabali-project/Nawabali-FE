@@ -8,8 +8,8 @@ import type {
 } from '@/interfaces/main/auth/auth.interface';
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
-import { UserInfo } from '@/interfaces/main/auth/auth.interface';
 import { useNavigate } from 'react-router-dom';
+import { AuthUser } from '@/interfaces/user/user.interface';
 
 export const signUp = async (user: SignUpUser) => {
   try {
@@ -33,7 +33,7 @@ export const login = async (user: LoginUser) => {
   }
 };
 
-export const getUserInfo = async (): Promise<UserInfo> => {
+export const getUserInfo = async (): Promise<AuthUser> => {
   try {
     const response = await authInstance.get('/users/my-info');
     return response.data;
@@ -77,11 +77,13 @@ export const nicknameDupCheck = async (nickname: string) => {
 export const useLogout = () => {
   const navigate = useNavigate();
   const cookie = new Cookies();
+  const token = cookie.get('accessToken');
+  const param = `Bearer ${token}`;
 
   return async () => {
-    await authInstance.post('/users/logout');
+    await instance.post(`/users/logout?accessToken=${param}`);
     cookie.remove('accessToken', { path: '/' });
     useAuthStore.getState().logout();
-    navigate('/'); // 로그아웃 후 메인 페이지로 이동
+    navigate('/');
   };
 };

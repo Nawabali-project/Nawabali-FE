@@ -44,10 +44,11 @@ const ModalContent = styled.div<{ size?: 'auth' | 'regular' }>`
     props.size === 'auth' &&
     css`
       padding: 100px;
-      margin-top: 60px;
+      margin: 60px auto 0;
       box-sizing: border-box;
       width: 500px;
       height: 700px;
+      justify-content: normal;
     `}
 `;
 
