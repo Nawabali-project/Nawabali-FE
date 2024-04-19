@@ -58,7 +58,7 @@ export const getPostsByFilter = async ({
   let params = {
     page: String(pageParam),
     size: '5',
-    sort: ['date,desc'],
+    sort: ['string'],
   };
 
   let pageable = new URLSearchParams();
@@ -70,7 +70,7 @@ export const getPostsByFilter = async ({
   if (district) pageable.append('district', district);
 
   const response = await instance.get(`/posts/filtered?${pageable.toString()}`);
-  return response.data.content;
+  return response;
 };
 
 // 지역 점수 가져오기

@@ -10,7 +10,7 @@ const CommentInput = ({ postId }: { postId: number }) => {
   // 댓글 생성
   const createCommentMutation = useMutation({
     mutationFn: () => addComment(postId, newComment),
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['scrollComments'] });
       alert('성공');
       setNewComment('');
@@ -31,7 +31,7 @@ const CommentInput = ({ postId }: { postId: number }) => {
   return (
     <>
       <MyCommentBox>
-        <MyProfile></MyProfile>
+        <MyProfile src={localStorage.getItem('profileImageUrl') ?? undefined} />
         <MyCommentInput
           placeholder="댓글 달기"
           value={newComment}
@@ -50,14 +50,14 @@ const MyCommentBox = styled.div`
   padding: 10px;
 `;
 
-const MyProfile = styled.div`
-  width: 13px;
-  height: 13px;
+const MyProfile = styled.img`
+  width: 50px;
+  height: 50px;
   background-color: #f1f1f1;
-  padding: 20px;
   margin: 0px 10px;
   border: none;
   border-radius: 100px;
+  object-fit: cover;
 `;
 
 const MyCommentInput = styled.input`
