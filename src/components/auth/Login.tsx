@@ -12,6 +12,7 @@ import Button from '@/components/button/Button';
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { useState } from 'react';
+import { AxiosError } from 'axios';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,6 +26,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     email: '',
     password: '',
   });
+
   const { login } = useAuthStore();
 
   const handleSubmit = async () => {
@@ -44,7 +46,15 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
         login(userInfo);
       }
     } catch (error) {
-      console.error('로그인 오류:', error);
+      if (error instanceof AxiosError) {
+        console.error('로그인 오류:', error.message);
+        alert(
+          '로그인 실패: ' + (error.response?.data.message || error.message),
+        );
+      } else {
+        console.error('Unexpected error:', error);
+        alert('로그인 실패: 알 수 없는 오류');
+      }
     }
   };
 
@@ -64,7 +74,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   };
 
   return (
-    <Modal size="auth">
+    <Modal size="auth" onClose={() => setIsModalOpen(false)}>
       {/* <span
         style={{ textAlign: 'right', margin: '-50px' }}
         onClick={() => setIsModalOpen(false)}

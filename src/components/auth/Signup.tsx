@@ -28,7 +28,7 @@ interface SignupProps {
   setModalType: (modalType: string) => void;
 }
 
-const Signup: React.FC<SignupProps> = (props) => {
+const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
   const [input, onChange, resetInput] = useInput({
     email: '',
     nickname: '',
@@ -197,9 +197,17 @@ const Signup: React.FC<SignupProps> = (props) => {
         district: input.district,
       });
       resetInput();
-      props.setIsModalOpen(false);
+      setIsModalOpen(false);
     } catch (error) {
-      console.error('Signup error:', error);
+      if (error instanceof AxiosError) {
+        console.error('회원가입 오류:', error.message);
+        alert(
+          '회원가입 실패: ' + (error.response?.data.message || error.message),
+        );
+      } else {
+        console.error('Unexpected error:', error);
+        alert('회원가입 실패: 알 수 없는 오류가 발생했습니다.');
+      }
     }
   };
 
@@ -207,7 +215,7 @@ const Signup: React.FC<SignupProps> = (props) => {
     input.district && !selectedDistrict && results.length > 0;
 
   return (
-    <Modal size="auth">
+    <Modal size="auth" onClose={() => setIsModalOpen(false)}>
       <form onSubmit={handleSubmit} style={{ marginTop: '-70px' }}>
         <div
           style={{
@@ -387,7 +395,7 @@ const Signup: React.FC<SignupProps> = (props) => {
             cursor: 'pointer',
             textDecoration: 'underLine',
           }}
-          onClick={() => props.setModalType('login')}
+          onClick={() => setModalType('login')}
         >
           로그인하기
         </InfoSpan>

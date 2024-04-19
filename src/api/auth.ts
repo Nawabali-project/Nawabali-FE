@@ -16,7 +16,12 @@ export const signUp = async (user: SignUpUser) => {
     const res = await instance.post('/users/signup', user);
     return res;
   } catch (error) {
-    throw error as AxiosError<ErrorResponse>;
+    const axiosError = error as AxiosError<ErrorResponse>;
+    if (axiosError.response) {
+      const message = axiosError.response.data.message || '회원가입 실패';
+      throw new Error(message);
+    }
+    throw new Error('Network error');
   }
 };
 
@@ -27,9 +32,10 @@ export const login = async (user: LoginUser) => {
   } catch (error) {
     const axiosError = error as AxiosError<ErrorResponse>;
     if (axiosError.response) {
-      const result = axiosError.response.data.status;
-      return result;
+      const message = axiosError.response.data.message || 'Login 실패';
+      throw new Error(message);
     }
+    throw new Error('Network error');
   }
 };
 
