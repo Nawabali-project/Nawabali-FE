@@ -27,7 +27,7 @@ const MapPage = () => {
     <Layout>
       <CategoryBox>
         <AreaBox>
-          서교동&nbsp;
+          구로구&nbsp;
           <BottomArrowIcon />
         </AreaBox>
         <ThreeKindBox>

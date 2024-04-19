@@ -1,20 +1,30 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { addComment } from '@/api/comment';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const CommentInput = ({ postId }: { postId: number }) => {
   const [newComment, setNewComment] = useState('');
+  const queryClient = useQueryClient();
+
+  // 댓글 생성
+  const createCommentMutation = useMutation({
+    mutationFn: () => addComment(postId, newComment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['scrollComments'] });
+      alert('성공');
+      setNewComment('');
+    },
+    onError: (error: any) => {
+      if (error.response.status === 500) {
+        alert('댓글작성은 로그인 후 이용 가능합니다 :)');
+      }
+    },
+  });
 
   const handleKeyDown = async (event: any) => {
     if (event.key === 'Enter' && newComment.trim()) {
-      try {
-        await addComment(postId, newComment);
-        setNewComment('');
-        alert('댓글 등록 성공 :)');
-      } catch (error) {
-        console.error('댓글 등록 실패:', error);
-        alert('댓글 등록 실패...');
-      }
+      createCommentMutation.mutate();
     }
   };
 

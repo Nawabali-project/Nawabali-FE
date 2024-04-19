@@ -1,13 +1,13 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons';
 import styled from 'styled-components';
-import { getPosts } from '@/api/post';
+import { getPosts, getPostsByFilter } from '@/api/post';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
 import DetailPostModal from '../modal/DetailPostModal';
 import { Post } from '@/interfaces/main/posts.interface';
 
-const FeedList = () => {
+const FeedList = ({ category, district }: any) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -17,6 +17,11 @@ const FeedList = () => {
   };
   const { ref, inView } = useInView();
 
+  const queryFn =
+    category && district
+      ? () => getPostsByFilter({ pageParam: 0, category, district })
+      : getPosts;
+
   const {
     data,
     status,
@@ -25,11 +30,11 @@ const FeedList = () => {
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ['scrollPosts'],
-    queryFn: getPosts,
+    queryKey: ['scrollPosts', category, district],
+    queryFn,
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.data.content.length > 0) {
+      if (lastPage.data?.content.length > 0) {
         return allPages.length;
       }
       return undefined;
@@ -53,47 +58,68 @@ const FeedList = () => {
     return <p>Error: {error.message}</p>;
   }
 
-  /*
-  const filteredPost =
-    clickedCategory === null
-      ? data.data.content
-      : data.data.content.filter(
-          (post: Post) => post.category === clickedCategory,
-        );
-  */
-
   return (
     <>
       {data?.pages.map((page: any) =>
-        page.data.content.map((post: any) => (
-          <FeedTotalBox ref={ref} key={post.postId}>
-            <UserInfoBox>
-              <UserImg src="https://img.freepik.com/free-photo/kitty-with-monochrome-wall-her_23-2148955134.jpg?t=st=1712986129~exp=1712989729~hmac=54301ae24769efc751f61f9514bed0b431756c6ef930490e47da5b8aa97cf46c&w=740" />
-              <UserName>{post.nickname}</UserName>
-              <UserGrade>서교동 토박이</UserGrade>
-            </UserInfoBox>
-            <ImgBox onClick={() => handlePostClick(post)}>
-              <img src={post.imageUrls?.[0]} alt="Post Image" />
-              <PostType category={post.category}>
-                {post.category === 'FOOD'
-                  ? '맛집'
-                  : post.category === 'CAFE'
-                    ? '카페'
-                    : post.category === 'PHOTOZONE'
-                      ? '사진'
-                      : ' '}
-              </PostType>
-            </ImgBox>
-            <LikeCommentBox>
-              <LikeIcon />
-              <LikesCountBox>{post.likesCount}</LikesCountBox>
-              <CommentIcon />
-              <CommentsCountBox>{post.commentCount}</CommentsCountBox>
-            </LikeCommentBox>
-            <ContentsBox>{post.contents}</ContentsBox>
-          </FeedTotalBox>
-        )),
+        queryFn === getPosts
+          ? page.data?.content.map((post: any) => (
+              <FeedTotalBox ref={ref} key={post.postId}>
+                <UserInfoBox>
+                  <UserImg src="https://img.freepik.com/free-photo/kitty-with-monochrome-wall-her_23-2148955134.jpg?t=st=1712986129~exp=1712989729~hmac=54301ae24769efc751f61f9514bed0b431756c6ef930490e47da5b8aa97cf46c&w=740" />
+                  <UserName>{post.nickname}</UserName>
+                  <UserGrade>서교동 토박이</UserGrade>
+                </UserInfoBox>
+                <ImgBox onClick={() => handlePostClick(post)}>
+                  <img src={post.imageUrls?.[0]} alt="Post Image" />
+                  <PostType category={post.category}>
+                    {post.category === 'FOOD'
+                      ? '맛집'
+                      : post.category === 'CAFE'
+                        ? '카페'
+                        : post.category === 'PHOTOZONE'
+                          ? '사진'
+                          : ' '}
+                  </PostType>
+                </ImgBox>
+                <LikeCommentBox>
+                  <LikeIcon />
+                  <LikesCountBox>{post.likesCount}</LikesCountBox>
+                  <CommentIcon />
+                  <CommentsCountBox>{post.commentCount}</CommentsCountBox>
+                </LikeCommentBox>
+                <ContentsBox>{post.contents}</ContentsBox>
+              </FeedTotalBox>
+            ))
+          : page.map((post: any) => (
+              <FeedTotalBox ref={ref} key={post.postId}>
+                <UserInfoBox>
+                  <UserImg src="https://img.freepik.com/free-photo/kitty-with-monochrome-wall-her_23-2148955134.jpg?t=st=1712986129~exp=1712989729~hmac=54301ae24769efc751f61f9514bed0b431756c6ef930490e47da5b8aa97cf46c&w=740" />
+                  <UserName>{post.nickname}</UserName>
+                  <UserGrade>서교동 토박이</UserGrade>
+                </UserInfoBox>
+                <ImgBox onClick={() => handlePostClick(post)}>
+                  <img src={post.imageUrls?.[0]} alt="Post Image" />
+                  <PostType category={post.category}>
+                    {post.category === 'FOOD'
+                      ? '맛집'
+                      : post.category === 'CAFE'
+                        ? '카페'
+                        : post.category === 'PHOTOZONE'
+                          ? '사진'
+                          : ' '}
+                  </PostType>
+                </ImgBox>
+                <LikeCommentBox>
+                  <LikeIcon />
+                  <LikesCountBox>{post.likesCount}</LikesCountBox>
+                  <CommentIcon />
+                  <CommentsCountBox>{post.commentCount}</CommentsCountBox>
+                </LikeCommentBox>
+                <ContentsBox>{post.contents}</ContentsBox>
+              </FeedTotalBox>
+            )),
       )}
+
       {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
           postId={selectedPost.postId}

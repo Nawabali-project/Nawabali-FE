@@ -62,6 +62,14 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
                 <NameGrade>
                   <UserName>{post.nickname}</UserName>
                   <UserGrade>• {post.userInfo}</UserGrade>
+                  {post?.userId == localStorage.getItem('userId') ? (
+                    <>
+                      <EditDelete>수정</EditDelete>
+                      <EditDelete>삭제</EditDelete>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </NameGrade>
                 <UserComment>{post.contents}</UserComment>
               </div>
@@ -76,9 +84,23 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
   );
 };
 
-const InfoComment = styled.div`
-  padding: 100px 0px 0px 145px;
+const EditDelete = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  color: gray;
   font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+  }
+`;
+
+const InfoComment = styled.div`
+  padding: 100px 0px 0px 160px;
+  font-size: 12px;
   color: gray;
 `;
 
@@ -131,7 +153,7 @@ const UserName = styled.div`
 const UserGrade = styled.div`
   display: flex;
   align-items: center;
-  width: 200px;
+  width: 150px;
   color: gray;
   font-size: 12px;
 `;

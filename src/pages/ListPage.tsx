@@ -14,7 +14,7 @@ import {
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Feed from '@/components/feedList/FeedList';
+import FeedList from '@/components/feedList/FeedList';
 
 const ListPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -27,7 +27,7 @@ const ListPage = () => {
     <Layout>
       <CategoryBox>
         <AreaBox>
-          서교동&nbsp;
+          구로구&nbsp;
           <BottomArrowIcon />
         </AreaBox>
         <ThreeKindBox>
@@ -82,7 +82,7 @@ const ListPage = () => {
       </CategoryBox>
 
       <FeedsBox>
-        <Feed />
+        <FeedList category={clickedKind} district={'중구'} />
       </FeedsBox>
     </Layout>
   );
