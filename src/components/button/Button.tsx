@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components';
 
 type ButtonStyleProps = {
   type?: string;
-  size?: 'small' | 'medium' | 'default';
-  color?: 'blue' | 'default';
+  size?: 'small' | 'medium' | 'check' | 'default';
+  color?: 'blue' | 'yellow' | 'default';
 };
 
 interface ButtonProps extends ButtonStyleProps {
@@ -46,6 +46,11 @@ const buttonSize = {
   medium: css`
     width: 250px;
   `,
+  check: css`
+    width: 60px;
+    font-size: 12px;
+    margin-left: 5px;
+  `,
   default: css`
     width: 100%;
   `,
@@ -53,13 +58,20 @@ const buttonSize = {
 
 const buttonType = {
   blue: css`
-    background-color: #00a3ff;
+    background-color: #00a2ff68;
     color: white;
     border: none;
     &:hover {
-      background-color: white;
-      color: #00a3ff;
-      border: 1px solid #00a3ff;
+      background-color: #00a3ff;
+    }
+  `,
+  yellow: css`
+    background-color: #fee5007f;
+    color: grey;
+    border: none;
+    &:hover {
+      background-color: #fee500;
+      color: black;
     }
   `,
   default: css`

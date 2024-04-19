@@ -11,6 +11,7 @@ import {
 import Button from '@/components/button/Button';
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
+import { useState } from 'react';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,6 +20,7 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   const cookie = new Cookies();
+  const [hover, setHover] = useState(false);
   const [{ email, password }, onInputChange, resetInput] = useInput({
     email: '',
     password: '',
@@ -46,6 +48,9 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     }
   };
 
+  const handleMouseEnter = () => setHover(true);
+  const handleMouseLeave = () => setHover(false);
+
   const handleKakaoLogin = async () => {
     const REDIRECT_URI = `${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
     const CLIENT_ID = `${import.meta.env.VITE_KAKAO_RESTAPI_KEY}`;
@@ -67,7 +72,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
         X
       </span> */}
 
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '20px', marginTop: '-90px' }}>
         <div
           style={{
             width: '80px',
@@ -90,9 +95,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
           }}
         />
         <AuthDiv>
-          <StyledLabel style={{ fontWeight: '800', fontSize: '15px' }}>
-            이메일
-          </StyledLabel>
+          <StyledLabel>이메일</StyledLabel>
           <AuthInput
             type="text"
             name="email"
@@ -103,16 +106,14 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
           />
         </AuthDiv>
         <AuthDiv>
-          <StyledLabel style={{ fontWeight: '800', fontSize: '15px' }}>
-            비밀번호
-          </StyledLabel>
+          <StyledLabel>비밀번호</StyledLabel>
           <AuthInput
             type="password"
             name="password"
             value={password}
             onChange={onInputChange}
             placeholder="비밀번호"
-            style={{ width: '238px', marginBottom: '30px' }}
+            style={{ width: '238px', marginBottom: '15px' }}
           />
         </AuthDiv>
         <Button color="blue" onClick={handleSubmit}>
@@ -126,8 +127,11 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             height: '35px',
             objectFit: 'cover',
             borderRadius: '5px',
-            margin: '10px 0',
+            margin: '5px 0',
+            opacity: hover ? 1 : 0.5,
           }}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           onClick={handleKakaoLogin}
           alt="kakao login"
         />
@@ -146,10 +150,16 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             아이디 / 비밀번호 찾기
           </span>
         </SideDiv>
-        <BottomDiv style={{ marginTop: '120px', fontSize: '13px' }}>
+        <BottomDiv style={{ marginTop: '260px', fontSize: '13px' }}>
           <span>함께 동네를 꾸며볼까요?</span>
           <span
-            style={{ marginLeft: '10px', color: '#00a3ff', cursor: 'pointer' }}
+            style={{
+              marginLeft: '10px',
+              color: '#00a3ff',
+              fontWeight: '700',
+              cursor: 'pointer',
+              textDecoration: 'underLine',
+            }}
             onClick={handleSignupClick}
           >
             회원가입하기
