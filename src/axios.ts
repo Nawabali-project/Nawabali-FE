@@ -22,6 +22,15 @@ authInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    if (error.response) {
+      const authHeader =
+        error.response.headers['authorization'] ||
+        error.response.headers['Authorization'];
+      if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        cookie.set('accessToken', token, { path: '/' });
+      }
+    }
     return Promise.reject(error);
   },
 );
