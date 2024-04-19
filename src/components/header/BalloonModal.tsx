@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { logout } from '@/api/auth';
+import { useLogout } from '@/api/auth';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
@@ -14,6 +14,7 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
   const cookie = new Cookies();
   const navigate = useNavigate();
   const modalRef = useRef<HTMLDivElement>(null);
+  const logout = useLogout();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

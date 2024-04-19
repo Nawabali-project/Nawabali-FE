@@ -25,3 +25,18 @@ authInstance.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+authInstance.interceptors.response.use(
+  (response) => {
+    const authHeader =
+      response.headers['authorization'] || response.headers['Authorization'];
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+      cookie.set('accessToken', token, { path: '/' });
+    }
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);

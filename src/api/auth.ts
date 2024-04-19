@@ -9,6 +9,7 @@ import type {
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { UserInfo } from '@/interfaces/main/auth/auth.interface';
+import { useNavigate } from 'react-router-dom';
 
 export const signUp = async (user: SignUpUser) => {
   try {
@@ -73,15 +74,14 @@ export const nicknameDupCheck = async (nickname: string) => {
   }
 };
 
-export const logout = async () => {
+export const useLogout = () => {
+  const navigate = useNavigate();
   const cookie = new Cookies();
-  try {
-    const response = await authInstance.post('/users/logout');
-    if (response.status === 302) {
-      cookie.remove('accessToken', { path: '/' });
-      useAuthStore.getState().logout();
-    }
-  } catch (error) {
-    throw error as AxiosError<ErrorResponse>;
-  }
+
+  return async () => {
+    await authInstance.post('/users/logout');
+    cookie.remove('accessToken', { path: '/' });
+    useAuthStore.getState().logout();
+    navigate('/'); // 로그아웃 후 메인 페이지로 이동
+  };
 };
