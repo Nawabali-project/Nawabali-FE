@@ -1,15 +1,15 @@
 import { ReactNode } from 'react';
+import GlobalStyles from '@/styles/GlobalStyle';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
+import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import App from '@/App';
 import EditUser from '@/components/mypage/EditUser';
-import Mypage from '@/components/mypage/Mypage';
-import useIsLoggedIn from '@/hooks/useIsLoggedIn';
+import Mypage from '@/pages/Mypage';
 import ListPage from '@/pages/ListPage';
 import MapPage from '@/pages/MapPage';
 import NewsPage from '@/pages/NewsPage';
 import ScorePage from '@/pages/ScorePage';
-import ChatMain from '@/components/chat/ChatMain';
-import GlobalStyles from '@/styles/GlobalStyle';
+import ChatMain from '@/pages/ChatPage';
 
 interface ProtectedRouteProps {
   children: ReactNode;

@@ -11,7 +11,7 @@ import { getMyBookMarks, getMyContents } from '@/api/mypage';
 import { useNavigate } from 'react-router-dom';
 import { BsFiles } from 'react-icons/bs';
 
-const Mypage = () => {
+const MyInfo = () => {
   const navigate = useNavigate();
   const profileImg = localStorage.getItem('profileImageUrl') ?? undefined;
   const nickname = localStorage.getItem('nickname') ?? 'Unknown';
@@ -195,7 +195,7 @@ const Mypage = () => {
   );
 };
 
-export default Mypage;
+export default MyInfo;
 
 const Row = styled.div`
   display: flex;
