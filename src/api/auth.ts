@@ -76,11 +76,9 @@ export const nicknameDupCheck = async (nickname: string) => {
 export const logout = async () => {
   const cookie = new Cookies();
   try {
-    const response = await authInstance.post('/users/logout');
-    if (response.status === 302) {
-      cookie.remove('accessToken', { path: '/' });
-      useAuthStore.getState().logout();
-    }
+    await authInstance.post('/users/logout');
+    cookie.remove('accessToken', { path: '/' });
+    useAuthStore.getState().logout();
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
   }
