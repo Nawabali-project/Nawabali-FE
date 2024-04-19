@@ -100,7 +100,6 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
                 : result[0].address.address_name;
 
               setPointAddr(newPointAddr);
-
               marker.setMap(null);
               marker.setPosition(mouseEvent.latLng);
               marker.setMap(map);

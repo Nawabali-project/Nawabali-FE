@@ -2,6 +2,7 @@ import { MapIcon, ListIcon, GlobalBlackIcon, StarIcon } from '@/utils/icons';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Score from '@/components/scoreMap/ScoreMap';
+import { BottomArrowIcon } from '@/utils/icons';
 
 const ScorePage = () => {
   const navigate = useNavigate();
@@ -9,6 +10,10 @@ const ScorePage = () => {
   return (
     <Layout>
       <CategoryBox>
+        <InfoBox>
+          동네별 활동점수란?&nbsp;
+          <BottomArrowIcon />
+        </InfoBox>
         <ThreeComponentBox>
           <FourCategory onClick={() => navigate('/')}>
             <MapIcon />
@@ -32,6 +37,15 @@ const ScorePage = () => {
     </Layout>
   );
 };
+
+const InfoBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  font-weight: bold;
+  cursor: pointer;
+`;
 
 const Layout = styled.div`
   padding-top: 61.25px;
