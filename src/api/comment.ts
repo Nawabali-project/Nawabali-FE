@@ -24,7 +24,7 @@ export const getComments = async ({
   pageable.append('size', params.size);
   params.sort.forEach((s) => pageable.append('sort', s));
 
-  const response = await authInstance.get(
+  const response = await instance.get(
     `comments/check/posts/${postId}?${pageable.toString()}`,
   );
   console.log('getComments api 댓글들 가져오기 response: ', response);
@@ -43,7 +43,12 @@ export const addComment = async (postId: number, newComment: string) => {
   }
 };
 
+// 댓글 수정
+export const editComment = async (commentId: number) => {
+  await authInstance.patch(`/comments/${commentId}`);
+};
+
 // 댓글 삭제
 export const deleteComment = async (commentId: number) => {
-  await authInstance.delete(`/bookmarks/posts/${commentId}`);
+  await authInstance.delete(`/comments/${commentId}`);
 };
