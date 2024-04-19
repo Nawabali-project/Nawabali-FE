@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { getComments } from '@/api/comment';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { deleteComment, getComments } from '@/api/comment';
 import { useEffect } from 'react';
 
 interface CommentListProps {
@@ -10,7 +14,9 @@ interface CommentListProps {
 
 const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
   const { ref, inView } = useInView();
+  const queryClient = useQueryClient();
 
+  // 댓글 전체 조회 (무한스크롤)
   const {
     data,
     status,
@@ -32,12 +38,29 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
 
   console.log('choi comment list', data);
 
+  // 무한스크롤 옵저버
   useEffect(() => {
     if (inView && hasNextPage) {
       console.log('Fire!');
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
+
+  // 댓글 삭제
+  const deleteCommentMutation = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['scrollComments'] });
+      alert('댓글 삭제 성공 :)');
+    },
+    onError: () => {
+      alert('댓글 삭제 실패 ㅠㅠ');
+    },
+  });
+
+  const handleDeleteCommentClick = (commentId: number) => {
+    deleteCommentMutation.mutate(commentId);
+  };
 
   if (status === 'pending') {
     return <p>Loading...</p>;
@@ -65,7 +88,11 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
                   {post?.userId == localStorage.getItem('userId') ? (
                     <>
                       <EditDelete>수정</EditDelete>
-                      <EditDelete>삭제</EditDelete>
+                      <EditDelete
+                        onClick={() => handleDeleteCommentClick(post.commentId)}
+                      >
+                        삭제
+                      </EditDelete>
                     </>
                   ) : (
                     <></>

@@ -61,63 +61,34 @@ const FeedList = ({ category, district }: any) => {
   return (
     <>
       {data?.pages.map((page: any) =>
-        queryFn === getPosts
-          ? page.data?.content.map((post: any) => (
-              <FeedTotalBox ref={ref} key={post.postId}>
-                <UserInfoBox>
-                  <UserImg src="https://img.freepik.com/free-photo/kitty-with-monochrome-wall-her_23-2148955134.jpg?t=st=1712986129~exp=1712989729~hmac=54301ae24769efc751f61f9514bed0b431756c6ef930490e47da5b8aa97cf46c&w=740" />
-                  <UserName>{post.nickname}</UserName>
-                  <UserGrade>서교동 토박이</UserGrade>
-                </UserInfoBox>
-                <ImgBox onClick={() => handlePostClick(post)}>
-                  <img src={post.imageUrls?.[0]} alt="Post Image" />
-                  <PostType category={post.category}>
-                    {post.category === 'FOOD'
-                      ? '맛집'
-                      : post.category === 'CAFE'
-                        ? '카페'
-                        : post.category === 'PHOTOZONE'
-                          ? '사진'
-                          : ' '}
-                  </PostType>
-                </ImgBox>
-                <LikeCommentBox>
-                  <LikeIcon />
-                  <LikesCountBox>{post.likesCount}</LikesCountBox>
-                  <CommentIcon />
-                  <CommentsCountBox>{post.commentCount}</CommentsCountBox>
-                </LikeCommentBox>
-                <ContentsBox>{post.contents}</ContentsBox>
-              </FeedTotalBox>
-            ))
-          : page.map((post: any) => (
-              <FeedTotalBox ref={ref} key={post.postId}>
-                <UserInfoBox>
-                  <UserImg src="https://img.freepik.com/free-photo/kitty-with-monochrome-wall-her_23-2148955134.jpg?t=st=1712986129~exp=1712989729~hmac=54301ae24769efc751f61f9514bed0b431756c6ef930490e47da5b8aa97cf46c&w=740" />
-                  <UserName>{post.nickname}</UserName>
-                  <UserGrade>서교동 토박이</UserGrade>
-                </UserInfoBox>
-                <ImgBox onClick={() => handlePostClick(post)}>
-                  <img src={post.imageUrls?.[0]} alt="Post Image" />
-                  <PostType category={post.category}>
-                    {post.category === 'FOOD'
-                      ? '맛집'
-                      : post.category === 'CAFE'
-                        ? '카페'
-                        : post.category === 'PHOTOZONE'
-                          ? '사진'
-                          : ' '}
-                  </PostType>
-                </ImgBox>
-                <LikeCommentBox>
-                  <LikeIcon />
-                  <LikesCountBox>{post.likesCount}</LikesCountBox>
-                  <CommentIcon />
-                  <CommentsCountBox>{post.commentCount}</CommentsCountBox>
-                </LikeCommentBox>
-                <ContentsBox>{post.contents}</ContentsBox>
-              </FeedTotalBox>
-            )),
+        page.data?.content.map((post: any) => (
+          <FeedTotalBox ref={ref} key={post.postId}>
+            <UserInfoBox>
+              <UserImg src={post.profileImageUrl} />
+              <UserName>{post.nickname}</UserName>
+              <UserGrade>서교동 토박이</UserGrade>
+            </UserInfoBox>
+            <ImgBox onClick={() => handlePostClick(post)}>
+              <img src={post.imageUrls?.[0]} alt="Post Image" />
+              <PostType category={post.category}>
+                {post.category === 'FOOD'
+                  ? '맛집'
+                  : post.category === 'CAFE'
+                    ? '카페'
+                    : post.category === 'PHOTOZONE'
+                      ? '사진'
+                      : ' '}
+              </PostType>
+            </ImgBox>
+            <LikeCommentBox>
+              <LikeIcon />
+              <LikesCountBox>{post.likesCount}</LikesCountBox>
+              <CommentIcon />
+              <CommentsCountBox>{post.commentCount}</CommentsCountBox>
+            </LikeCommentBox>
+            <ContentsBox>{post.contents}</ContentsBox>
+          </FeedTotalBox>
+        )),
       )}
 
       {isDetailPostModalOpen && selectedPost && (

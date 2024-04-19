@@ -13,7 +13,6 @@ import BalloonModal from './BalloonModal';
 import useAuthStore from '@/store/AuthState';
 
 import DetailPostModal from '../modal/DetailPostModal';
-const profileImg = '/assets/images/cat.png';
 
 const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -119,7 +118,10 @@ const Header: React.FC = () => {
                   }}
                 />
                 <ProfileContainer>
-                  <Profile onClick={handleOpenInfoModal} />
+                  <Profile
+                    src={localStorage.getItem('profileImageUrl') ?? undefined}
+                    onClick={handleOpenInfoModal}
+                  />
                   {isMyInfoModalOpen && (
                     <BalloonModal
                       isOpen={isMyInfoModalOpen}
@@ -235,12 +237,12 @@ const ProfileContainer = styled.div`
   cursor: pointer;
 `;
 
-const Profile = styled.div`
+const Profile = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background-size: cover;
   cursor: pointer;
   margin: 0 8px;
-  background-image: url(${profileImg});
+  object-fit: cover;
 `;
