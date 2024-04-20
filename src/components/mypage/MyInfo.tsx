@@ -20,10 +20,12 @@ import {
 
 const MyInfo = () => {
   const navigate = useNavigate();
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  const rankName = user ? user.rankName : 'Unknown';
   const profileImg = localStorage.getItem('profileImageUrl') ?? undefined;
   const nickname = localStorage.getItem('nickname') ?? 'Unknown';
   const district = localStorage.getItem('district') ?? 'Unknown';
-  const rank = localStorage.getItem('rank') ?? 'Unknown';
   const [type, setType] = useState<string>('contents');
   const { ref, inView } = useInView();
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -88,9 +90,9 @@ const MyInfo = () => {
         <ProfileBox>
           <ProfileImage src={profileImg} alt="Profile" />
           <MyLevel>
-            {rank === 'RESIDENT' ? (
+            {rankName === '주민' ? (
               <Lv1Icon />
-            ) : rank === 'NATIVE_PERSON' ? (
+            ) : rankName === '토박이' ? (
               <Lv2Icon />
             ) : (
               <Lv3Icon />
@@ -120,7 +122,7 @@ const MyInfo = () => {
           </Row>
           <Col>
             <c.MiddleTitle>
-              {district} {rank}
+              {district} {rankName}
             </c.MiddleTitle>
             <c.LightSpan>
               다음등급인 터줏대감까지 게시물 3개 / 좋아요 23개 남았어요 :)
