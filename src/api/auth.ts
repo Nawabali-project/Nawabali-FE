@@ -1,6 +1,5 @@
 import { authInstance, instance } from '../axios';
 import { AxiosError } from 'axios';
-import { ErrorResponse } from 'react-router-dom';
 import type {
   SignUpUser,
   LoginUser,
@@ -10,6 +9,12 @@ import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { useNavigate } from 'react-router-dom';
 import { AuthUser } from '@/interfaces/user/user.interface';
+
+export interface ErrorResponse {
+  statusCode: number;
+  message: string;
+  error: string;
+}
 
 export const signUp = async (user: SignUpUser) => {
   try {
