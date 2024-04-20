@@ -2,7 +2,6 @@
 import KaKaoMap from '@/components/address/KaKaoMap';
 import styled from 'styled-components';
 import Modal from './Modal';
-import { CloseIcon } from '@/utils/icons';
 import UploadBox from '../uploadImg/UploadBox';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -105,10 +104,6 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   return (
     <Modal>
       <form onSubmit={handleSubmit(onSubmitHandler)}>
-        <CloseBox onClick={handleCloseModal}>
-          <CloseIcon />
-        </CloseBox>
-
         <MainLayout>
           <ImageBox>
             <UploadBox onImagesChange={handleImagesChange} />
@@ -119,18 +114,21 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
                 <ProfileImg src="public\assets\images\cat.png" />
               </ProfileBox>
               <NickName>{localStorage.getItem('nickname')}</NickName>
+              <CloseBox onClick={handleCloseModal}>취소</CloseBox>
               <SubmitInput type="submit" value="업로드" />
             </ContentHeader>
             <ContentTextArea
               {...register('contents', { required: true, minLength: 1 })}
               cols={10}
-              rows={6}
+              rows={5}
               placeholder="문구를 입력해주세요..."
             />
+            <CategorySelectInfo>
+              1개의 카테고리를 선택해주세요.
+            </CategorySelectInfo>
             <CategoryBox>
               <CategoryButton
                 type="button"
-                className="firstCategory"
                 isSelected={watch('category') === 'FOOD'}
                 onClick={() => handleCategoryClick('FOOD')}
               >
@@ -138,7 +136,6 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               </CategoryButton>
               <CategoryButton
                 type="button"
-                className="secondCategory"
                 isSelected={watch('category') === 'CAFE'}
                 onClick={() => handleCategoryClick('CAFE')}
               >
@@ -146,7 +143,6 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               </CategoryButton>
               <CategoryButton
                 type="button"
-                className="thirdCategory"
                 isSelected={watch('category') === 'PHOTOZONE'}
                 onClick={() => handleCategoryClick('PHOTOZONE')}
               >
@@ -165,13 +161,19 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   );
 };
 
+const CategorySelectInfo = styled.div`
+  color: gray;
+  font-size: 13px;
+  padding-left: 25px;
+`;
+
 const CloseBox = styled.div`
-  position: absolute;
-  left: 48%;
-  bottom: -80px;
-  padding: 5px 6px 3px 7px;
-  border-radius: 100px;
-  z-index: 20;
+  display: flex;
+  align-items: center;
+  width: 60px;
+  margin: 15px 0px;
+  color: gray;
+  font-size: 13px;
   cursor: pointer;
 `;
 
@@ -185,8 +187,8 @@ const ImageBox = styled.div`
   flex-direction: column;
   width: 500px;
   height: 600px;
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
   overflow: hidden;
 
   .file {
@@ -303,18 +305,36 @@ const NickName = styled.div`
 const ContentTextArea = styled.textarea`
   box-sizing: border-box;
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 20px;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
   resize: none;
+  outline: none;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: gray;
+  }
 `;
 
 const SubmitInput = styled.input`
   width: 100px;
-  margin-right: 10px;
-  background-color: white;
+  margin: 20px 30px 20px 10px;
+  padding: 0px 12px;
+  background-color: #00a3ff;
   border: none;
-  font-size: 15px;
+  border-radius: 5px;
+  color: white;
+  font-size: 13px;
   cursor: pointer;
 `;
 

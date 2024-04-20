@@ -15,6 +15,7 @@ interface KaKaoMapProps {
   width: string;
   height: string;
   clickedCategory: string | null;
+  district: string | null;
 }
 
 interface Post {
@@ -34,7 +35,12 @@ interface CustomOverlay {
   setMap: (map: any | null) => void;
 }
 
-const CustomMap = ({ width, height, clickedCategory }: KaKaoMapProps) => {
+const CustomMap = ({
+  width,
+  height,
+  clickedCategory,
+  district,
+}: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -122,7 +128,7 @@ const CustomMap = ({ width, height, clickedCategory }: KaKaoMapProps) => {
 
       setOverlays(newOverlays);
     }
-  }, [data?.data?.content, map, clickedCategory]);
+  }, [data?.data?.content, map, clickedCategory, district]);
 
   // 전역 함수로 클릭시 상세보기 모달 띄움
   window.handlePostClick = (postId: number) => {

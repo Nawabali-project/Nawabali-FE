@@ -11,7 +11,7 @@ import {
   LikeFilledIcon,
   BookMarkFilledIcon,
 } from '@/utils/icons';
-import { deletePost, useGetDedetailPost } from '@/api/post';
+import { deletePost, editPost, useGetDedetailPost } from '@/api/post';
 import { useState, useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { checkBookmark, checkLike, checkLocalLike } from '@/api/likeBookmark';
@@ -36,6 +36,8 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   const [localLikesCount, setLocalLikesCount] = useState(0);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [editingContent, setEditingContent] = useState('');
+  const [isPostEditing, setIsPostEditing] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -83,7 +85,30 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     setIsDetailPostModalOpen(false);
   };
 
-  // 게시글 삭제 클릭 동작
+  // 게시글 수정
+  const editPostMutation = useMutation({
+    mutationFn: ({ postId, contents }: { postId: number; contents: string }) =>
+      editPost(postId, contents),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [postId] });
+      alert('게시글 수정 성공 :)');
+    },
+    onError: () => {
+      alert('게시글 수정 실패 ㅠㅠ');
+    },
+  });
+
+  const handleEditStart = () => {
+    setEditingContent(data.contents);
+    setIsPostEditing(true);
+  };
+
+  const handleEditPostClick = () => {
+    editPostMutation.mutate({ postId, contents: editingContent });
+    setIsPostEditing(false);
+  };
+
+  // 게시글 삭제
   const deletePostMutation = useMutation({
     mutationFn: deletePost,
     onSuccess: async () => {
@@ -235,29 +260,67 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
               </ProfileBox>
               <div>
                 <NameAndIcon>
-                  <NickName>{data?.nickname}</NickName>
-                  {data?.userId == localStorage.getItem('userId') ? (
-                    <ThreePointIconBox
-                      onClick={toggleDropdown}
-                      ref={dropdownRef}
-                    >
-                      <ThreePointIcon />
-                      {showDropdown && (
-                        <ToggleLayout>
-                          <EditBox>수정</EditBox>
-                          <EditBox
-                            onClick={() => handleDeletePostClick(data?.postId)}
+                  <NickName>
+                    {data?.nickname}
+                    <UserGrade>
+                      &nbsp;&nbsp;&nbsp;• {data?.district} {data?.userRankName}
+                    </UserGrade>
+                  </NickName>
+
+                  {data?.userId == localStorage.getItem('userId') && (
+                    <>
+                      {isPostEditing ? (
+                        <>
+                          <CancelConfirmMent
+                            onClick={() => setIsPostEditing(false)}
                           >
-                            삭제
-                          </EditBox>
-                        </ToggleLayout>
+                            취소
+                          </CancelConfirmMent>
+                          <CancelConfirmMent onClick={handleEditPostClick}>
+                            확인
+                          </CancelConfirmMent>
+                        </>
+                      ) : (
+                        <>
+                          <ThreePointIconBox
+                            onClick={toggleDropdown}
+                            ref={dropdownRef}
+                          >
+                            <ThreePointIcon />
+                            {showDropdown && (
+                              <ToggleLayout>
+                                <EditBox onClick={handleEditStart}>
+                                  수정
+                                </EditBox>
+                                <EditBox
+                                  onClick={() =>
+                                    handleDeletePostClick(data?.postId)
+                                  }
+                                >
+                                  삭제
+                                </EditBox>
+                              </ToggleLayout>
+                            )}
+                          </ThreePointIconBox>
+                        </>
                       )}
-                    </ThreePointIconBox>
-                  ) : (
-                    <></>
+                    </>
                   )}
                 </NameAndIcon>
-                <ContentText>{data?.contents}</ContentText>
+                {isPostEditing ? (
+                  <>
+                    <ContentTextArea
+                      value={editingContent}
+                      cols={10}
+                      rows={6}
+                      onChange={(e) => setEditingContent(e.target.value)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ContentText>{data?.contents}</ContentText>
+                  </>
+                )}
               </div>
             </ContentHeader>
 
@@ -287,6 +350,35 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     </>
   );
 };
+
+const UserGrade = styled.div`
+  display: flex;
+  align-items: center;
+  width: 150px;
+  color: gray;
+  font-size: 12px;
+`;
+
+const ContentTextArea = styled.textarea`
+  box-sizing: border-box;
+  width: 90%;
+  height: 60%;
+  padding: 12px 12px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  font-size: 15px;
+  resize: none;
+`;
+
+const CancelConfirmMent = styled.div`
+  width: 50px;
+  color: gray;
+  font-size: 13px;
+
+  &:hover {
+    color: red;
+  }
+`;
 
 const ToggleLayout = styled.div`
   position: absolute;
@@ -433,7 +525,7 @@ const NickName = styled.div`
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  width: 100%;
+  width: auto;
   height: 70px;
   padding: 10px 16px;
   border: none;

@@ -1,6 +1,6 @@
 import { authInstance, instance } from '@/axios';
 
-// 댓글 가져오기
+// 댓글 모두 가져오기 (무한스크롤)
 export const getComments = async ({
   pageParam,
   postId,
@@ -33,19 +33,17 @@ export const getComments = async ({
 
 // 댓글 추가
 export const addComment = async (postId: number, newComment: string) => {
-  try {
-    const response = await authInstance.post(`/comments/posts/${postId}`, {
-      contents: newComment,
-    });
-    return response.data;
-  } catch (error: any) {
-    console.log('addComment api 에러', error);
-  }
+  const response = await authInstance.post(`/comments/posts/${postId}`, {
+    contents: newComment,
+  });
+  return response.data;
 };
 
 // 댓글 수정
-export const editComment = async (commentId: number) => {
-  await authInstance.patch(`/comments/${commentId}`);
+export const editComment = async (commentId: number, editedComment: string) => {
+  await authInstance.patch(`/comments/${commentId}`, {
+    contents: editedComment,
+  });
 };
 
 // 댓글 삭제
