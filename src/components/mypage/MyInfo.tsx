@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 import * as c from '@/styles/CommonSytle';
-import { TbApps } from 'react-icons/tb';
-import { IoBookmarkOutline } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -10,6 +8,15 @@ import DetailPostModal from '../modal/DetailPostModal';
 import { getMyBookMarks, getMyContents } from '@/api/mypage';
 import { useNavigate } from 'react-router-dom';
 import { BsFiles } from 'react-icons/bs';
+import {
+  BookmarkOutlineGrayIcon,
+  BookmarkOutlineIcon,
+  Lv1Icon,
+  Lv2Icon,
+  Lv3Icon,
+  TbAppsIcon,
+  TbAppsGrayIcon,
+} from '@/utils/icons';
 
 const MyInfo = () => {
   const navigate = useNavigate();
@@ -75,11 +82,21 @@ const MyInfo = () => {
           width: '1000px',
           height: '160px',
           margin: '100px auto 10px',
-          // border: '1px solid red',
           alignItems: 'center',
         }}
       >
-        <ProfileImage src={profileImg} alt="Profile" />
+        <ProfileBox>
+          <ProfileImage src={profileImg} alt="Profile" />
+          <MyLevel>
+            {rank === 'RESIDENT' ? (
+              <Lv1Icon />
+            ) : rank === 'NATIVE_PERSON' ? (
+              <Lv2Icon />
+            ) : (
+              <Lv3Icon />
+            )}
+          </MyLevel>
+        </ProfileBox>
         <Col style={{ marginLeft: '25px', justifyContent: 'center' }}>
           <Row style={{ alignItems: 'center' }}>
             <c.Title>{nickname}</c.Title>
@@ -137,7 +154,15 @@ const MyInfo = () => {
               handleShow('contents');
             }}
           >
-            <TbApps /> <span style={{ marginLeft: '5px' }}>게시물 6</span>
+            {type === 'contents' ? <TbAppsIcon /> : <TbAppsGrayIcon />}
+            <span
+              style={{
+                marginLeft: '5px',
+                color: type === 'contents' ? 'black' : '#A1A1A1',
+              }}
+            >
+              게시물
+            </span>
           </div>
         </Col>
         <Col>
@@ -163,8 +188,19 @@ const MyInfo = () => {
               handleShow('bookmarks');
             }}
           >
-            <IoBookmarkOutline />
-            <span style={{ marginLeft: '5px' }}>저장됨</span>
+            {type === 'bookmarks' ? (
+              <BookmarkOutlineIcon />
+            ) : (
+              <BookmarkOutlineGrayIcon />
+            )}
+            <span
+              style={{
+                marginLeft: '5px',
+                color: type === 'bookmarks' ? 'black' : '#A1A1A1',
+              }}
+            >
+              저장됨
+            </span>
           </div>
         </Col>
       </Row>
@@ -206,11 +242,22 @@ const Col = styled.div`
   flex-direction: column;
 `;
 
+const ProfileBox = styled.div`
+  position: relative;
+`;
+
 const ProfileImage = styled.img`
   width: 110px;
   height: 110px;
   border-radius: 50%;
   border: 1px solid #e7e7e7;
+  object-fit: cover;
+`;
+
+const MyLevel = styled.div`
+  position: absolute;
+  top: -35px;
+  left: 13px;
 `;
 
 const FeedTotalBox = styled.div`
