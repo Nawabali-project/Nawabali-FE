@@ -121,11 +121,25 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
           <CameraIcon />
           <p className="preview_msg">사진을 여기에 끌어다 놓으세요 :&#41;</p>
           <p className="preview_desc">최대 5장까지 올릴수 있어요.</p>
+          <SelectImg>컴퓨터에서 선택</SelectImg>
         </>
       )}
     </label>
   );
 };
+
+const SelectImg = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 105px;
+  height: 34px;
+  margin-top: 15px;
+  background-color: #00a3ff;
+  border-radius: 5px;
+  color: white;
+  font-size: 13px;
+`;
 
 const LeftIconBox = styled.button`
   position: absolute;

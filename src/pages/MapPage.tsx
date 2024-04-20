@@ -10,6 +10,7 @@ import {
   FoodFilledIcon,
   CameraFilledIcon,
   CafeFilledIcon,
+  LocationIcon,
 } from '@/utils/icons';
 import styled from 'styled-components';
 import { useState } from 'react';
@@ -20,16 +21,65 @@ const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const [selectedArea, setSelectedArea] = useState('서울특별시 구로구');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+
+  const handleSelectArea = (area: string) => {
+    setSelectedArea(area);
+    setShowDropdown(false);
+  };
+
   const handleKindClick = (kind: string) => {
     setClickedKind(clickedKind === kind ? null : kind);
   };
+
+  const seoulDistricts = [
+    '서울특별시 강남구',
+    '서울특별시 강동구',
+    '서울특별시 강북구',
+    '서울특별시 강서구',
+    '서울특별시 관악구',
+    '서울특별시 광진구',
+    '서울특별시 구로구',
+    '서울특별시 금천구',
+    '서울특별시 노원구',
+    '서울특별시 도봉구',
+    '서울특별시 동대문구',
+    '서울특별시 동작구',
+    '서울특별시 마포구',
+    '서울특별시 서대문구',
+    '서울특별시 서초구',
+    '서울특별시 성동구',
+    '서울특별시 성북구',
+    '서울특별시 송파구',
+    '서울특별시 양천구',
+    '서울특별시 영등포구',
+    '서울특별시 용산구',
+    '서울특별시 은평구',
+    '서울특별시 종로구',
+    '서울특별시 중구',
+    '서울특별시 중랑구',
+  ];
+
   return (
     <Layout>
       <CategoryBox>
-        <AreaBox>
-          구로구&nbsp;
+        <AreaBox onClick={toggleDropdown}>
+          <LocationIcon />
+          &nbsp; {selectedArea}&nbsp;
           <BottomArrowIcon />
+          {showDropdown && (
+            <DropdownMenu>
+              {seoulDistricts.map((area) => (
+                <DropdownItem key={area} onClick={() => handleSelectArea(area)}>
+                  {area}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          )}
         </AreaBox>
+
         <ThreeKindBox>
           <KindBox
             kind="FOOD"
@@ -81,16 +131,57 @@ const MapPage = () => {
         </ThreeComponentBox>
       </CategoryBox>
 
-      <CustomMap width="100%" height="811px" clickedCategory={clickedKind} />
+      <CustomMap
+        width="100%"
+        height="811px"
+        clickedCategory={clickedKind}
+        district={selectedArea.split(' ')[1]}
+      />
     </Layout>
   );
 };
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 45px;
+  left: 0;
+  background-color: #fff;
+  border-radius: 5px;
+  width: 167px;
+  height: 180px;
+  overflow-y: auto;
+  z-index: 400;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: gray;
+  }
+`;
+
+const DropdownItem = styled.div`
+  padding: 8px 16px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f1f1f1;
+  }
+`;
 
 const Layout = styled.div`
   padding-top: 61.25px;
 `;
 
 const AreaBox = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;

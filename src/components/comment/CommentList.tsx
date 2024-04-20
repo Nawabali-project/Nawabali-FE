@@ -5,16 +5,26 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { deleteComment, getComments } from '@/api/comment';
-import { useEffect } from 'react';
+import { deleteComment, editComment, getComments } from '@/api/comment';
+import { useEffect, useState } from 'react';
 
-interface CommentListProps {
+interface CommentListType {
   postId: number;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
+interface IsEditingType {
+  [key: number]: boolean;
+}
+
+interface EditContentType {
+  [key: number]: string;
+}
+
+const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
   const { ref, inView } = useInView();
   const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState<IsEditingType>({});
+  const [editContent, setEditContent] = useState<EditContentType>({});
 
   // 댓글 전체 조회 (무한스크롤)
   const {
@@ -62,6 +72,43 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
     deleteCommentMutation.mutate(commentId);
   };
 
+  // 댓글 수정
+  const handleEditStart = (commentId: number, content: string) => {
+    setIsEditing((prev) => ({ ...prev, [commentId]: true }));
+    setEditContent((prev) => ({ ...prev, [commentId]: content }));
+  };
+
+  const handleEditCancel = (commentId: number) => {
+    setIsEditing((prev) => ({ ...prev, [commentId]: false }));
+  };
+
+  const handleChange = (commentId: number, value: string) => {
+    setEditContent((prev) => ({ ...prev, [commentId]: value }));
+  };
+
+  const handleEditConfirm = (commentId: number) => {
+    const content = editContent[commentId];
+    editCommentMutation.mutate({ commentId, content });
+    setIsEditing((prev) => ({ ...prev, [commentId]: false }));
+  };
+
+  const editCommentMutation = useMutation({
+    mutationFn: ({
+      commentId,
+      content,
+    }: {
+      commentId: number;
+      content: string;
+    }) => editComment(commentId, content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['scrollComments', postId] });
+      alert('댓글 수정 성공 :)');
+    },
+    onError: () => {
+      alert('댓글 수정 실패 ㅠㅠ');
+    },
+  });
+
   if (status === 'pending') {
     return <p>Loading...</p>;
   }
@@ -77,7 +124,7 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
       {hasComments ? (
         data?.pages.map((page) =>
           page?.data?.content.map((post: any) => (
-            <Comment ref={ref} key={post.postId}>
+            <Comment ref={ref} key={post.commentId}>
               <ProfileBox>
                 <ProfileImg src={post.profileImageUrl} />
               </ProfileBox>
@@ -85,20 +132,53 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
                 <NameGrade>
                   <UserName>{post.nickname}</UserName>
                   <UserGrade>• {post.userInfo}</UserGrade>
-                  {post?.userId == localStorage.getItem('userId') ? (
+                  {post?.userId == localStorage.getItem('userId') && (
                     <>
-                      <EditDelete>수정</EditDelete>
-                      <EditDelete
-                        onClick={() => handleDeleteCommentClick(post.commentId)}
-                      >
-                        삭제
-                      </EditDelete>
+                      {isEditing[post.commentId] ? (
+                        <>
+                          <EditDelete
+                            onClick={() => handleEditCancel(post.commentId)}
+                          >
+                            취소
+                          </EditDelete>
+                          <EditDelete
+                            onClick={() => handleEditConfirm(post.commentId)}
+                          >
+                            확인
+                          </EditDelete>
+                        </>
+                      ) : (
+                        <>
+                          <EditDelete
+                            onClick={() =>
+                              handleEditStart(post.commentId, post.contents)
+                            }
+                          >
+                            수정
+                          </EditDelete>
+                          <EditDelete
+                            onClick={() =>
+                              handleDeleteCommentClick(post.commentId)
+                            }
+                          >
+                            삭제
+                          </EditDelete>
+                        </>
+                      )}
                     </>
-                  ) : (
-                    <></>
                   )}
                 </NameGrade>
-                <UserComment>{post.contents}</UserComment>
+                {!isEditing[post.commentId] ? (
+                  <UserComment>{post.contents}</UserComment>
+                ) : (
+                  <EditComment
+                    type="text"
+                    value={editContent[post.commentId]}
+                    onChange={(e) =>
+                      handleChange(post.commentId, e.target.value)
+                    }
+                  />
+                )}
               </div>
             </Comment>
           )),
@@ -110,6 +190,12 @@ const CommentList: React.FC<CommentListProps> = ({ postId }: any) => {
     </CommentsBox>
   );
 };
+
+const EditComment = styled.input`
+  width: 292px;
+  border-radius: 5px;
+  padding: 5px;
+`;
 
 const EditDelete = styled.div`
   display: flex;
@@ -132,16 +218,30 @@ const InfoComment = styled.div`
 `;
 
 const CommentsBox = styled.div`
-  width: 420px;
+  width: 440px;
   height: 220px;
-  padding: 0px 30px;
+  padding: 0px 10px 0px 30px;
   border-bottom: 1px solid #f1f1f1;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: gray;
+  }
 `;
 
 const Comment = styled.div`
   display: flex;
-  width: 390px;
+  width: 420px;
   height: 100px;
 `;
 
@@ -149,8 +249,8 @@ const ProfileBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   padding: 15px;
   border: none;
   border-radius: 100px;
@@ -172,7 +272,7 @@ const UserName = styled.div`
   display: flex;
   align-items: center;
   margin-right: 10px;
-  height: 70px;
+  height: 50px;
   border: none;
   font-size: 15px;
 `;

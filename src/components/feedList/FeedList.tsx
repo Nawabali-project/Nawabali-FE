@@ -6,8 +6,15 @@ import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
 import DetailPostModal from '../modal/DetailPostModal';
 import { Post } from '@/interfaces/main/posts.interface';
+import { LocationIcon } from '@/utils/icons';
 
-const FeedList = ({ category, district }: any) => {
+const FeedList = ({
+  category,
+  district,
+}: {
+  category: string | null;
+  district: string | null;
+}) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -66,7 +73,9 @@ const FeedList = ({ category, district }: any) => {
             <UserInfoBox>
               <UserImg src={post.profileImageUrl} />
               <UserName>{post.nickname}</UserName>
-              <UserGrade>서교동 토박이</UserGrade>
+              <UserGrade>
+                {post.district} {post.userRankName}
+              </UserGrade>
             </UserInfoBox>
             <ImgBox onClick={() => handlePostClick(post)}>
               <img src={post.imageUrls?.[0]} alt="Post Image" />
@@ -86,6 +95,10 @@ const FeedList = ({ category, district }: any) => {
               <CommentIcon />
               <CommentsCountBox>{post.commentCount}</CommentsCountBox>
             </LikeCommentBox>
+            <LocationBox>
+              {post.district}&nbsp;
+              <LocationIcon />
+            </LocationBox>
             <ContentsBox>{post.contents}</ContentsBox>
           </FeedTotalBox>
         )),
@@ -101,6 +114,14 @@ const FeedList = ({ category, district }: any) => {
     </>
   );
 };
+
+const LocationBox = styled.div`
+  display: flex;
+  align-items: center;
+  width: 295px;
+  padding: 5px 0px;
+  font-size: 13px;
+`;
 
 const ContentsBox = styled.div`
   width: 295px;

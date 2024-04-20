@@ -82,7 +82,7 @@ export const getAreaScore = async () => {
 
 // 게시물 상세보기
 export const getDedetailPost = async (postId: number) => {
-  const data = await instance.get(`posts/${postId}`);
+  const data = await authInstance.get(`posts/${postId}`);
   return data.data;
 };
 
@@ -92,6 +92,19 @@ export const useGetDedetailPost = (postId: number) => {
     queryKey: [postId],
     queryFn: () => getDedetailPost(postId),
   });
+};
+
+// 게시물 수정
+export const editPost = async (postId: number, editedContent: string) => {
+  try {
+    const response = await authInstance.patch(`/posts/${postId}`, {
+      contents: editedContent,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting post', error);
+    throw error;
+  }
 };
 
 // 게시글 삭제
