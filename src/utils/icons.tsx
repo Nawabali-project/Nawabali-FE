@@ -1542,8 +1542,8 @@ export const LeftTranslucentIcon = () => (
 
 export const LocationIcon = () => (
   <svg
-    width="20"
-    height="26"
+    width="10"
+    height="12.5"
     viewBox="0 0 20 26"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

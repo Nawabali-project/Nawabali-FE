@@ -12,7 +12,7 @@ const CommentInput = ({ postId }: { postId: number }) => {
     mutationFn: () => addComment(postId, newComment),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['scrollComments'] });
-      alert('성공');
+      alert('댓글 추가 성공 :)');
       setNewComment('');
     },
     onError: (error: any) => {
