@@ -67,7 +67,7 @@ function Carousel4() {
     slidesToScroll: 1,
     arrows: false,
     initialSlide: 0,
-    beforeChange: (oldIndex: number, newIndex: number) => {
+    beforeChange: (newIndex: number) => {
       setCurrentSlide(newIndex);
     },
   };
