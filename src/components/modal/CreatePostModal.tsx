@@ -111,7 +111,9 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
           <ContentBox>
             <ContentHeader>
               <ProfileBox>
-                <ProfileImg src="public\assets\images\cat.png" />
+                <ProfileImg
+                  src={localStorage.getItem('profileImageUrl') ?? undefined}
+                />
               </ProfileBox>
               <NickName>{localStorage.getItem('nickname')}</NickName>
               <CloseBox onClick={handleCloseModal}>취소</CloseBox>
