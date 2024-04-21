@@ -1,19 +1,30 @@
 import { useQuery } from '@tanstack/react-query';
-import { instance } from '../axios';
+import { authInstance, instance } from '../axios';
 import { GetRecentPostsParams } from '@/interfaces/main/news.interface';
 
-const getAllPostsByDistrict = async (district: string) => {
-  const basicParams = '&page=0&size=7&sort=likesCount';
-  const response = await instance.get(
-    `/posts/filtered?district=${district}${basicParams}`,
-  );
+const getAllPostsByDistrictOrCategory = async (
+  district?: string,
+  category?: string,
+) => {
+  let endpoint = '/posts/filtered?';
+  if (district) {
+    endpoint += `district=${district}&`;
+  }
+  if (category) {
+    endpoint += `category=${category}&`;
+  }
+  const pageable = 'page=0&size=7&sort=likesCount';
+  const response = await authInstance.get(`${endpoint}${pageable}`);
   return response.data;
 };
 
-export const useGetAllPostsByDistrict = (district: string) => {
+export const useGetAllPostsByDistrictOrCategory = (
+  district?: string,
+  category?: string,
+) => {
   return useQuery({
-    queryKey: [district],
-    queryFn: () => getAllPostsByDistrict(district),
+    queryKey: [district, category],
+    queryFn: () => getAllPostsByDistrictOrCategory(district, category),
   });
 };
 
@@ -35,5 +46,33 @@ export const useGetRecentPosts = ({
   return useQuery({
     queryKey: ['getRecentPosts', category, district, period],
     queryFn: () => getRecentPosts({ category, district, period }),
+  });
+};
+
+export const getCategoryCountsByDistrict = async (district: string) => {
+  const response = await authInstance.get(
+    `posts/sort-category?district=${district}`,
+  );
+  return response.data;
+};
+
+export const useGetCategoryCountsByDistrict = (district: string) => {
+  return useQuery({
+    queryKey: [district],
+    queryFn: () => getCategoryCountsByDistrict(district),
+  });
+};
+
+export const getCountOfPostsByDistrict = async (district: string) => {
+  const response = await authInstance.get(
+    `posts/top-district?district=${district}&period=MONTH`,
+  );
+  return response.data;
+};
+
+export const useGetCountOfPostsByDistrict = (district: string) => {
+  return useQuery({
+    queryKey: [district],
+    queryFn: () => getCountOfPostsByDistrict(district),
   });
 };

@@ -7,7 +7,6 @@ export interface MessageForm {
   sender: string;
   message: string;
   userId: number;
-  roomId: number;
   type: MessageType;
 }
 
