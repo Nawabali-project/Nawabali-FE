@@ -13,6 +13,8 @@ export interface PostItem {
   likesCount: number;
   localLikesCount: number;
   commentCount: number;
+  userRankName: string;
+  profileImageUrl: string;
 }
 
 export interface ApiResponse {
@@ -46,4 +48,14 @@ export interface GetRecentPostsParams {
   category: number;
   district: string;
   period: string;
+}
+
+export type CategoryData = {
+  category: string;
+  postCount: number;
+};
+
+export interface CarouselProps {
+  iconCategory: string;
+  category: string;
 }

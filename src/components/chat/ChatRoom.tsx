@@ -71,11 +71,10 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
       message,
       sender: localStorage.getItem('nickname')!,
       userId: parseInt(localStorage.getItem('userId')!),
-      roomId: roomId,
     };
 
     stompClient.publish({
-      destination: '/pub/chat/message',
+      destination: `/pub/chat/message/${roomId}`,
       headers: { Authorization: `Bearer ${accessToken}` },
       body: JSON.stringify(chatMessage),
     });

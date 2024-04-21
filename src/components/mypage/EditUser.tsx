@@ -23,9 +23,6 @@ import DeleteAccountModal from '../modal/DeleteAccountModal';
 import { ChangedData } from '@/interfaces/user/user.interface';
 import { useNavigate } from 'react-router-dom';
 
-const profileImg = localStorage.getItem('profileImageUrl')?.split('"')[1];
-const basicImg = '/assets/images/basicImg.png';
-
 const EditUser: React.FC = () => {
   const navigate = useNavigate();
   const { data, isLoading } = useUserInfo();
@@ -78,9 +75,7 @@ const EditUser: React.FC = () => {
   const [imageAction, setImageAction] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const [previewImageUrl, setPreviewImageUrl] = useState<string>(
-    profileImg || basicImg,
-  );
+  const previewImageUrl = localStorage.getItem('profileImageUrl') || undefined;
 
   const { mutate: deletePhotoMutate } = useDeletePhoto();
   const { mutate: updatePhotoMutate } = useUpdatePhoto();
@@ -115,12 +110,13 @@ const EditUser: React.FC = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      setProfileImage(file);
-      setImageAction('modify');
-      console.log('이미지 수정: ', file);
-
-      const fileURL = URL.createObjectURL(file);
-      setPreviewImageUrl(fileURL);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        localStorage.setItem('profileImageUrl', reader.result as string);
+        setProfileImage(file);
+        setImageAction('modify');
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -293,8 +289,7 @@ const EditUser: React.FC = () => {
       if (profileImage && imageAction === 'modify') {
         updatePhotoMutate(profileImage);
         const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-        currentUser.profileImageUrl =
-          URL.createObjectURL(profileImage).slice(5);
+        currentUser.profileImageUrl = previewImageUrl;
         localStorage.setItem('user', JSON.stringify(currentUser));
       } else if (imageAction === 'delete') {
         deletePhotoMutate();
@@ -322,14 +317,6 @@ const EditUser: React.FC = () => {
     deleteAccount();
     setShowDeleteModal(false);
   };
-
-  useEffect(() => {
-    return () => {
-      if (previewImageUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(previewImageUrl);
-      }
-    };
-  }, [previewImageUrl]);
 
   const showSearchResults = !selectedDistrict && results.length > 0;
 
@@ -699,7 +686,7 @@ const ProfileImageIcon = styled.div`
 const Modal = styled.div`
   position: absolute;
   width: 50px;
-  top: 330px;
+  top: 290px;
   left: 196px;
   text-align: center;
   z-index: 10;
@@ -709,6 +696,12 @@ const Modal = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
+
+  span {
+    &:hover {
+      background-color: #e7e7e7;
+    }
+  }
 `;
 
 const Line = styled.div`
