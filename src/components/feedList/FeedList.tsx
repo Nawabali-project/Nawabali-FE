@@ -110,7 +110,7 @@ const FeedList = ({
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-      {isFetchingNextPage && <h3>Loading...</h3>}
+      {isFetchingNextPage}
     </>
   );
 };
