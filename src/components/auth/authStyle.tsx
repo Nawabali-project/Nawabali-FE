@@ -51,3 +51,22 @@ export const InfoSpan = styled.span`
   color: black;
   font-size: 0.7rem;
 `;
+
+export const Logo = styled.div`
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  background-image: url('/assets/images/squareLogo.png');
+  background-size: cover;
+`;
+
+export const Result = styled.div`
+  padding: 5px;
+  margin: 0;
+  font-size: 13px;
+  cursor: pointer;
+  &:hover {
+    background-color: #dfdede;
+  }
+`;

@@ -29,7 +29,11 @@ function useFetchCarouslPosts(district: string, category: string) {
     category: category,
   };
 
-  const { data } = useGetAllPostsByDistrictOrCategory(queryParams.district);
+  const { data } = useGetAllPostsByDistrictOrCategory(
+    queryParams.district,
+    queryParams.category,
+    9,
+  );
   return { data };
 }
 
@@ -64,7 +68,7 @@ function Carousel4() {
     autoplay: true,
     autoplaySpeed: 2000,
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 3,
     arrows: false,
     initialSlide: 0,
     beforeChange: (newIndex: number) => {
@@ -102,7 +106,7 @@ function Carousel4() {
   }, [categoryCounts]);
 
   return (
-    <div style={{ backgroundColor: '#FAFAFA' }}>
+    <div style={{ height: '300px', backgroundColor: '#FAFAFA' }}>
       <s.Container>
         <div
           style={{
@@ -219,7 +223,6 @@ const EmptyPost = styled.div`
 const StyledSlider = styled(Slider)`
   margin: 0 0 0 30px;
   padding: 50px 0;
-  height: 350px;
   width: 530px;
   .slick-prev::before,
   .slick-next::before {

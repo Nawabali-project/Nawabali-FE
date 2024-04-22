@@ -23,12 +23,14 @@ function useFetchPosts(district: string, category: string) {
       CategoryMappings[category] !== 'ALL'
         ? CategoryMappings[category]
         : undefined,
+    size: 10,
   };
 
   const { data, isLoading, isError, refetch } =
     useGetAllPostsByDistrictOrCategory(
       queryParams.district,
       queryParams.category,
+      queryParams.size,
     );
 
   return { data, isLoading, isError, refetch };
@@ -99,10 +101,10 @@ function Carousel2() {
   let settings = {
     dots: false,
     infinite: true,
-    autoplay: true,
-    autoplaySpeed: 2000,
+    // autoplay: true,
+    // autoplaySpeed: 4000,
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 3,
     arrows: false,
   };
 

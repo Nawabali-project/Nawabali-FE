@@ -5,6 +5,7 @@ import { GetRecentPostsParams } from '@/interfaces/main/news.interface';
 const getAllPostsByDistrictOrCategory = async (
   district?: string,
   category?: string,
+  size?: number,
 ) => {
   let endpoint = '/posts/filtered?';
   if (district) {
@@ -13,7 +14,7 @@ const getAllPostsByDistrictOrCategory = async (
   if (category) {
     endpoint += `category=${category}&`;
   }
-  const pageable = 'page=0&size=7&sort=likesCount';
+  const pageable = `page=0&size=${size}&sort=likesCount`;
   const response = await authInstance.get(`${endpoint}${pageable}`);
   return response.data;
 };
@@ -21,10 +22,11 @@ const getAllPostsByDistrictOrCategory = async (
 export const useGetAllPostsByDistrictOrCategory = (
   district?: string,
   category?: string,
+  size?: number,
 ) => {
   return useQuery({
-    queryKey: [district, category],
-    queryFn: () => getAllPostsByDistrictOrCategory(district, category),
+    queryKey: [district, category, size],
+    queryFn: () => getAllPostsByDistrictOrCategory(district, category, size),
   });
 };
 

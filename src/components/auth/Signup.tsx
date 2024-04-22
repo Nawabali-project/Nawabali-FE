@@ -8,6 +8,8 @@ import {
   AuthInput,
   WarnSpan,
   InfoSpan,
+  Logo,
+  Result,
 } from '@/components/auth/authStyle';
 import Button from '@/components/button/Button';
 import { emailCheck, pwCheck, nicknameCheck } from '@/utils/regex';
@@ -184,6 +186,16 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
     }
   };
 
+  const isFormValid =
+    input.email.length > 0 &&
+    emailCheck(input.email) &&
+    input.nickname.length > 0 &&
+    nicknameCheck(input.nickname);
+  input.password.length > 0 &&
+    pwCheck(input.password) &&
+    input.confirmPassword === input.password &&
+    input.district.trim().length > 0;
+
   // 회원가입 처리
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -194,7 +206,7 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
         password: input.password,
         confirmPassword: input.confirmPassword,
         city: '서울특별시',
-        district: input.district,
+        district: input.district.split(' ')[1],
       });
       resetInput();
       setIsModalOpen(false);
@@ -217,18 +229,8 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
   return (
     <Modal size="auth" onClose={() => setIsModalOpen(false)}>
       <form onSubmit={handleSubmit} style={{ marginTop: '-70px' }}>
-        <div
-          style={{
-            width: '80px',
-            height: '40px',
-            border: '1px solid black',
-            margin: '0 auto',
-            boxSizing: 'border-box',
-          }}
-        >
-          logo
-        </div>
-        {/* <span onClick={() => props.setIsModalOpen(false)}>X</span> */}
+        <Logo />
+
         <p style={{ textAlign: 'center', fontWeight: '900', fontSize: '20px' }}>
           회원가입
         </p>
@@ -258,6 +260,7 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
             placeholder="이메일"
           />
           <Button
+            disabled={input.email.length <= 0}
             size="check"
             color="blue"
             type="button"
@@ -285,6 +288,7 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
             placeholder="인증번호를 입력해주세요."
           />
           <Button
+            disabled={input.validateNumber.length != 6}
             size="check"
             color="blue"
             type="button"
@@ -367,14 +371,19 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
         {showSearchResults && (
           <div>
             {results.map((result, index) => (
-              <div key={index} onClick={() => handleResultClick(result)}>
-                서울특별시 {result}
-              </div>
+              <Result key={index} onClick={() => handleResultClick(result)}>
+                - {result}
+              </Result>
             ))}
           </div>
         )}
         <div style={{ margin: ' 15px 0 5px' }}>
-          <Button type="submit" size="default" color="blue">
+          <Button
+            type="submit"
+            size="default"
+            color="blue"
+            disabled={!isFormValid}
+          >
             회원가입하기
           </Button>
         </div>

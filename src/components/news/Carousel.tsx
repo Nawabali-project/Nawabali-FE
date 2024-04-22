@@ -14,7 +14,11 @@ import { PostItem } from '@/interfaces/main/news.interface';
 
 function Carousel() {
   const userDistrict = localStorage.getItem('district')!;
-  const { data } = useGetAllPostsByDistrictOrCategory(userDistrict);
+  const { data } = useGetAllPostsByDistrictOrCategory(
+    userDistrict,
+    undefined,
+    7,
+  );
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const totalSlides = 7;
@@ -81,7 +85,7 @@ function Carousel() {
             <span style={{ marginLeft: '3px', fontSize: '10px' }}>07</span>
             {isHovering ? (
               <FaRegStopCircle
-                style={{ fontSize: '12px' }}
+                style={{ marginLeft: '3px', fontSize: '12px' }}
                 className="stop-icon"
               />
             ) : (
@@ -164,15 +168,16 @@ function Carousel() {
 export default Carousel;
 
 const Container = styled.div`
+  width: 722px;
   padding-top: 30px;
   position: relative;
+  margin: 0 auto;
 `;
 
 const StyledCol = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
-  left: 160px;
 `;
 
 const CarouselContainer = styled.div`

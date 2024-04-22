@@ -2,8 +2,9 @@ import styled, { css } from 'styled-components';
 
 type ButtonStyleProps = {
   type?: string;
-  size?: 'small' | 'medium' | 'check' | 'default';
+  size?: 'small' | 'medium' | 'check' | 'chat' | 'default';
   color?: 'blue' | 'yellow' | 'default';
+  disabled?: boolean;
 };
 
 interface ButtonProps extends ButtonStyleProps {
@@ -54,15 +55,22 @@ const buttonSize = {
   default: css`
     width: 100%;
   `,
+  chat: css`
+    border-radius: 25px;
+    height: 25px;
+    color: #757575;
+    border: 2px solid #757575;
+  `,
 };
 
 const buttonType = {
   blue: css`
-    background-color: #00a2ff68;
     color: white;
     border: none;
-    &:hover {
-      background-color: #00a3ff;
+    background-color: #00a3ff;
+    &:disabled {
+      cursor: not-allowed;
+      background-color: #00a2ff68;
     }
   `,
   yellow: css`
