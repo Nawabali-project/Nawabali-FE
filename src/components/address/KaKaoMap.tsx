@@ -2,7 +2,7 @@
 import useDidMountEffect from '@/hooks/useDidMountEffect';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MyLocationIcon } from '@/utils/icons';
+import { MyLocationIcon, SearchIcon, LocationIcon } from '@/utils/icons';
 
 declare global {
   interface Window {
@@ -17,6 +17,8 @@ interface KaKaoMapProps {
     latitude: number,
     logitude: number,
     district: string,
+    placeName: string,
+    placeAddr: string,
   ) => void;
 }
 
@@ -24,19 +26,9 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
   const [pointAddr, setPointAddr] = useState<string>('');
-
-  const updateMarkerAndLocation = (latLng: any, district: string) => {
-    const latitude = latLng.getLat();
-    const longitude = latLng.getLng();
-
-    marker.setMap(null);
-    marker.setPosition(latLng);
-    marker.setMap(map);
-
-    if (onLocationChange) {
-      onLocationChange(latitude, longitude, district); // 상위 컴포넌트로 위도와 경도 값 전달
-    }
-  };
+  const [placeName, setPlaceName] = useState<string>('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [inputText, setInputText] = useState<string>('');
 
   // 1. 카카오맵 불러오기
   useEffect(() => {
@@ -44,13 +36,44 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
       const container = document.getElementById('map');
       const options = {
         center: new window.kakao.maps.LatLng(37.555949, 126.972309),
-        level: 3,
+        level: 5,
       };
 
-      setMap(new window.kakao.maps.Map(container, options));
-      setMarker(new window.kakao.maps.Marker());
+      const mapInstance = new window.kakao.maps.Map(container, options);
+      const markerInstance = new window.kakao.maps.Marker();
+      setMap(mapInstance);
+      setMarker(markerInstance);
     });
   }, []);
+
+  const handleSearch = () => {
+    const ps = new window.kakao.maps.services.Places();
+    ps.keywordSearch(inputText, (data: any[], status: any) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        setSearchResults(data);
+      } else {
+        alert('검색 결과가 없습니다.');
+      }
+    });
+  };
+
+  const handleResultClick = (result: any) => {
+    const { y, x, address_name, road_address_name, place_name } = result;
+    const newAddr = road_address_name || address_name;
+    setPointAddr(newAddr);
+    setPlaceName(place_name);
+    const newPos = new window.kakao.maps.LatLng(y, x);
+    marker.setPosition(newPos);
+    marker.setMap(map);
+    map.panTo(newPos);
+    onLocationChange(y, x, newAddr.split(' ')[1], placeName, newAddr); // 구 지역 정보를 상위 컴포넌트에 전달
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   // 2. 현재 위치 함수
   const getCurrentPosBtn = () => {
@@ -67,16 +90,12 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
 
   // 3. 현재 위치 함수가 정상 작동하면 실행
   const getPosSuccess = (pos: GeolocationPosition) => {
-    // 현재 위치의 위도, 경도
     const currentPos = new window.kakao.maps.LatLng(
-      pos.coords.latitude, // 위도
-      pos.coords.longitude, // 경도
+      pos.coords.latitude,
+      pos.coords.longitude,
     );
 
-    // 지도를 현재 위치로 이동시킨다.
     map.panTo(currentPos);
-
-    // 기존 마커를 제거하고 새로운 마커를 넣는다.
     marker.setMap(null);
     marker.setPosition(currentPos);
     marker.setMap(map);
@@ -100,13 +119,19 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
                 : result[0].address.address_name;
 
               setPointAddr(newPointAddr);
+              setPlaceName('');
 
               marker.setMap(null);
               marker.setPosition(mouseEvent.latLng);
               marker.setMap(map);
 
               let district = newPointAddr.split(' ')[1];
-              updateMarkerAndLocation(mouseEvent.latLng, district);
+              updateMarkerAndLocation(
+                mouseEvent.latLng,
+                district,
+                placeName,
+                pointAddr,
+              );
             }
           },
         );
@@ -114,49 +139,67 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
     );
   }, [map]);
 
-  // 5. 검색된 주소 위치 표시
-  const onClickAddr = () => {
-    new window.daum.Postcode({
-      oncomplete: function (addrData: any) {
-        let geocoder = new window.kakao.maps.services.Geocoder();
-        geocoder.addressSearch(
-          addrData.address,
-          function (result: any, status: any) {
-            if (status === window.kakao.maps.services.Status.OK) {
-              let currentPos = new window.kakao.maps.LatLng(
-                result[0].y,
-                result[0].x,
-              );
-              let district = result[0].address_name.split(' ')[1];
+  const updateMarkerAndLocation = (
+    latLng: any,
+    district: string,
+    placeName: string,
+    pointAddr: string,
+  ) => {
+    const latitude = latLng.getLat();
+    const longitude = latLng.getLng();
 
-              updateMarkerAndLocation(currentPos, district);
+    marker.setMap(null);
+    marker.setPosition(latLng);
+    marker.setMap(map);
 
-              (document.getElementById('addr') as HTMLInputElement).value =
-                addrData.address;
-              map.panTo(currentPos);
-              marker.setMap(null);
-              marker.setPosition(currentPos);
-              marker.setMap(map);
-            }
-          },
-        );
-      },
-    }).open();
+    // 상위 컴포넌트로 위도와 경도 값 전달
+    if (onLocationChange) {
+      onLocationChange(latitude, longitude, district, placeName, pointAddr);
+    }
   };
 
   return (
     <Layout>
-      <div onClick={onClickAddr}>
+      <AddressBox>
+        <AddressName
+          type="text"
+          value={placeName}
+          placeholder="장소명"
+          readOnly
+        ></AddressName>
         <AddressInput
           type="text"
-          id="addr"
           value={pointAddr}
-          placeholder="주소를 검색하세요"
+          placeholder="주소"
           readOnly
         />
-      </div>
+      </AddressBox>
+
+      <SearchContainer>
+        <InputContainer>
+          <SearchIcon />
+          <Input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="검색어를 입력해주세요."
+            onKeyDown={handleKeyPress}
+          />
+        </InputContainer>
+        <ResultBox>
+          {searchResults.map((result, index) => (
+            <SearchResultItem
+              key={index}
+              onClick={() => handleResultClick(result)}
+            >
+              <LocationIcon /> &nbsp;
+              {result.place_name} ({result.address_name})
+            </SearchResultItem>
+          ))}
+        </ResultBox>
+      </SearchContainer>
       <MapContainer style={{ width, height }}>
-        <MapBox id="map" style={{ width: '100%', height: '100%' }}></MapBox>
+        <MapBox id="map" style={{ width: '100%', height: '100%' }} />
         <MyLocationBtn onClick={getCurrentPosBtn}>
           <MyLocationIcon />
         </MyLocationBtn>
@@ -166,7 +209,10 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
 };
 
 const Layout = styled.div`
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
 `;
 
 const MapContainer = styled.div`
@@ -184,7 +230,10 @@ const MyLocationBtn = styled.div`
   position: absolute;
   left: 15px;
   top: 15px;
-  padding: 5px 6px 3px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
   border: 1px solid #c2c2c2;
   border-radius: 100px;
   background: white;
@@ -196,15 +245,94 @@ const MyLocationBtn = styled.div`
   }
 `;
 
-const AddressInput = styled.input`
-  box-sizing: border-box;
-  width: 100%;
-  margin: 10px 0px 10px 0px;
-  padding: 12px 16px;
-  border: 1px solid #d4d3d3;
-  border-radius: 100px;
-  font-size: 15px;
-  cursor: pointer;
+const AddressBox = styled.div`
+  display: flex;
 `;
 
+const AddressName = styled.input`
+  width: 300px;
+  padding: 10px;
+  margin: 5px;
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 10px;
+  font-size: 12px;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const AddressInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin: 5px;
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 10px;
+  font-size: 12px;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const SearchContainer = styled.div`
+  position: absolute;
+  top: 330px;
+  right: 10px;
+  width: 180px;
+  height: 43%;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px;
+  z-index: 500;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 5px;
+`;
+
+const Input = styled.input`
+  border: none;
+  outline: none;
+  padding-left: 5px;
+  width: 100%;
+  font-size: 12px;
+`;
+
+const ResultBox = styled.div`
+  margin: 10px 0px;
+  height: 215px;
+  overflow-y: auto;
+  cursor: pointer;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: gray;
+  }
+`;
+
+const SearchResultItem = styled.div`
+  position: relative;
+  padding: 15px 10px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+`;
 export default KaKaoMap;

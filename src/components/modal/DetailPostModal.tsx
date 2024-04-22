@@ -108,6 +108,12 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     setIsPostEditing(false);
   };
 
+  const handleKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      handleEditPostClick();
+    }
+  };
+
   // 게시글 삭제
   const deletePostMutation = useMutation({
     mutationFn: deletePost,
@@ -135,7 +141,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onError: (error: any) => {
       setIsLocalLiked(!isLocalLiked);
       setLocalLikesCount(localLikesCount - 1);
-      if (error.response.status === 500) {
+      if (error.response.status === 403) {
         alert('주민추천은 로그인 후 이용 가능합니다 :)');
       } else if (error.response.status === 400) {
         alert('해당 게시물 동네주민만 누를 수 있어요!');
@@ -156,7 +162,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onError: (error: any) => {
       setIsLiked(!isLiked);
       setLikesCount(likesCount - 1);
-      if (error.response.status === 500) {
+      if (error.response.status === 403) {
         alert('좋아요는 로그인 후 이용 가능합니다 :)');
       }
     },
@@ -174,7 +180,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onSuccess: async () => {},
     onError: (error: any) => {
       setIsBookmarked(!isBookmarked);
-      if (error.response.status === 500) {
+      if (error.response.status === 403) {
         alert('북마크는 로그인 후 이용 가능합니다 :)');
       }
     },
@@ -202,7 +208,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
 
   return (
     <>
-      <Modal>
+      <Modal onClose={handleCloseModal}>
         <CloseBox onClick={handleCloseModal}>
           <CloseIcon />
         </CloseBox>
@@ -314,6 +320,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
                       cols={10}
                       rows={6}
                       onChange={(e) => setEditingContent(e.target.value)}
+                      onKeyDown={handleKeyPress}
                     />
                   </>
                 ) : (
@@ -361,7 +368,7 @@ const UserGrade = styled.div`
 
 const ContentTextArea = styled.textarea`
   box-sizing: border-box;
-  width: 90%;
+  width: 85%;
   height: 60%;
   padding: 12px 12px;
   border: 1px solid gray;
@@ -478,7 +485,7 @@ const ImageBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 500px;
-  height: 600px;
+  height: 620px;
   border-top-left-radius: 140px;
   border-bottom-right-radius: 140px;
   border-bottom-left-radius: 15px;
@@ -495,7 +502,7 @@ const NameAndIcon = styled.div`
 
 const ContentBox = styled.div`
   width: 480px;
-  height: 600px;
+  height: 620px;
 `;
 
 const ContentHeader = styled.div`

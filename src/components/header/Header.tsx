@@ -14,6 +14,7 @@ import useAuthStore from '@/store/AuthState';
 
 import DetailPostModal from '../modal/DetailPostModal';
 import { useNavigate } from 'react-router-dom';
+import { LogoIcon } from '@/utils/icons';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -73,6 +74,14 @@ const Header: React.FC = () => {
   return (
     <>
       <HeaderLayout>
+        <LogoBox
+          onClick={() => {
+            navigate('/');
+          }}
+        >
+          <LogoIcon />
+        </LogoBox>
+
         <Items>
           <SearchDiv style={{ position: 'relative' }}>
             <IoIosSearch style={{ color: 'gray' }} />
@@ -180,7 +189,7 @@ export default Header;
 
 const HeaderLayout = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   align-items: center;
   position: fixed;
   top: 0;
@@ -190,7 +199,11 @@ const HeaderLayout = styled.div`
   z-index: 900;
   background-color: white;
   border-bottom: 1px solid #a1a1a1;
-  padding: 0 100px;
+  padding: 0px 0px 0px 50px;
+`;
+
+const LogoBox = styled.div`
+  cursor: pointer;
 `;
 
 const Items = styled.div`

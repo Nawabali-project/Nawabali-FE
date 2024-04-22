@@ -25,7 +25,7 @@ const ListPage = () => {
     setClickedKind(clickedKind === kind ? null : kind);
   };
 
-  const [selectedArea, setSelectedArea] = useState('서울특별시 구로구');
+  const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
