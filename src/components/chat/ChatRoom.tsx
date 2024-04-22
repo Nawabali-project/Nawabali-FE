@@ -32,11 +32,16 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
       client.subscribe(
         `/sub/chat/room/${roomId}`,
         (message: Message) => {
-          const receivedMessage: ReturnedMessageForm = {
-            ...JSON.parse(message.body),
-            createdAt: new Date(),
-          };
-          setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
+          try {
+            const parsedMessage = JSON.parse(message.body);
+            const receivedMessage: ReturnedMessageForm = {
+              ...parsedMessage,
+              createdAt: new Date(),
+            };
+            setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
+          } catch (error) {
+            console.error('Failed to parse message:', message.body, error);
+          }
         },
         headers,
       );
@@ -88,7 +93,8 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
       <div>
         {messages.map((msg, index) => (
           <div key={index}>
-            {msg.sender}: {msg.message} ({msg.createdAt})
+            {msg.sender}: {msg.message} (
+            {new Date(msg.createdAt).toLocaleString()})
           </div>
         ))}
       </div>

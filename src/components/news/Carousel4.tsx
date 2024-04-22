@@ -197,7 +197,7 @@ const ImageContainer = styled.div<{ isCenter?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: ${(props) => (props.isCenter ? '0 10px' : '0')};
+  margin: ${(props) => (props.isCenter ? '0 0px' : '0')};
 
   p {
     text-decoration: none;
@@ -207,8 +207,8 @@ const ImageContainer = styled.div<{ isCenter?: boolean }>`
 `;
 
 const EmptyPost = styled.div`
-  width: 180px;
-  height: 252px;
+  width: 170px;
+  height: 238px;
   border: 1px solid #e2e2e2;
   display: flex;
   border-radius: 20px;
@@ -217,10 +217,10 @@ const EmptyPost = styled.div`
 `;
 
 const StyledSlider = styled(Slider)`
-  margin: 0 auto;
+  margin: 0 0 0 30px;
   padding: 50px 0;
   height: 350px;
-  width: 550px;
+  width: 530px;
   .slick-prev::before,
   .slick-next::before {
     opacity: 0;
@@ -234,8 +234,8 @@ export const Post = styled.div<{
   background-image: url(${(props) => props.$backgroundImage});
   background-size: cover;
   background-position: center;
-  width: 180px;
-  height: 252px;
+  width: 170px;
+  height: 238px;
   display: block;
   border-radius: 20px;
 `;

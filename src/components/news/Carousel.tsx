@@ -9,6 +9,7 @@ import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
 } from 'react-icons/io5';
+import { FaRegPlayCircle, FaRegStopCircle } from 'react-icons/fa';
 import { PostItem } from '@/interfaces/main/news.interface';
 
 function Carousel() {
@@ -20,6 +21,8 @@ function Carousel() {
   const actualSlides = data?.content.length || 0;
   const emptySlidesCount = Math.max(0, totalSlides - actualSlides);
 
+  const [isHovering, setIsHovering] = useState(false);
+
   let settings = {
     dots: false,
     infinite: true,
@@ -27,7 +30,6 @@ function Carousel() {
     autoplaySpeed: 2000,
     slidesToShow: 3,
     slidesToScroll: 1,
-    centerMode: true,
     beforeChange: (oldIndex: number, newIndex: number) => {
       console.log('Changing from', oldIndex, 'to', newIndex);
       setCurrentSlide(newIndex);
@@ -38,7 +40,7 @@ function Carousel() {
 
   const slickRef = useRef<Slider | null>(null);
 
-  const centerIndex = currentSlide;
+  const centerIndex = currentSlide + 1;
 
   const previous = useCallback(() => {
     if (slickRef.current) {
@@ -57,85 +59,139 @@ function Carousel() {
   const MemoizedPost = React.memo(Post, (prevProps, nextProps) => {
     return (
       prevProps.$backgroundImage === nextProps.$backgroundImage &&
-      prevProps.$isCenter === nextProps.$isCenter
+      prevProps.$isCenter === nextProps.$isCenter &&
+      prevProps.$position === nextProps.$position
     );
   });
 
+  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseLeave = () => setIsHovering(false);
+
   return (
-    <CarouselContainer>
-      <s.Col>
-        <s.TitleSpan>이번주 우리동네</s.TitleSpan>
-        <s.TitleSpan>인기글을 모아봤어요!</s.TitleSpan>
-        <s.Row>
-          <span style={{ fontSize: '10px' }}>0{currentSlide + 1}</span>
-          <BarContainer style={{ margin: '0 5px' }}>
-            <Progress $index={currentSlide + 1} />
-          </BarContainer>
-          <span style={{ fontSize: '10px' }}>07</span>
-        </s.Row>{' '}
-      </s.Col>
-      <StyledSlider ref={slickRef} {...settings}>
-        {data?.content.map((item: PostItem, idx: number) => {
-          const isCenter = idx === centerIndex;
-          console.log(
-            `Real Post - Index: ${idx}, Current Slide: ${currentSlide}, Is Center: ${isCenter}`,
-          );
-          return (
-            <ImageContainer key={idx}>
-              <MemoizedPost
-                $backgroundImage={item.imageUrls[0]}
-                $isCenter={isCenter}
+    <div style={{ backgroundColor: '#fafafa' }}>
+      <Container>
+        <StyledCol>
+          <s.TitleSpan>이번주 우리동네</s.TitleSpan>
+          <s.TitleSpan>인기글을 모아봤어요!</s.TitleSpan>
+          <s.Row>
+            <span style={{ fontSize: '10px' }}>0{currentSlide + 1}</span>
+            <BarContainer style={{ margin: '0 5px' }}>
+              <Progress $index={currentSlide + 1} />
+            </BarContainer>
+            <span style={{ marginLeft: '3px', fontSize: '10px' }}>07</span>
+            {isHovering ? (
+              <FaRegStopCircle
+                style={{ fontSize: '12px' }}
+                className="stop-icon"
               />
-            </ImageContainer>
-          );
-        })}
-        {[...Array(emptySlidesCount)].map((_, idx) => {
-          const emptyIndex = idx + actualSlides;
-          const isCenter = emptyIndex === centerIndex;
-          console.log(
-            `Empty Post - Index: ${emptyIndex}, Current Slide: ${currentSlide}, Is Center: ${isCenter}`,
-          );
-          return (
-            <ImageContainer key={`empty-${idx}`}>
-              <EmptyPost $isCenter={isCenter}>
-                <span style={{ fontSize: '13px', color: '#616161' }}>
-                  아직 TOP7의 자리가 남아있습니다!
-                </span>
-              </EmptyPost>
-            </ImageContainer>
-          );
-        })}
-      </StyledSlider>
-      <Arrows>
-        <IoArrowBackCircleOutline onClick={previous} />
-        <IoArrowForwardCircleOutline onClick={next} />
-      </Arrows>
-    </CarouselContainer>
+            ) : (
+              <FaRegPlayCircle
+                style={{ marginLeft: '3px', fontSize: '12px' }}
+                className="play-icon"
+              />
+            )}
+          </s.Row>
+        </StyledCol>
+        <CarouselContainer>
+          <StyledSlider ref={slickRef} {...settings}>
+            {console.log('Rendering actual posts')}
+            {data?.content.map((item: PostItem, idx: number) => {
+              const isCenter = idx === centerIndex;
+              const position =
+                idx < centerIndex
+                  ? 'left'
+                  : idx > centerIndex
+                    ? 'right'
+                    : 'center';
+              console.log(
+                `Actual Post - Index: ${idx}, CurrentSlide: ${currentSlide}, Position: ${position}, Is it special case? ${currentSlide === 5 && idx === 6}`,
+              );
+              return (
+                <ImageContainer key={idx}>
+                  <MemoizedPost
+                    $backgroundImage={item.imageUrls[0]}
+                    $isCenter={isCenter}
+                    $position={position}
+                    $currentSlide={currentSlide}
+                    $index={idx}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  />
+                </ImageContainer>
+              );
+            })}
+            {console.log('Rendering empty posts')}
+            {[...Array(emptySlidesCount)].map((_, idx) => {
+              const emptyIndex = actualSlides + idx;
+              const isCenter = emptyIndex === centerIndex;
+              const position =
+                emptyIndex < centerIndex
+                  ? 'left'
+                  : emptyIndex > centerIndex
+                    ? 'right'
+                    : 'center';
+              console.log(
+                `Empty Post - Index: ${emptyIndex}, CurrentSlide: ${currentSlide}, Position: ${position}, Is it special case? ${currentSlide === 5 && emptyIndex === 6}`,
+              );
+              return (
+                <ImageContainer key={`empty-${emptyIndex}`}>
+                  <EmptyPost
+                    $isCenter={isCenter}
+                    $position={position}
+                    $currentSlide={currentSlide}
+                    $index={emptyIndex}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <span style={{ fontSize: '13px', color: '#616161' }}>
+                      아직 TOP7의 자리가 남아있습니다!
+                    </span>
+                  </EmptyPost>
+                </ImageContainer>
+              );
+            })}
+          </StyledSlider>
+          <Arrows>
+            <IoArrowBackCircleOutline onClick={previous} />
+            <IoArrowForwardCircleOutline onClick={next} />
+          </Arrows>
+        </CarouselContainer>
+      </Container>
+    </div>
   );
 }
 
 export default Carousel;
 
+const Container = styled.div`
+  padding-top: 30px;
+  position: relative;
+`;
+
+const StyledCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 160px;
+`;
+
 const CarouselContainer = styled.div`
   position: relative;
   width: 722px;
-  height: 350px;
+  height: 320px;
   margin: 0 auto;
 `;
 
 const StyledSlider = styled(Slider)`
   margin: 0 auto;
-  height: 400px;
-  width: 722px;
+  height: 300px;
+  width: 720px;
   .slick-prev::before,
   .slick-next::before {
     opacity: 0;
     display: none;
   }
 
-  .slick-list {
-    height: 3;
-  }
   .slick-slide {
     transition:
       transform 0.3s ease-out,
@@ -145,35 +201,155 @@ const StyledSlider = styled(Slider)`
 `;
 
 const ImageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 350px;
+  position: relative;
+  width: 100%;
+  height: 280px;
+  margin: 0 auto;
 `;
 
-const Post = styled.div<{ $backgroundImage: string; $isCenter: boolean }>`
+const Post = styled.div<{
+  $backgroundImage: string;
+  $isCenter: boolean;
+  $position: string;
+  $currentSlide: number;
+  $index: number;
+}>`
   background-image: url(${(props) => props.$backgroundImage});
   background-size: cover;
-  background-position: center;
-  width: ${(props) => (props.$isCenter ? '240px' : '180px')};
-  height: ${(props) => (props.$isCenter ? '336px' : '252px')};
+  position: absolute;
+  width: ${(props) => (props.$isCenter ? '200px' : '150px')};
+  height: ${(props) => (props.$isCenter ? '280px' : '210px')};
   display: block;
   border-radius: 20px;
-  margin: 0;
   transition: all 0.3s ease-in-out;
+
+  ${(props) =>
+    props.$currentSlide === 5 &&
+    props.$index === 0 &&
+    `
+    top: 0px !important;
+    right: 0px !important;
+  `}
+  ${(props) =>
+    props.$currentSlide === 6 &&
+    props.$index === 0 &&
+    `
+width: 200px !important;
+height: 280px !important;
+top: 0px !important;
+    right: 20px !important;
+  `}
+  ${(props) =>
+    props.$currentSlide === 6 &&
+    props.$index === 1 &&
+    `
+    top: 0px !important;
+    right: 0px !important;
+  `}
+
+  ${(props) =>
+    props.$position === 'left' &&
+    `
+    top: 70px;
+    right: 90px;
+  `}
+
+  ${(props) =>
+    props.$position === 'center' &&
+    `
+    right: 20px;
+  `}
+
+  ${(props) =>
+    props.$position === 'right' &&
+    `
+    top: 0px;
+    right: 0px;
+  `}
+
+  &:hover {
+    .play-icon {
+      visibility: hidden;
+    }
+    .stop-icon {
+      visibility: visible;
+    }
+  }
 `;
 
-const EmptyPost = styled.div<{ $isCenter: boolean }>`
-  width: ${(props) => (props.$isCenter ? '240px' : '180px')};
-  height: ${(props) => (props.$isCenter ? '336px' : '252px')};
+const EmptyPost = styled.div<{
+  $isCenter: boolean;
+  $position: string;
+  $currentSlide: number;
+  $index: number;
+}>`
+  width: ${(props) => (props.$isCenter ? '200px' : '150px')};
+  height: ${(props) => (props.$isCenter ? '280px' : '210px')};
   border-radius: 20px;
   border: 1px solid #e2e2e2;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
+
+  ${(props) =>
+    props.$currentSlide === 5 &&
+    props.$index === 0 &&
+    `
+    top: 0px !important;
+    right: 0px !important;
+  `}
+  ${(props) =>
+    props.$currentSlide === 6 &&
+    props.$index === 0 &&
+    `
+width: 200px !important;
+height: 280px !important;
+top: 0px !important;
+    right: 20px !important;
+  `}
+  ${(props) =>
+    props.$currentSlide === 6 &&
+    props.$index === 1 &&
+    `
+    top: 0px !important;
+    right: 0px !important;
+  `}
+
+  ${(props) =>
+    props.$position === 'left' &&
+    `
+    top: 70px;
+    right: 90px;
+  `}
+
+  ${(props) =>
+    props.$position === 'center' &&
+    `
+    right: 20px;
+  `}
+
+  ${(props) =>
+    props.$position === 'right' &&
+    `
+    top: 0px;
+    right: 0px;
+  `}
+
+  &:hover {
+    .play-icon {
+      visibility: hidden;
+    }
+    .stop-icon {
+      visibility: visible;
+    }
+  }
 `;
 
 const Arrows = styled.div`
+  position: absolute;
+  right: 100px;
+  bottom: 80px;
   svg {
     width: 1.5rem;
     height: 1.5rem;
