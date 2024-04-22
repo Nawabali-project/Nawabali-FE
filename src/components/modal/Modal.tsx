@@ -76,7 +76,7 @@ const ModalContent = styled.div<{ size?: 'auth' | 'regular' }>`
       margin: 60px auto 0;
       box-sizing: border-box;
       width: 500px;
-      height: 700px;
+      height: 730px;
       justify-content: normal;
     `}
 `;

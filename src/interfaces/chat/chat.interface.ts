@@ -28,3 +28,18 @@ export interface ChatRoom {
 export interface ChatRoomProps {
   $isSelected: boolean;
 }
+
+export interface User {
+  id: number;
+  nickname: string;
+  imgUrl: string;
+}
+
+export interface NewChatRoom {
+  chatMessage: any;
+  chatRoomEnum: string;
+  roomId: number;
+  roomName: string;
+  roomNumber: string;
+  imgUrls: string[];
+}

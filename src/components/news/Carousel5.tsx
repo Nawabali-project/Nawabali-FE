@@ -27,7 +27,11 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
     data: postsData,
     isLoading: isLoadingPosts,
     isError: isErrorPosts,
-  } = useGetAllPostsByDistrictOrCategory(bestDistrict?.district, iconCategory);
+  } = useGetAllPostsByDistrictOrCategory(
+    bestDistrict?.district,
+    iconCategory,
+    10,
+  );
 
   const safeData = bestDistrict || { district: '', postCount: 0, content: [] };
 
@@ -46,10 +50,10 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
   let settings = {
     dots: false,
     infinite: true,
-    autoplay: true,
-    autoplaySpeed: 2000,
+    // autoplay: true,
+    // autoplaySpeed: 2000,
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 3,
     arrows: false,
   };
 

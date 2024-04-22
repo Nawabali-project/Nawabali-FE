@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { getChatRooms, createRoom, enterChatRoom } from '@/api/chat';
+import {
+  getChatRooms,
+  createRoom,
+  enterChatRoom,
+  searchUserByNickname,
+} from '@/api/chat';
 import { IoIosSearch } from 'react-icons/io';
 import styled from 'styled-components';
 import {
-  ChatRoom,
   ChatRoomProps,
   MessageType,
+  NewChatRoom,
+  User,
 } from '@/interfaces/chat/chat.interface';
 import { Client } from '@stomp/stompjs';
+import Button from '../button/Button';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
   client: Client | null;
 }> = ({ onRoomSelect, client }) => {
-  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+  const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
+  const [searchResults, setSearchResults] = useState<User[]>([]);
   const [userNickname, setUserNickname] = useState('');
   const [searchWord, setSearchWord] = useState<string>('');
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
@@ -25,11 +33,42 @@ export const ChatRoomsList: React.FC<{
   const fetchChatRooms = async () => {
     try {
       const rooms = await getChatRooms();
-      setChatRooms(rooms);
+      const roomsWithUserImages = await Promise.all(
+        rooms.map(async (room) => {
+          const users = await searchUserByNickname(room.roomName);
+
+          const imgUrls = users.map((user: User) => user.imgUrl);
+
+          return { ...room, imgUrls };
+        }),
+      );
+      setChatRooms(roomsWithUserImages);
     } catch (error) {
-      console.error('로딩 실패', error);
+      console.error('Failed to load chat rooms or user data', error);
       setChatRooms([]);
     }
+  };
+
+  const handleSearchUserNickname = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setUserNickname(e.target.value);
+    if (e.target.value.trim() === '') {
+      setSearchResults([]);
+      return;
+    }
+    try {
+      const response = await searchUserByNickname(userNickname);
+      console.log('API response:', response);
+      setSearchResults(response);
+    } catch (error) {
+      console.error('Error searching user by nickname', error);
+      setSearchResults([]);
+    }
+  };
+
+  const handleSelectUser = (nickname: string) => {
+    setUserNickname(nickname);
   };
 
   const handleCreateRoom = async () => {
@@ -65,13 +104,38 @@ export const ChatRoomsList: React.FC<{
     <ChatList>
       <h1>채팅방이욤</h1>
       <div>
-        <input
-          type="text"
-          value={userNickname}
-          onChange={(e) => setUserNickname(e.target.value)}
-          placeholder="유저닉네임"
-        />
-        <button onClick={handleCreateRoom}>채팅 생성</button>
+        <SearchDiv>
+          <input
+            type="text"
+            value={userNickname}
+            onChange={handleSearchUserNickname}
+            placeholder="유저닉네임 검색"
+          />
+        </SearchDiv>
+        {searchResults.length > 0 && (
+          <div
+            style={{
+              marginTop: '10px',
+              backgroundColor: '#fff',
+              padding: '0 10px 10px',
+              borderRadius: '5px',
+            }}
+          >
+            {searchResults.map((user: User, index: number) => (
+              <div key={index} onClick={() => handleSelectUser(user.nickname)}>
+                <Row>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <ProfileImg $profileImg={user.imgUrl} />
+                    {user.nickname}
+                  </div>
+                  <Button size="chat" onClick={handleCreateRoom}>
+                    채팅 생성
+                  </Button>
+                </Row>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div>
         <SearchDiv style={{ position: 'relative' }}>
@@ -83,17 +147,22 @@ export const ChatRoomsList: React.FC<{
             onChange={(e) => setSearchWord(e.target.value)}
           />
         </SearchDiv>
-        <div>
+        <Col>
           {chatRooms.map((room) => (
             <ChatRooms
               key={room.roomId}
               $isSelected={selectedRoomId === room.roomId}
               onClick={() => handleRoomClick(room.roomId)}
             >
-              {room.roomName}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {room.imgUrls && room.imgUrls[0] && (
+                  <ProfileImg $profileImg={room.imgUrls[0]} />
+                )}
+                <span>{room.roomName}</span>
+              </div>
             </ChatRooms>
           ))}
-        </div>
+        </Col>
       </div>
     </ChatList>
   );
@@ -101,11 +170,48 @@ export const ChatRoomsList: React.FC<{
 
 export default ChatRoomsList;
 
+const Col = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const ChatList = styled.div`
   width: 300px;
+  height: 500px;
   margin: 100px 0 0 100px;
   background-color: white;
   border-radius: 20px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 15px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+  }
+`;
+
+const ProfileImg = styled.div<{ $profileImg: string }>`
+  width: 30px;
+  height: 30px;
+  background-image: url(${(props) => props.$profileImg});
+  border-radius: 50%;
+  border: 1px solid #d9d9d9;
+  background-size: cover;
+  margin-right: 10px;
+  margin-left: 10px;
 `;
 
 const SearchDiv = styled.div`

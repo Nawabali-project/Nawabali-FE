@@ -25,7 +25,7 @@ function useFetchPosts(district: string) {
   };
 
   const { data, isLoading, isError, refetch } =
-    useGetAllPostsByDistrictOrCategory(queryParams.district);
+    useGetAllPostsByDistrictOrCategory(queryParams.district, undefined, 10);
   return { data, isLoading, isError, refetch };
 }
 
@@ -86,10 +86,10 @@ function Carousel3() {
   let settings = {
     dots: false,
     infinite: true,
-    autoplay: true,
-    autoplaySpeed: 2000,
+    // autoplay: true,
+    // autoplaySpeed: 2000,
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 3,
     arrows: false,
   };
 

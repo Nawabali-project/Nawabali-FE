@@ -7,6 +7,7 @@ import {
   AuthDiv,
   SideDiv,
   BottomDiv,
+  Logo,
 } from '@/components/auth/authStyle';
 import Button from '@/components/button/Button';
 import { Cookies } from 'react-cookie';
@@ -26,6 +27,8 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     email: '',
     password: '',
   });
+
+  const isFormFilled = email.length > 0 && password.length > 0;
 
   const { login } = useAuthStore();
 
@@ -73,27 +76,16 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     setModalType('signup');
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   return (
     <Modal size="auth" onClose={() => setIsModalOpen(false)}>
-      {/* <span
-        style={{ textAlign: 'right', margin: '-50px' }}
-        onClick={() => setIsModalOpen(false)}
-      >
-        X
-      </span> */}
-
       <div style={{ padding: '20px', marginTop: '-90px' }}>
-        <div
-          style={{
-            width: '80px',
-            height: '40px',
-            border: '1px solid black',
-            margin: '0 auto',
-            boxSizing: 'border-box',
-          }}
-        >
-          logo
-        </div>
+        <Logo />
         <p style={{ textAlign: 'center', fontWeight: '900', fontSize: '20px' }}>
           로그인
         </p>
@@ -124,9 +116,10 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             onChange={onInputChange}
             placeholder="비밀번호"
             style={{ width: '238px', marginBottom: '15px' }}
+            onKeyDown={handleKeyDown}
           />
         </AuthDiv>
-        <Button color="blue" onClick={handleSubmit}>
+        <Button disabled={!isFormFilled} color="blue" onClick={handleSubmit}>
           로그인
         </Button>
         <img
@@ -153,7 +146,6 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             justifyContent: 'flex-end',
           }}
         >
-          {/* <span>로그인 유지</span> */}
           <span
             style={{ fontSize: '13px', cursor: 'pointer', color: '#757575' }}
           >
