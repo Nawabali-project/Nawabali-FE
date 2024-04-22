@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import geojson from '../../utils/geojson.json';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { getAreaScore } from '@/api/post';
 import OverlayContent from './OverlayContent';
 
@@ -110,9 +110,9 @@ const ScoreMap: React.FC = () => {
           overlay.setPosition(mouseEvent.latLng);
           overlay.setMap(map);
 
-          ReactDOM.render(
+          const overlayRoot = ReactDOM.createRoot(overlayElement);
+          overlayRoot.render(
             <OverlayContent name={name} districtData={districtData} />,
-            overlayElement,
           );
         },
       );
