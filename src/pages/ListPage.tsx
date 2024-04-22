@@ -86,7 +86,7 @@ const ListPage = () => {
         <ThreeKindBox>
           <KindBox
             kind="FOOD"
-            isSelected={clickedKind === 'FOOD'}
+            $isSelected={clickedKind === 'FOOD'}
             onClick={() => handleKindClick('FOOD')}
           >
             {clickedKind === 'FOOD' ? <FoodIcon /> : <FoodFilledIcon />}
@@ -94,7 +94,7 @@ const ListPage = () => {
           </KindBox>
           <KindBox
             kind="CAFE"
-            isSelected={clickedKind === 'CAFE'}
+            $isSelected={clickedKind === 'CAFE'}
             onClick={() => handleKindClick('CAFE')}
           >
             {clickedKind === 'CAFE' ? <CafeIcon /> : <CafeFilledIcon />}
@@ -102,7 +102,7 @@ const ListPage = () => {
           </KindBox>
           <KindBox
             kind="PHOTOZONE"
-            isSelected={clickedKind === 'PHOTOZONE'}
+            $isSelected={clickedKind === 'PHOTOZONE'}
             onClick={() => handleKindClick('PHOTOZONE')}
           >
             {clickedKind === 'PHOTOZONE' ? (
@@ -206,14 +206,14 @@ const ThreeKindBox = styled.div`
   cursor: pointer;
 `;
 
-const KindBox = styled.div<{ isSelected?: boolean; kind: string }>`
+const KindBox = styled.div<{ $isSelected?: boolean; kind: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
   margin-right: 10px;
   padding: 10px 15px;
   background-color: ${(props) => {
-    if (!props.isSelected) {
+    if (!props.$isSelected) {
       return 'none';
     } else if (props.kind == 'FOOD') {
       return '#FE6847';
@@ -223,7 +223,7 @@ const KindBox = styled.div<{ isSelected?: boolean; kind: string }>`
       return '#00A3FF';
     }
   }};
-  color: ${(props) => (props.isSelected ? 'white' : 'none')};
+  color: ${(props) => (props.$isSelected ? 'white' : 'none')};
   border: none;
   border-radius: 300px;
   box-shadow: 0px 0px 5px #d8d8d8;

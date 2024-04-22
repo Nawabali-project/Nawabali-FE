@@ -110,7 +110,7 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
             </RightIconBox>
             <DotsBox>
               {uploadedImages.map((_, index) => (
-                <Dot key={index} active={currentIndex === index} />
+                <Dot key={index} $active={currentIndex === index} />
               ))}
             </DotsBox>
           </div>
@@ -173,12 +173,12 @@ const DotsBox = styled.div`
   left: 22%;
 `;
 
-const Dot = styled.span<{ active: boolean }>`
+const Dot = styled.span<{ $active: boolean }>`
   display: inline-block;
   width: 6px;
   height: 6px;
   margin: 3px;
-  background-color: ${(props) => (props.active ? '#000' : '#e1dddd')};
+  background-color: ${(props) => (props.$active ? '#000' : '#e1dddd')};
   border-radius: 100%;
 `;
 
