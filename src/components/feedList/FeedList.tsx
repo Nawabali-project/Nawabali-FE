@@ -12,8 +12,8 @@ const FeedList = ({
   category,
   district,
 }: {
-  category: string | null;
-  district: string | null;
+  category: any;
+  district: string;
 }) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
@@ -25,7 +25,7 @@ const FeedList = ({
   const { ref, inView } = useInView();
 
   const queryFn =
-    category && district
+    category || district
       ? () => getPostsByFilter({ pageParam: 0, category, district })
       : getPosts;
 
@@ -110,7 +110,7 @@ const FeedList = ({
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-      {isFetchingNextPage && <h3>Loading...</h3>}
+      {isFetchingNextPage}
     </>
   );
 };
@@ -128,6 +128,9 @@ const ContentsBox = styled.div`
   padding: 5px 0px;
   color: gray;
   font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const FeedTotalBox = styled.div`

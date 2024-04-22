@@ -10,6 +10,7 @@ import {
   LocationWhiteIcon,
   LikeFilledIcon,
   BookMarkFilledIcon,
+  ThumbIcon,
 } from '@/utils/icons';
 import { deletePost, editPost, useGetDedetailPost } from '@/api/post';
 import { useState, useEffect, useRef } from 'react';
@@ -18,6 +19,7 @@ import { checkBookmark, checkLike, checkLocalLike } from '@/api/likeBookmark';
 import { useQueryClient } from '@tanstack/react-query';
 import CommentInput from '../comment/CommentInput';
 import CommentList from '../comment/CommentList';
+import AlertModal from './AlertModal';
 
 interface DetailPostProps {
   postId: number;
@@ -38,8 +40,16 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [editingContent, setEditingContent] = useState('');
   const [isPostEditing, setIsPostEditing] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+
+  // 경고창 열기
+  const showAlertModal = (message: string) => {
+    setAlertMessage(message);
+    setIsAlertModalOpen(true);
+  };
 
   // 수정, 삭제 토글창
   useEffect(() => {
@@ -91,10 +101,10 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
       editPost(postId, contents),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [postId] });
-      alert('게시글 수정 성공 :)');
+      showAlertModal('게시글 수정 성공 :)');
     },
     onError: () => {
-      alert('게시글 수정 실패 ㅠㅠ');
+      showAlertModal('게시글 수정 실패 ㅠㅠ');
     },
   });
 
@@ -108,16 +118,22 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     setIsPostEditing(false);
   };
 
+  const handleKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      handleEditPostClick();
+    }
+  };
+
   // 게시글 삭제
   const deletePostMutation = useMutation({
     mutationFn: deletePost,
     onSuccess: async () => {
       setIsDetailPostModalOpen(false);
       queryClient.invalidateQueries();
-      alert('게시글을 삭제하였습니다.');
+      showAlertModal('게시글을 삭제하였습니다.');
     },
     onError: () => {
-      alert('게시글 삭제 실패ㅠㅠ');
+      showAlertModal('게시글 삭제 실패ㅠㅠ');
     },
   });
 
@@ -135,10 +151,10 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onError: (error: any) => {
       setIsLocalLiked(!isLocalLiked);
       setLocalLikesCount(localLikesCount - 1);
-      if (error.response.status === 500) {
-        alert('주민추천은 로그인 후 이용 가능합니다 :)');
+      if (error.response.status === 403) {
+        showAlertModal('주민추천은 로그인 후 이용 가능합니다 :)');
       } else if (error.response.status === 400) {
-        alert('해당 게시물 동네주민만 누를 수 있어요!');
+        showAlertModal('해당 게시물 동네주민만 누를 수 있어요!');
       }
     },
   });
@@ -156,8 +172,8 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onError: (error: any) => {
       setIsLiked(!isLiked);
       setLikesCount(likesCount - 1);
-      if (error.response.status === 500) {
-        alert('좋아요는 로그인 후 이용 가능합니다 :)');
+      if (error.response.status === 403) {
+        showAlertModal('좋아요는 로그인 후 이용 가능합니다 :)');
       }
     },
   });
@@ -174,8 +190,8 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onSuccess: async () => {},
     onError: (error: any) => {
       setIsBookmarked(!isBookmarked);
-      if (error.response.status === 500) {
-        alert('북마크는 로그인 후 이용 가능합니다 :)');
+      if (error.response.status === 403) {
+        showAlertModal('북마크는 로그인 후 이용 가능합니다 :)');
       }
     },
   });
@@ -202,7 +218,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
 
   return (
     <>
-      <Modal>
+      <Modal onClose={handleCloseModal}>
         <CloseBox onClick={handleCloseModal}>
           <CloseIcon />
         </CloseBox>
@@ -241,7 +257,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
                 </RightIconBox>
                 <DotsBox>
                   {data.imageUrls.map((_: null, index: number) => (
-                    <Dot key={index} active={currentIndex === index} />
+                    <Dot key={index} $active={currentIndex === index} />
                   ))}
                 </DotsBox>
               </>
@@ -249,7 +265,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
           </ImageBox>
           <DotsBox>
             {data.imageUrls.map((_: null, index: number) => {
-              <Dot key={index} active={currentIndex === index} />;
+              <Dot key={index} $active={currentIndex === index} />;
             })}
           </DotsBox>
 
@@ -314,6 +330,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
                       cols={10}
                       rows={6}
                       onChange={(e) => setEditingContent(e.target.value)}
+                      onKeyDown={handleKeyPress}
                     />
                   </>
                 ) : (
@@ -329,9 +346,11 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
             <ItemBox>
               <LikesBox>
                 <LocalLikesBox
+                  $isLocalLiked={isLocalLiked}
                   onClick={() => handleLocalLikeClick(data?.postId)}
                 >
-                  주민추천 {localLikesCount}
+                  <ThumbIcon />
+                  &nbsp;주민추천 {localLikesCount}
                 </LocalLikesBox>
                 <LikeIconBox onClick={() => handleLikeClick(data?.postId)}>
                   {isLiked ? <LikeFilledIcon /> : <LikeIcon />}
@@ -347,6 +366,12 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
           </ContentBox>
         </MainLayout>
       </Modal>
+      {isAlertModalOpen && (
+        <AlertModal
+          message={alertMessage}
+          closeAlert={() => setIsAlertModalOpen(false)}
+        />
+      )}
     </>
   );
 };
@@ -361,7 +386,7 @@ const UserGrade = styled.div`
 
 const ContentTextArea = styled.textarea`
   box-sizing: border-box;
-  width: 90%;
+  width: 85%;
   height: 60%;
   padding: 12px 12px;
   border: 1px solid gray;
@@ -450,12 +475,12 @@ const DotsBox = styled.div`
   left: 23%;
 `;
 
-const Dot = styled.span<{ active: boolean }>`
+const Dot = styled.span<{ $active: boolean }>`
   display: inline-block;
   width: 6px;
   height: 6px;
   margin: 3px;
-  background-color: ${(props) => (props.active ? '#ffffff' : '#b7b7b7')};
+  background-color: ${(props) => (props.$active ? '#ffffff' : '#b7b7b7')};
   border-radius: 100%;
 `;
 
@@ -478,7 +503,7 @@ const ImageBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 500px;
-  height: 600px;
+  height: 620px;
   border-top-left-radius: 140px;
   border-bottom-right-radius: 140px;
   border-bottom-left-radius: 15px;
@@ -495,7 +520,7 @@ const NameAndIcon = styled.div`
 
 const ContentBox = styled.div`
   width: 480px;
-  height: 600px;
+  height: 620px;
 `;
 
 const ContentHeader = styled.div`
@@ -571,10 +596,14 @@ const LikeCount = styled.div`
   padding-left: 6px;
 `;
 
-const LocalLikesBox = styled.div`
+const LocalLikesBox = styled.div<{ $isLocalLiked: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px 18px;
   border-radius: 300px;
   background-color: #00a3ff;
+  opacity: ${(props) => (props.$isLocalLiked ? '1' : '0.4')};
   color: white;
 `;
 

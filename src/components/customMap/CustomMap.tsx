@@ -15,7 +15,9 @@ interface KaKaoMapProps {
   width: string;
   height: string;
   clickedCategory: string | null;
-  district: string | null;
+  selectedDistrict: string | null;
+  selectedLatitude: number | null;
+  selectedLongitude: number | null;
 }
 
 interface Post {
@@ -39,7 +41,9 @@ const CustomMap = ({
   width,
   height,
   clickedCategory,
-  district,
+  selectedDistrict,
+  selectedLatitude,
+  selectedLongitude,
 }: KaKaoMapProps) => {
   const [map, setMap] = useState<any>();
   const [marker, setMarker] = useState<any>();
@@ -49,43 +53,80 @@ const CustomMap = ({
   const [overlays, setOverlays] = useState<CustomOverlay[]>([]);
   const data: any = AllPosts();
 
-  // 맨 처음 지도 내 위치로 렌더링
+  // 1. 맨 처음 지도 내 위치로 렌더링
+  // useEffect(() => {
+  //   window.kakao.maps.load(() => {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (pos) => {
+  //         const coords = new window.kakao.maps.LatLng(
+  //           pos.coords.latitude,
+  //           pos.coords.longitude,
+  //         );
+
+  //         const container = document.getElementById('map');
+  //         const options = {
+  //           center: coords,
+  //           level: 4,
+  //         };
+
+  //         const createdMap = new window.kakao.maps.Map(container, options);
+  //         setMap(createdMap);
+
+  //         const newMarker = new window.kakao.maps.Marker({
+  //           position: coords,
+  //           zIndex: 300,
+  //         });
+  //         newMarker.setMap(createdMap);
+  //         setMarker(newMarker);
+  //       },
+  //       () => {
+  //         alert('위치 정보 가져오기 실패');
+  //       },
+  //       {
+  //         enableHighAccuracy: true,
+  //         maximumAge: 30000,
+  //         timeout: 27000,
+  //       },
+  //     );
+  //   });
+  // }, []);
+
+  // 1. 맨 처음 지도 서울로 렌더링
   useEffect(() => {
     window.kakao.maps.load(() => {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const coords = new window.kakao.maps.LatLng(
-            pos.coords.latitude,
-            pos.coords.longitude,
-          );
+      const container = document.getElementById('map');
+      const options = {
+        center: new window.kakao.maps.LatLng(37.555949, 126.972309),
+        level: 8,
+      };
 
-          const container = document.getElementById('map');
-          const options = {
-            center: coords,
-            level: 4,
-          };
-
-          const createdMap = new window.kakao.maps.Map(container, options);
-          setMap(createdMap);
-
-          const newMarker = new window.kakao.maps.Marker({
-            position: coords,
-            zIndex: 300,
-          });
-          newMarker.setMap(createdMap);
-          setMarker(newMarker);
-        },
-        () => {
-          alert('위치 정보 가져오기 실패');
-        },
-        {
-          enableHighAccuracy: true,
-          maximumAge: 30000,
-          timeout: 27000,
-        },
-      );
+      const mapInstance = new window.kakao.maps.Map(container, options);
+      const markerInstance = new window.kakao.maps.Marker();
+      setMap(mapInstance);
+      setMarker(markerInstance);
     });
   }, []);
+
+  // 지역 선택시 해당 지역으로 지도 중심 이동
+  useEffect(() => {
+    if (map && selectedLatitude && selectedLongitude) {
+      const newCenter = new window.kakao.maps.LatLng(
+        selectedLatitude,
+        selectedLongitude,
+      );
+      map.setCenter(newCenter);
+
+      if (selectedDistrict === '서울특별시') {
+        map.setLevel(8);
+      } else {
+        map.setLevel(5);
+      }
+
+      marker.setMap(null);
+      marker.setPosition(newCenter);
+      marker.setMap(map);
+    }
+  }, [selectedLatitude, selectedLongitude, selectedDistrict, map]);
 
   function getBorderColor(category: string) {
     if (category === 'FOOD') {
@@ -128,7 +169,7 @@ const CustomMap = ({
 
       setOverlays(newOverlays);
     }
-  }, [data?.data?.content, map, clickedCategory, district]);
+  }, [data?.data?.content, map, clickedCategory, selectedDistrict]);
 
   // 전역 함수로 클릭시 상세보기 모달 띄움
   window.handlePostClick = (postId: number) => {
@@ -196,7 +237,10 @@ const MyLocationBtn = styled.div`
   position: absolute;
   left: 15px;
   top: 15px;
-  padding: 5px 6px 3px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
   border: 1px solid #c2c2c2;
   border-radius: 100px;
   background: white;
