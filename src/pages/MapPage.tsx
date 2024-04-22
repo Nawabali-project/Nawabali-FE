@@ -19,15 +19,31 @@ import { useNavigate } from 'react-router-dom';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
+  const [selectedLatitude, setSelectedLatitude] = useState<number | null>(null);
+  const [selectedLongitude, setSelectedLongitude] = useState<number | null>(
+    null,
+  );
   const navigate = useNavigate();
 
-  const [selectedArea, setSelectedArea] = useState('서울특별시 구로구');
+  const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
-  const handleSelectArea = (area: string) => {
-    setSelectedArea(area);
+  const handleSelectArea = (areaName: string) => {
+    setSelectedArea(areaName);
     setShowDropdown(false);
+
+    // 선택된 지역의 위도와 경도를 찾아서 설정
+    const selectedDistrict = seoulDistricts.find(
+      (district) => district.name === areaName,
+    );
+    if (selectedDistrict) {
+      setSelectedLatitude(selectedDistrict.latitude);
+      setSelectedLongitude(selectedDistrict.longitude);
+    } else {
+      setSelectedLatitude(null);
+      setSelectedLongitude(null);
+    }
   };
 
   const handleKindClick = (kind: string) => {
@@ -35,31 +51,32 @@ const MapPage = () => {
   };
 
   const seoulDistricts = [
-    '서울특별시 강남구',
-    '서울특별시 강동구',
-    '서울특별시 강북구',
-    '서울특별시 강서구',
-    '서울특별시 관악구',
-    '서울특별시 광진구',
-    '서울특별시 구로구',
-    '서울특별시 금천구',
-    '서울특별시 노원구',
-    '서울특별시 도봉구',
-    '서울특별시 동대문구',
-    '서울특별시 동작구',
-    '서울특별시 마포구',
-    '서울특별시 서대문구',
-    '서울특별시 서초구',
-    '서울특별시 성동구',
-    '서울특별시 성북구',
-    '서울특별시 송파구',
-    '서울특별시 양천구',
-    '서울특별시 영등포구',
-    '서울특별시 용산구',
-    '서울특별시 은평구',
-    '서울특별시 종로구',
-    '서울특별시 중구',
-    '서울특별시 중랑구',
+    { name: '서울특별시', latitude: 37.555949, longitude: 126.972309 },
+    { name: '서울특별시 종로구', latitude: 37.573, longitude: 126.9794 },
+    { name: '서울특별시 중구', latitude: 37.5638, longitude: 126.9976 },
+    { name: '서울특별시 용산구', latitude: 37.5326, longitude: 126.9909 },
+    { name: '서울특별시 성동구', latitude: 37.5633, longitude: 127.0371 },
+    { name: '서울특별시 광진구', latitude: 37.5385, longitude: 127.0823 },
+    { name: '서울특별시 동대문구', latitude: 37.5744, longitude: 127.0403 },
+    { name: '서울특별시 중랑구', latitude: 37.6066, longitude: 127.0928 },
+    { name: '서울특별시 성북구', latitude: 37.5891, longitude: 127.0166 },
+    { name: '서울특별시 강북구', latitude: 37.6396, longitude: 127.0257 },
+    { name: '서울특별시 도봉구', latitude: 37.6688, longitude: 127.0471 },
+    { name: '서울특별시 노원구', latitude: 37.6542, longitude: 127.0568 },
+    { name: '서울특별시 은평구', latitude: 37.6027, longitude: 126.9291 },
+    { name: '서울특별시 서대문구', latitude: 37.5791, longitude: 126.9368 },
+    { name: '서울특별시 마포구', latitude: 37.5663, longitude: 126.9014 },
+    { name: '서울특별시 양천구', latitude: 37.5169, longitude: 126.8664 },
+    { name: '서울특별시 강서구', latitude: 37.5509, longitude: 126.8497 },
+    { name: '서울특별시 구로구', latitude: 37.4954, longitude: 126.8874 },
+    { name: '서울특별시 금천구', latitude: 37.4568, longitude: 126.8954 },
+    { name: '서울특별시 영등포구', latitude: 37.5264, longitude: 126.8962 },
+    { name: '서울특별시 동작구', latitude: 37.5124, longitude: 126.9393 },
+    { name: '서울특별시 관악구', latitude: 37.4784, longitude: 126.9516 },
+    { name: '서울특별시 서초구', latitude: 37.4837, longitude: 127.0324 },
+    { name: '서울특별시 강남구', latitude: 37.5172, longitude: 127.0473 },
+    { name: '서울특별시 송파구', latitude: 37.5145, longitude: 127.1066 },
+    { name: '서울특별시 강동구', latitude: 37.5301, longitude: 127.1238 },
   ];
 
   return (
@@ -72,8 +89,11 @@ const MapPage = () => {
           {showDropdown && (
             <DropdownMenu>
               {seoulDistricts.map((area) => (
-                <DropdownItem key={area} onClick={() => handleSelectArea(area)}>
-                  {area}
+                <DropdownItem
+                  key={area.name}
+                  onClick={() => handleSelectArea(area.name)}
+                >
+                  {area.name}
                 </DropdownItem>
               ))}
             </DropdownMenu>
@@ -83,7 +103,7 @@ const MapPage = () => {
         <ThreeKindBox>
           <KindBox
             kind="FOOD"
-            isSelected={clickedKind === 'FOOD'}
+            $isSelected={clickedKind === 'FOOD'}
             onClick={() => handleKindClick('FOOD')}
           >
             {clickedKind === 'FOOD' ? <FoodIcon /> : <FoodFilledIcon />}
@@ -91,7 +111,7 @@ const MapPage = () => {
           </KindBox>
           <KindBox
             kind="CAFE"
-            isSelected={clickedKind === 'CAFE'}
+            $isSelected={clickedKind === 'CAFE'}
             onClick={() => handleKindClick('CAFE')}
           >
             {clickedKind === 'CAFE' ? <CafeIcon /> : <CafeFilledIcon />}
@@ -99,7 +119,7 @@ const MapPage = () => {
           </KindBox>
           <KindBox
             kind="PHOTOZONE"
-            isSelected={clickedKind === 'PHOTOZONE'}
+            $isSelected={clickedKind === 'PHOTOZONE'}
             onClick={() => handleKindClick('PHOTOZONE')}
           >
             {clickedKind === 'PHOTOZONE' ? (
@@ -135,7 +155,9 @@ const MapPage = () => {
         width="100%"
         height="811px"
         clickedCategory={clickedKind}
-        district={selectedArea.split(' ')[1]}
+        selectedDistrict={selectedArea}
+        selectedLatitude={selectedLatitude}
+        selectedLongitude={selectedLongitude}
       />
     </Layout>
   );
@@ -203,14 +225,14 @@ const ThreeKindBox = styled.div`
   cursor: pointer;
 `;
 
-const KindBox = styled.div<{ isSelected?: boolean; kind: string }>`
+const KindBox = styled.div<{ $isSelected?: boolean; kind: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
   margin-right: 10px;
   padding: 10px 15px;
   background-color: ${(props) => {
-    if (!props.isSelected) {
+    if (!props.$isSelected) {
       return 'none';
     } else if (props.kind == 'FOOD') {
       return '#FE6847';
@@ -220,7 +242,7 @@ const KindBox = styled.div<{ isSelected?: boolean; kind: string }>`
       return '#00A3FF';
     }
   }};
-  color: ${(props) => (props.isSelected ? 'white' : 'none')};
+  color: ${(props) => (props.$isSelected ? 'white' : 'none')};
   border: none;
   border-radius: 300px;
   box-shadow: 0px 0px 5px #d8d8d8;

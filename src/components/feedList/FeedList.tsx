@@ -12,8 +12,8 @@ const FeedList = ({
   category,
   district,
 }: {
-  category: string | null;
-  district: string | null;
+  category: any;
+  district: string;
 }) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
@@ -25,7 +25,7 @@ const FeedList = ({
   const { ref, inView } = useInView();
 
   const queryFn =
-    category && district
+    category || district
       ? () => getPostsByFilter({ pageParam: 0, category, district })
       : getPosts;
 

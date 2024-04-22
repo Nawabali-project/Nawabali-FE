@@ -31,12 +31,48 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   const [inputText, setInputText] = useState<string>('');
 
   // 1. 카카오맵 불러오기
+  // useEffect(() => {
+  //   window.kakao.maps.load(() => {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (pos) => {
+  //         const coords = new window.kakao.maps.LatLng(
+  //           pos.coords.latitude,
+  //           pos.coords.longitude,
+  //         );
+
+  //         const container = document.getElementById('map');
+  //         const options = {
+  //           center: coords,
+  //           level: 4,
+  //         };
+
+  //         const createdMap = new window.kakao.maps.Map(container, options);
+  //         setMap(createdMap);
+
+  //         const newMarker = new window.kakao.maps.Marker({
+  //           position: coords,
+  //           zIndex: 300,
+  //         });
+  //         newMarker.setMap(createdMap);
+  //         setMarker(newMarker);
+  //       },
+  //       () => {
+  //         alert('위치 정보 가져오기 실패');
+  //       },
+  //       {
+  //         enableHighAccuracy: true,
+  //         maximumAge: 30000,
+  //         timeout: 27000,
+  //       },
+  //     );
+  //   });
+  // }, []);
   useEffect(() => {
     window.kakao.maps.load(() => {
       const container = document.getElementById('map');
       const options = {
         center: new window.kakao.maps.LatLng(37.555949, 126.972309),
-        level: 5,
+        level: 7,
       };
 
       const mapInstance = new window.kakao.maps.Map(container, options);
