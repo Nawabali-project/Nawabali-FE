@@ -10,7 +10,7 @@ import {
   CafeFilledIcon,
   MapIcon,
   ListBlackIcon,
-  LocationIcon,
+  BigLocationIcon,
 } from '@/utils/icons';
 import styled from 'styled-components';
 import { useState } from 'react';
@@ -69,7 +69,7 @@ const ListPage = () => {
     <Layout>
       <CategoryBox>
         <AreaBox onClick={toggleDropdown}>
-          <LocationIcon />
+          <BigLocationIcon />
           &nbsp; {selectedArea}&nbsp;
           <BottomArrowIcon />
           {showDropdown && (
