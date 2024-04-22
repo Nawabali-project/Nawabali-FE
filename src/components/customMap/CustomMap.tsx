@@ -196,7 +196,10 @@ const MyLocationBtn = styled.div`
   position: absolute;
   left: 15px;
   top: 15px;
-  padding: 5px 6px 3px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
   border: 1px solid #c2c2c2;
   border-radius: 100px;
   background: white;

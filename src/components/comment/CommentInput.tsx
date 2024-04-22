@@ -16,7 +16,7 @@ const CommentInput = ({ postId }: { postId: number }) => {
       setNewComment('');
     },
     onError: (error: any) => {
-      if (error.response.status === 500) {
+      if (error.response.status === 403) {
         alert('댓글작성은 로그인 후 이용 가능합니다 :)');
       }
     },

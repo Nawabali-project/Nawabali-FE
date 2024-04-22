@@ -128,6 +128,9 @@ const ContentsBox = styled.div`
   padding: 5px 0px;
   color: gray;
   font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const FeedTotalBox = styled.div`

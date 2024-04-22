@@ -23,11 +23,15 @@ interface FormValue {
   latitude: number;
   longitude: number;
   district: string;
+  placeName: string;
+  placeAddr: string;
 }
 
 const CreatePostModal: React.FC<CreatePostProps> = (props) => {
-  const { register, handleSubmit, setValue, watch } = useForm<FormValue>();
+  const { register, handleSubmit, setValue } = useForm<FormValue>();
   const [, setImages] = useState<File[]>([]);
+  const [content, setContent] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const handleCloseModal = () => {
     props.setIsAddPostModalOpen(false);
@@ -42,14 +46,20 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     latitude: number,
     longitude: number,
     district: string,
+    placeName: string,
+    placeAddr: string,
   ) => {
     setValue('latitude', latitude);
     setValue('longitude', longitude);
     setValue('district', district);
+    setValue('placeName', placeName);
+    setValue('placeAddr', placeAddr);
   };
 
+  // 카테고리 클릭
   const handleCategoryClick = (category: string) => {
     setValue('category', category);
+    setSelectedCategory(category);
   };
 
   // 게시글 생성 통신
@@ -80,6 +90,8 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       latitude: data.latitude,
       longitude: data.longitude,
       district: data.district,
+      placeName: data.placeName,
+      placeAddr: data.placeAddr,
     };
 
     formData.append('requestDto', JSON.stringify(requestDto));
@@ -115,7 +127,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
                   src={localStorage.getItem('profileImageUrl') ?? undefined}
                 />
               </ProfileBox>
-              <NickName>{localStorage.getItem('nickname')}</NickName>
+              <NickName>{localStorage.getItem('nickname')} </NickName>
               <CloseBox onClick={handleCloseModal}>취소</CloseBox>
               <SubmitInput type="submit" value="업로드" />
             </ContentHeader>
@@ -124,36 +136,45 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               cols={10}
               rows={5}
               placeholder="문구를 입력해주세요..."
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+                setValue('contents', e.target.value);
+              }}
             />
+            <CharacterCount>{content.length}/500</CharacterCount>
             <CategorySelectInfo>
               1개의 카테고리를 선택해주세요.
             </CategorySelectInfo>
             <CategoryBox>
               <CategoryButton
                 type="button"
-                isSelected={watch('category') === 'FOOD'}
+                isSelected={selectedCategory === 'FOOD'}
                 onClick={() => handleCategoryClick('FOOD')}
+                color="#FE6847"
               >
                 맛집
               </CategoryButton>
               <CategoryButton
                 type="button"
-                isSelected={watch('category') === 'CAFE'}
+                isSelected={selectedCategory === 'CAFE'}
                 onClick={() => handleCategoryClick('CAFE')}
+                color="#9BCF53"
               >
                 카페
               </CategoryButton>
               <CategoryButton
                 type="button"
-                isSelected={watch('category') === 'PHOTOZONE'}
+                isSelected={selectedCategory === 'PHOTOZONE'}
                 onClick={() => handleCategoryClick('PHOTOZONE')}
+                color="#00A3FF"
               >
                 사진스팟
               </CategoryButton>
             </CategoryBox>
             <KaKaoMap
               width="100%"
-              height="240px"
+              height="285px"
               onLocationChange={handleLocationChange}
             />
           </ContentBox>
@@ -162,6 +183,14 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     </Modal>
   );
 };
+
+const CharacterCount = styled.div`
+  text-align: right;
+  margin: 0px 35px 0px 0px;
+  color: gray;
+  font-size: 12px;
+  padding-right: 10px;
+`;
 
 const CategorySelectInfo = styled.div`
   color: gray;
@@ -188,7 +217,7 @@ const ImageBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 500px;
-  height: 600px;
+  height: 620px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   overflow: hidden;
@@ -199,9 +228,11 @@ const ImageBox = styled.div`
 
   .preview {
     width: 500px;
-    height: 600px;
+    height: 620px;
     margin: auto;
     background-color: #f1f1f1;
+    border-top-left-radius: 150px;
+    border-bottom-right-radius: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -285,7 +316,8 @@ const CategoryBox = styled.div`
 `;
 
 const CategoryButton = styled.button<CategoryButtonProps>`
-  background-color: ${(props) => (props.isSelected ? '#dfdfdf' : 'white')};
+  background-color: ${(props) => (props.isSelected ? props.color : 'white')};
+  color: ${(props) => (props.isSelected ? 'white' : 'black')};
   border: 2px solid #dfdfdf;
   border-radius: 10px;
   padding: 5px 10px;

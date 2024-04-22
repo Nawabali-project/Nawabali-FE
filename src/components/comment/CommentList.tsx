@@ -92,6 +92,12 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
     setIsEditing((prev) => ({ ...prev, [commentId]: false }));
   };
 
+  const handleKeyPress = (event: any, commentId: number) => {
+    if (event.key === 'Enter') {
+      handleEditConfirm(commentId);
+    }
+  };
+
   const editCommentMutation = useMutation({
     mutationFn: ({
       commentId,
@@ -177,6 +183,7 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
                     onChange={(e) =>
                       handleChange(post.commentId, e.target.value)
                     }
+                    onKeyDown={(e) => handleKeyPress(e, post.commentId)}
                   />
                 )}
               </div>
@@ -212,14 +219,14 @@ const EditDelete = styled.div`
 `;
 
 const InfoComment = styled.div`
-  padding: 100px 0px 0px 160px;
+  padding: 120px 0px 0px 160px;
   font-size: 12px;
   color: gray;
 `;
 
 const CommentsBox = styled.div`
   width: 440px;
-  height: 220px;
+  height: 270px;
   padding: 0px 10px 0px 30px;
   border-bottom: 1px solid #f1f1f1;
   overflow-y: auto;
