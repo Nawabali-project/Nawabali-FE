@@ -9,7 +9,8 @@ export interface PostItem {
   longitude: number | null;
   createdAt: string;
   modifiedAt: string;
-  imageUrls: string[];
+  mainImageUrl: 'string';
+  multiImages: true;
   likesCount: number;
   localLikesCount: number;
   commentCount: number;
