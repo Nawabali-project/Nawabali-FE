@@ -78,7 +78,7 @@ const FeedList = ({
               </UserGrade>
             </UserInfoBox>
             <ImgBox onClick={() => handlePostClick(post)}>
-              <img src={post.imageUrls?.[0]} alt="Post Image" />
+              <img src={post.mainImageUrl} alt="Post Image" />
               <PostType category={post.category}>
                 {post.category === 'FOOD'
                   ? '맛집'
