@@ -1,6 +1,6 @@
 import { CommentIcon, LikeIcon } from '@/utils/icons';
 import styled from 'styled-components';
-import { getPosts, getPostsByFilter } from '@/api/post';
+import { getPostsByFilter } from '@/api/post';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { useState, useEffect } from 'react';
@@ -8,13 +8,7 @@ import DetailPostModal from '../modal/DetailPostModal';
 import { Post } from '@/interfaces/main/posts.interface';
 import { LocationIcon } from '@/utils/icons';
 
-const FeedList = ({
-  category,
-  district,
-}: {
-  category: any;
-  district: string;
-}) => {
+const FeedList = ({ category, district }: { category: any; district: any }) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -23,11 +17,10 @@ const FeedList = ({
     setIsDetailPostModalOpen(true);
   };
   const { ref, inView } = useInView();
-
-  const queryFn =
-    category || district
-      ? () => getPostsByFilter({ pageParam: 0, category, district })
-      : getPosts;
+  const effectiveDistrict =
+    district && district !== '서울특별시'
+      ? district.replace('서울특별시 ', '')
+      : null;
 
   const {
     data,
@@ -38,11 +31,16 @@ const FeedList = ({
     hasNextPage,
   } = useInfiniteQuery({
     queryKey: ['scrollPosts', category, district],
-    queryFn,
+    queryFn: ({ pageParam = 0 }) =>
+      getPostsByFilter({
+        pageParam,
+        category: category,
+        district: effectiveDistrict,
+      }),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.data?.content.length > 0) {
-        return allPages.length;
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.data.last) {
+        return lastPage.data.number + 1;
       }
       return undefined;
     },
@@ -52,7 +50,7 @@ const FeedList = ({
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      console.log('Fire!');
+      console.log('다음 페이지 로딩 중...');
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
@@ -67,9 +65,12 @@ const FeedList = ({
 
   return (
     <>
-      {data?.pages.map((page: any) =>
+      {data?.pages.map((page: any, pageIndex) =>
         page.data?.content.map((post: any) => (
-          <FeedTotalBox ref={ref} key={post.postId}>
+          <FeedTotalBox
+            ref={pageIndex === data.pages.length - 1 ? ref : null}
+            key={post.postId}
+          >
             <UserInfoBox>
               <UserImg src={post.profileImageUrl} />
               <UserName>{post.nickname}</UserName>
@@ -78,7 +79,7 @@ const FeedList = ({
               </UserGrade>
             </UserInfoBox>
             <ImgBox onClick={() => handlePostClick(post)}>
-              <img src={post.mainImageUrl} alt="Post Image" />
+              <img src={post.mainImageUrl} alt="게시물 이미지" />
               <PostType category={post.category}>
                 {post.category === 'FOOD'
                   ? '맛집'
@@ -86,7 +87,7 @@ const FeedList = ({
                     ? '카페'
                     : post.category === 'PHOTOZONE'
                       ? '사진'
-                      : ' '}
+                      : ''}
               </PostType>
             </ImgBox>
             <LikeCommentBox>
@@ -103,7 +104,6 @@ const FeedList = ({
           </FeedTotalBox>
         )),
       )}
-
       {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
           postId={selectedPost.postId}

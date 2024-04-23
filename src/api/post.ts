@@ -57,7 +57,7 @@ export const getPostsByFilter = async ({
 }) => {
   let params = {
     page: String(pageParam),
-    size: '5',
+    size: '10',
     sort: ['string'],
   };
 
