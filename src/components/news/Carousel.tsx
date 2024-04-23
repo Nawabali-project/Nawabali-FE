@@ -113,7 +113,7 @@ function Carousel() {
               return (
                 <ImageContainer key={idx}>
                   <MemoizedPost
-                    $backgroundImage={item.imageUrls[0]}
+                    $backgroundImage={item.mainImageUrl}
                     $isCenter={isCenter}
                     $position={position}
                     $currentSlide={currentSlide}

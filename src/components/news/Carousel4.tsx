@@ -176,7 +176,7 @@ function Carousel4() {
           <StyledSlider ref={slickRef} {...settings}>
             {carouselPosts?.content.map((item: PostItem, idx: number) => (
               <ImageContainer key={idx}>
-                <Post $backgroundImage={item.imageUrls[0]} />
+                <Post $backgroundImage={item.mainImageUrl} />
               </ImageContainer>
             ))}
             {[...Array(emptySlidesCount)].map((_, idx) => (

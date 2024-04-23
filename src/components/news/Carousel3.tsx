@@ -139,7 +139,7 @@ function Carousel3() {
               </span>
             </s.Row>
             <div style={{ position: 'relative' }}>
-              <Post $backgroundImage={item.imageUrls[0]} />
+              <Post $backgroundImage={item.mainImageUrl} />
 
               <s.PostType $category={item.category}>
                 {item.category === 'FOOD'

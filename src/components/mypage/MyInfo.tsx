@@ -211,8 +211,8 @@ const MyInfo = () => {
           page.data.content.map((post: any) => (
             <FeedTotalBox ref={ref} key={post.postId}>
               <ImgBox onClick={() => handlePostClick(post)}>
-                <img src={post.imageUrls?.[0]} alt="Post Image" />
-                {post.imageUrls && post.imageUrls.length >= 2 && (
+                <img src={post.mainImageUrl} alt="Post Image" />
+                {post.multiImages && (
                   <PostsIcon>
                     <BsFiles size={'25px'} />
                   </PostsIcon>
