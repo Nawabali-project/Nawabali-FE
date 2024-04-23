@@ -41,12 +41,12 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   const [editingContent, setEditingContent] = useState('');
   const [isPostEditing, setIsPostEditing] = useState(false);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
   // 경고창 열기
-  const showAlertModal = (message: string) => {
+  const showAlertModal = (message: React.ReactNode) => {
     setAlertMessage(message);
     setIsAlertModalOpen(true);
   };
@@ -152,9 +152,17 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
       setIsLocalLiked(!isLocalLiked);
       setLocalLikesCount(localLikesCount - 1);
       if (error.response.status === 403) {
-        showAlertModal('주민추천은 로그인 후 이용 가능합니다 :)');
+        showAlertModal([
+          '앗, 주민추천은',
+          <br />,
+          '로그인 후 이용 가능합니다 :)',
+        ]);
       } else if (error.response.status === 400) {
-        showAlertModal('해당 게시물 동네주민만 누를 수 있어요!');
+        showAlertModal([
+          '앗, 주민추천은',
+          <br />,
+          '동네주민만 누를 수 있어요!',
+        ]);
       }
     },
   });
@@ -173,7 +181,11 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
       setIsLiked(!isLiked);
       setLikesCount(likesCount - 1);
       if (error.response.status === 403) {
-        showAlertModal('좋아요는 로그인 후 이용 가능합니다 :)');
+        showAlertModal([
+          '앗, 좋아요는',
+          <br />,
+          '로그인 후 이용 가능합니다 :)',
+        ]);
       }
     },
   });
@@ -191,7 +203,11 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onError: (error: any) => {
       setIsBookmarked(!isBookmarked);
       if (error.response.status === 403) {
-        showAlertModal('북마크는 로그인 후 이용 가능합니다 :)');
+        showAlertModal([
+          '앗, 북마크는',
+          <br />,
+          '로그인 후 이용 가능합니다 :)',
+        ]);
       }
     },
   });
@@ -218,7 +234,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
 
   return (
     <>
-      <Modal onClose={handleCloseModal}>
+      <Modal onClose={handleCloseModal} isAlertModalOpen={isAlertModalOpen}>
         <CloseBox onClick={handleCloseModal}>
           <CloseIcon />
         </CloseBox>

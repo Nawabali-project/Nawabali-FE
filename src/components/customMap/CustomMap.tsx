@@ -24,7 +24,8 @@ interface Post {
   postId: number;
   profileImageUrl: string;
   nickname: string;
-  imageUrls: string[];
+  mainImageUrl: string;
+  multiImages: boolean;
   category: string;
   likesCount: number;
   commentCount: number;
@@ -156,7 +157,7 @@ const CustomMap = ({
         let content = `
           <div style="box-shadow: 3px 3px 6px rgba(86, 86, 86, 0.5); cursor: pointer; border: 3px solid ${borderColor}; border-radius: 10px; width: 60px; height: 60px; overflow: hidden; display: flex; justify-content: center; align-items: center;"
               onclick="window.handlePostClick(${post.postId})">
-            <img src="${post.imageUrls[0]}" style="width: 100%; height: auto; min-height: 100%; object-fit: cover; pointer-events: none;" alt="" />
+            <img src="${post.mainImageUrl}" style="width: 100%; height: auto; min-height: 100%; object-fit: cover; pointer-events: none;" alt="" />
           </div>
         `;
         let customOverlay = new window.kakao.maps.CustomOverlay({

@@ -4,26 +4,27 @@ import styled, { css } from 'styled-components';
 interface ModalProps {
   children?: React.ReactNode;
   size?: 'regular' | 'auth';
-  onClose?: () => void; // 모달을 닫는 함수를 선택적 프롭으로 추가
+  onClose?: () => void;
+  isAlertModalOpen: any;
 }
 
 const Modal: React.FC<ModalProps> = ({
   size = 'regular',
   children,
   onClose,
+  isAlertModalOpen,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    // onClose가 제공되지 않은 경우 외부 클릭 이벤트를 추가하지 않습니다.
     if (!onClose) return;
 
     const handleClickOutside = (event: MouseEvent) => {
       if (
         modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
+        !modalRef.current.contains(event.target as Node) &&
+        !isAlertModalOpen
       ) {
-        onClose(); // 모달 외부 클릭 시 onClose 실행
+        onClose();
       }
     };
 
@@ -31,7 +32,7 @@ const Modal: React.FC<ModalProps> = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, isAlertModalOpen]);
 
   return (
     <ModalWrapper>
