@@ -57,6 +57,10 @@ export const router = createBrowserRouter([
         path: '/chat',
         element: <ChatMain />,
       },
+      {
+        path: '/*',
+        element: <MapPage />,
+      },
 
       {
         path: '/mypage2',
