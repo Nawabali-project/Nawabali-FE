@@ -13,6 +13,7 @@ import {
 } from '@/api/news';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CategoryData, PostItem } from '@/interfaces/main/news.interface';
+import { useNavigate } from 'react-router-dom';
 
 function useFetchPosts(district: string) {
   const queryParams = {
@@ -41,10 +42,12 @@ function Carousel4() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [categoryData, setCategoryData] = useState<CategoryData[]>([]);
   const [maxCategory, setMaxCategory] = useState<string>('');
+  const [maxCategoryKorean, setMaxCategoryKorean] = useState<string>('');
   const district = localStorage.getItem('district')!;
   const { data: categoryCounts } = useFetchPosts(district);
   const { data: carouselPosts } = useFetchCarouslPosts(district, maxCategory);
   const slickRef = useRef<Slider | null>(null);
+  const navigate = useNavigate();
 
   const totalSlides = 7;
   const actualSlides = carouselPosts?.content.length || 0;
@@ -76,6 +79,12 @@ function Carousel4() {
     },
   };
 
+  const goToPosts = () => {
+    navigate(
+      `/listpage?district=${encodeURIComponent(district)}&category=${encodeURIComponent(maxCategory)}`,
+    );
+  };
+
   const findMaxPostCategory = (
     categoryCounts: CategoryData[] | undefined,
   ): string => {
@@ -95,12 +104,13 @@ function Carousel4() {
     if (categoryCounts && categoryCounts.length > 0) {
       setCategoryData(categoryCounts);
       const maxCat = findMaxPostCategory(categoryCounts);
+      setMaxCategory(maxCat);
       if (maxCat === 'FOOD') {
-        setMaxCategory('맛집이');
+        setMaxCategoryKorean('맛집이');
       } else if (maxCat === 'CAFE') {
-        setMaxCategory('카페가');
+        setMaxCategoryKorean('카페가');
       } else {
-        setMaxCategory('사진스팟이');
+        setMaxCategoryKorean('사진스팟이');
       }
     }
   }, [categoryCounts]);
@@ -120,7 +130,7 @@ function Carousel4() {
               <span style={{ fontSize: '9px' }}>우리동네 대표 카테고리</span>
               <s.Col>
                 <s.TitleSpan>
-                  {district}는 {maxCategory}
+                  {district}는 {maxCategoryKorean}
                 </s.TitleSpan>
                 <s.TitleSpan>활성화 된 동네예요!</s.TitleSpan>
               </s.Col>
@@ -162,6 +172,7 @@ function Carousel4() {
                 color: '#707070',
                 textDecoration: 'underLine',
               }}
+              onClick={goToPosts}
             >
               게시물 보러가기
             </span>

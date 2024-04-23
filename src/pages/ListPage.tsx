@@ -13,13 +13,26 @@ import {
   BigLocationIcon,
 } from '@/utils/icons';
 import styled from 'styled-components';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import FeedList from '@/components/feedList/FeedList';
 
 const ListPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const district = `서울특별시 ${query.get('district')}`;
+  const category = query.get('category');
+
+  useEffect(() => {
+    if (district) {
+      setSelectedArea(district);
+    }
+    if (category) {
+      setClickedKind(category);
+    }
+  }, [district, category]);
 
   const handleKindClick = (kind: string) => {
     setClickedKind(clickedKind === kind ? null : kind);

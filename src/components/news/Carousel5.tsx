@@ -12,10 +12,14 @@ import {
   useGetAllPostsByDistrictOrCategory,
   useGetCountOfPostsByDistrict,
 } from '@/api/news';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { CarouselProps, PostItem } from '@/interfaces/main/news.interface';
+import DetailPostModal from '../modal/DetailPostModal';
 
 function Carousel5({ iconCategory, category }: CarouselProps) {
+  const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
+    useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
   const slickRef = useRef<Slider | null>(null);
   const {
     data: bestDistrict,
@@ -34,6 +38,11 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
   );
 
   const safeData = bestDistrict || { district: '', postCount: 0, content: [] };
+
+  const handlePostClick = (item: PostItem) => {
+    setSelectedPost(item);
+    setIsDetailPostModalOpen(true);
+  };
 
   const previous = useCallback(() => {
     if (slickRef.current) {
@@ -153,6 +162,7 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
                     cursor: 'pointer',
                     marginRight: '5px',
                   }}
+                  onClick={() => handlePostClick(item)}
                 >
                   게시물 보러가기
                 </span>
@@ -160,6 +170,12 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
             </ImageContainer>
           ))}
       </StyledSlider>
+      {isDetailPostModalOpen && selectedPost && (
+        <DetailPostModal
+          postId={selectedPost.postId}
+          setIsDetailPostModalOpen={setIsDetailPostModalOpen}
+        />
+      )}
     </>
   );
 }

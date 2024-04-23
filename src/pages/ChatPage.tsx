@@ -8,6 +8,7 @@ import NoChat from '@/components/chat/NoChat';
 
 function ChatMain() {
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [selectedRoomName, setSelectedRoomName] = useState<string>('');
   const [stompClient, setStompClient] = useState<Client | null>(null);
 
   useEffect(() => {
@@ -48,9 +49,17 @@ function ChatMain() {
         justifyContent: 'center',
       }}
     >
-      <ChatRoomsList onRoomSelect={setSelectedRoomId} client={stompClient} />
+      <ChatRoomsList
+        onRoomSelect={setSelectedRoomId}
+        onRoomNameSelect={setSelectedRoomName}
+        client={stompClient}
+      />
       {selectedRoomId ? (
-        <ChatRoom roomId={selectedRoomId} client={stompClient} />
+        <ChatRoom
+          roomId={selectedRoomId}
+          roomName={selectedRoomName}
+          client={stompClient}
+        />
       ) : (
         <NoChat />
       )}
