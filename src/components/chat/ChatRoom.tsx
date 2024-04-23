@@ -1,24 +1,42 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client, Message } from '@stomp/stompjs';
-import { showChat } from '@/api/chat';
+import { searchUserByNickname, showChat } from '@/api/chat';
 import { Cookies } from 'react-cookie';
 import {
   MessageForm,
   MessageType,
   ReturnedMessageForm,
+  User,
 } from '@/interfaces/chat/chat.interface';
 import styled from 'styled-components';
 
-export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
-  roomId,
-  client,
-}) => {
+export const ChatRoom: React.FC<{
+  roomId: number;
+  roomName: string;
+  client: Client | null;
+}> = ({ roomId, roomName, client }) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const accessToken = new Cookies().get('accessToken');
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const stompClient = client;
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const user = await searchUserByNickname(roomName);
+        setUserInfo(user[0]);
+      } catch (error) {
+        console.error('Failed to fetch user info', error);
+      }
+    };
+
+    if (roomName) {
+      fetchUserInfo();
+    }
+  }, [roomName]);
 
   useEffect(() => {
     if (roomId && client) {
@@ -26,7 +44,6 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
         console.error('WebSocket connection is not active.');
         return;
       }
-
       const headers = {
         Authorization: `Bearer ${accessToken}`,
       };
@@ -66,12 +83,22 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
     fetchMessages();
   }, [roomId]);
 
-  const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    const chatDiv = chatEndRef.current?.parentElement as HTMLElement | null;
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!chatDiv) return;
+      event.preventDefault();
+      const { deltaY } = event;
+      chatDiv.scrollTop += deltaY > 0 ? -100 : 100;
+    };
+
+    chatDiv?.addEventListener('wheel', handleWheel);
+
+    return () => {
+      chatDiv?.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -100,17 +127,31 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
 
   return (
     <ChatContainer>
-      <UserInfo></UserInfo>
+      {roomName && userInfo && (
+        <UserInfo>
+          <UserProfileImg src={userInfo.imgUrl} alt={`${roomName}의 프로필`} />
+          <h3>{roomName}</h3>
+        </UserInfo>
+      )}
       <Chat>
         {messages.map((msg, index) =>
           msg.sender === myNickname ? (
-            <MyMessage key={index}>
-              {msg.message} ({new Date(msg.createdAt).toLocaleString()})
-            </MyMessage>
+            <Row>
+              <ProfileImg
+                src={localStorage.getItem('profileImageUrl')!}
+                alt="내 프로필"
+              />
+              <MyMessage key={index}>
+                {msg.message} ({new Date(msg.createdAt).toLocaleString()})
+              </MyMessage>
+            </Row>
           ) : (
-            <OtherMessage key={index}>
-              {msg.message} {new Date(msg.createdAt).toLocaleString()}
-            </OtherMessage>
+            <Row>
+              <ProfileImg src={userInfo!.imgUrl} alt={`상대방 프로필`} />
+              <OtherMessage key={index}>
+                {msg.message} {new Date(msg.createdAt).toLocaleString()}
+              </OtherMessage>
+            </Row>
           ),
         )}
         <div ref={chatEndRef} />
@@ -136,16 +177,24 @@ export const ChatRoom: React.FC<{ roomId: number; client: Client | null }> = ({
 
 export default ChatRoom;
 
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 const ChatContainer = styled.div`
   margin-top: 100px;
   margin-left: 20px;
-  height: 740px;
+  height: 750px;
   width: 60vw;
   background-color: white;
   border-radius: 20px;
 `;
 
 const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
   height: 100px;
   border-bottom: 1px solid #cccccc;
 `;
@@ -156,6 +205,7 @@ const Chat = styled.div`
   height: 550px;
   overflow: auto;
   padding: 0 20px 20px;
+  transform: scaleY(-1);
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -170,24 +220,26 @@ const Chat = styled.div`
 `;
 
 const MyMessage = styled.div`
-  width: 400px;
-  background-color: #f0f0f0;
+  width: 300px;
+  background-color: #00a3ff;
   padding: 5px;
+  color: white;
   border-radius: 8px;
   align-self: flex-start;
+  transform: scaleY(-1);
 `;
 
 const OtherMessage = styled.div`
-  width: 400px;
-  background-color: #00a3ff;
+  width: 300px;
+  background-color: #f0f0f0;
   padding: 5px;
   border-radius: 8px;
-  color: white;
   align-self: flex-end;
+  transform: scaleY(-1);
 `;
 
 const InputDiv = styled.div`
-  width: 730px;
+  width: 90%;
   height: 30px;
   border: 1px solid #cccccc;
   border-radius: 15px;
@@ -195,10 +247,10 @@ const InputDiv = styled.div`
   justify-content: flex-start;
   align-items: center;
   padding: 0 10px;
-  margin: 10px auto 0;
+  margin: 30px auto 10px;
 
   input {
-    width: 550px;
+    width: 100%;
     border: none;
     font-size: 13px;
     &:focus {
@@ -209,4 +261,22 @@ const InputDiv = styled.div`
   input::placeholder {
     color: #cccccc;
   }
+`;
+
+const UserProfileImg = styled.img`
+  width: 70px;
+  height: 70px;
+  border: 1px solid #d9d9d9;
+  background-size: cover;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
+const ProfileImg = styled.img`
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d9d9d9;
+  background-size: cover;
+  border-radius: 50%;
+  margin-right: 10px;
 `;

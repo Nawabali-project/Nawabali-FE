@@ -74,7 +74,6 @@ export const sendMessage = (client: Client, messageForm: MessageForm) => {
 export const showChat = async (roomId: number) => {
   try {
     const response = await authInstance.get(`/chat/room/${roomId}/message`);
-    console.log('처음데이터: ', response);
     return response.data;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;

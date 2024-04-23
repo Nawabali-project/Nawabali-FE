@@ -64,6 +64,7 @@ const Header: React.FC = () => {
   };
   const handleSearchBlur = () => {
     setSearchFocused(false);
+    setContent('');
   };
 
   const handleOpenDetailModal = (postId: number) => {
@@ -223,7 +224,7 @@ const SearchDiv = styled.div`
   padding: 0 10px;
 
   input {
-    width: 230px;
+    width: 250px;
     border: none;
     font-size: 13px;
     &:focus {

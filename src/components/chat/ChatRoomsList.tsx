@@ -18,8 +18,9 @@ import Button from '../button/Button';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
+  onRoomNameSelect: (roomName: string) => void;
   client: Client | null;
-}> = ({ onRoomSelect, client }) => {
+}> = ({ onRoomSelect, onRoomNameSelect, client }) => {
   const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [userNickname, setUserNickname] = useState('');
@@ -84,7 +85,7 @@ export const ChatRoomsList: React.FC<{
     }
   };
 
-  const handleRoomClick = (roomId: number) => {
+  const handleRoomClick = (roomId: number, roomName: string) => {
     if (client) {
       const messageForm = {
         sender: localStorage.getItem('nickname')!,
@@ -95,6 +96,7 @@ export const ChatRoomsList: React.FC<{
       };
       setSelectedRoomId(roomId);
       onRoomSelect(roomId);
+      onRoomNameSelect(roomName);
       enterChatRoom(client, messageForm);
       console.log('채팅방 입장');
     }
@@ -113,28 +115,21 @@ export const ChatRoomsList: React.FC<{
           />
         </SearchDiv>
         {searchResults.length > 0 && (
-          <div
-            style={{
-              marginTop: '10px',
-              backgroundColor: '#fff',
-              padding: '0 10px 10px',
-              borderRadius: '5px',
-            }}
-          >
+          <SearchedUserDiv>
             {searchResults.map((user: User, index: number) => (
               <div key={index} onClick={() => handleSelectUser(user.nickname)}>
                 <Row>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <UserNicknamesDiv>
                     <ProfileImg $profileImg={user.imgUrl} />
                     {user.nickname}
-                  </div>
+                  </UserNicknamesDiv>
                   <Button size="chat" onClick={handleCreateRoom}>
                     채팅 생성
                   </Button>
                 </Row>
               </div>
             ))}
-          </div>
+          </SearchedUserDiv>
         )}
       </div>
       <div>
@@ -152,12 +147,10 @@ export const ChatRoomsList: React.FC<{
             <ChatRooms
               key={room.roomId}
               $isSelected={selectedRoomId === room.roomId}
-              onClick={() => handleRoomClick(room.roomId)}
+              onClick={() => handleRoomClick(room.roomId, room.roomName)}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                {room.imgUrls && room.imgUrls[0] && (
-                  <ProfileImg $profileImg={room.imgUrls[0]} />
-                )}
+                <ProfileImg $profileImg={room.imgUrls[0]} />
                 <span>{room.roomName}</span>
               </div>
             </ChatRooms>
@@ -176,10 +169,14 @@ const Col = styled.div`
 `;
 
 const Row = styled.div`
+  width: 280px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  &:hover {
+    background-color: #e9e9e9;
+  }
 `;
 
 const ChatList = styled.div`
@@ -188,8 +185,7 @@ const ChatList = styled.div`
   margin: 100px 0 0 100px;
   background-color: white;
   border-radius: 20px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -210,22 +206,22 @@ const ProfileImg = styled.div<{ $profileImg: string }>`
   border-radius: 50%;
   border: 1px solid #d9d9d9;
   background-size: cover;
-  margin-right: 10px;
-  margin-left: 10px;
+  margin: 0 10px;
 `;
 
 const SearchDiv = styled.div`
   border: 1px solid gray;
   border-radius: 15px;
   height: 30px;
-  width: 250px;
+  width: 260px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 10px 0 5px;
+  margin: 0 auto;
 
   input {
-    width: 230px;
+    width: 250px;
     border: none;
     font-size: 13px;
     &:focus {
@@ -237,7 +233,22 @@ const SearchDiv = styled.div`
 const ChatRooms = styled.div<ChatRoomProps>`
   width: 300px;
   height: 50px;
-  background-color: ${(props) => (props.$isSelected ? '#F9F9F9' : 'white')};
+  background-color: ${(props) => (props.$isSelected ? '#e9e9e9' : 'white')};
   cursor: pointer;
   line-height: 50px;
+  &:hover {
+    background-color: #e9e9e9;
+  }
+`;
+
+const SearchedUserDiv = styled.div`
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 10px 0;
+`;
+
+const UserNicknamesDiv = styled.div`
+  width: 200px;
+  display: flex;
+  align-items: center;
 `;

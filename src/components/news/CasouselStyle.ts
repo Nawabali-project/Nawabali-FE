@@ -36,7 +36,7 @@ export const InnerSpan = styled.span`
 export const PostType = styled.div<{ $category: string }>`
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 15px;
   padding: 3px 10px;
   background-color: ${(props) => {
     switch (props.$category) {

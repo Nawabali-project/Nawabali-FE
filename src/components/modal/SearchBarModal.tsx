@@ -21,27 +21,25 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <ModalDiv $isOpen={$isOpen}>
-      <div>
-        <StyledUl>
-          {isLoading ? (
-            <li>Loading...</li>
-          ) : isError ? (
-            <li>Error: {error.message}</li>
-          ) : (
-            posts &&
-            posts.length > 0 &&
-            posts.map((post: Post) => (
-              <li
-                style={{ cursor: 'pointer' }}
-                onMouseDown={() => onPostSelect(post.postId)}
-                key={post.id}
-              >
-                {post.contents}
-              </li>
-            ))
-          )}
-        </StyledUl>
-      </div>
+      <StyledUl>
+        {isLoading ? (
+          <StyledLi>Loading...</StyledLi>
+        ) : isError ? (
+          <StyledLi>Error: {error.message}</StyledLi>
+        ) : (
+          posts &&
+          posts.length > 0 &&
+          posts.map((post: Post) => (
+            <StyledLi
+              style={{ cursor: 'pointer' }}
+              onMouseDown={() => onPostSelect(post.postId)}
+              key={post.id}
+            >
+              {post.contents}
+            </StyledLi>
+          ))
+        )}
+      </StyledUl>
     </ModalDiv>
   );
 };
@@ -78,9 +76,15 @@ const slideDown = keyframes`
   }
 `;
 
-const StyledUl = styled.ul`
-  li {
-    list-style-type: none;
-    margin-bottom: 5px;
+const StyledUl = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledLi = styled.span`
+  padding: 10px;
+
+  &:hover {
+    background-color: #e9e9e9;
   }
 `;
