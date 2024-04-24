@@ -55,7 +55,7 @@ export const ChatRoom: React.FC<{
             const parsedMessage = JSON.parse(message.body);
             const receivedMessage: ReturnedMessageForm = {
               ...parsedMessage,
-              createdAt: new Date(),
+              createdMessageAt: new Date(parsedMessage.createdMessageAt),
             };
             console.log('Received message:', receivedMessage);
             setMessages((prevMessages) => [...prevMessages, receivedMessage]);
@@ -84,21 +84,15 @@ export const ChatRoom: React.FC<{
   }, [roomId]);
 
   useEffect(() => {
-    const chatDiv = chatEndRef.current?.parentElement as HTMLElement | null;
-
-    const handleWheel = (event: WheelEvent) => {
-      if (!chatDiv) return;
-      event.preventDefault();
-      const { deltaY } = event;
-      chatDiv.scrollTop += deltaY > 0 ? -100 : 100;
+    const scrollToBottom = () => {
+      const chatDiv = chatEndRef.current?.parentElement as HTMLElement | null;
+      if (chatDiv) {
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+      }
     };
 
-    chatDiv?.addEventListener('wheel', handleWheel);
-
-    return () => {
-      chatDiv?.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -136,20 +130,21 @@ export const ChatRoom: React.FC<{
       <Chat>
         {messages.map((msg, index) =>
           msg.sender === myNickname ? (
-            <Row>
+            <Row key={index} style={{ alignSelf: 'flex-end' }}>
               <ProfileImg
                 src={localStorage.getItem('profileImageUrl')!}
                 alt="내 프로필"
               />
-              <MyMessage key={index}>
-                {msg.message} ({new Date(msg.createdAt).toLocaleString()})
+              <MyMessage>
+                <span>{msg.message}</span>
+                <span>({new Date(msg.createdMessageAt).toLocaleString()})</span>
               </MyMessage>
             </Row>
           ) : (
-            <Row>
+            <Row key={index} style={{ alignSelf: 'flex-start' }}>
               <ProfileImg src={userInfo!.imgUrl} alt={`상대방 프로필`} />
-              <OtherMessage key={index}>
-                {msg.message} {new Date(msg.createdAt).toLocaleString()}
+              <OtherMessage>
+                {msg.message} {new Date(msg.createdMessageAt).toLocaleString()}
               </OtherMessage>
             </Row>
           ),
@@ -220,12 +215,14 @@ const Chat = styled.div`
 `;
 
 const MyMessage = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   width: 300px;
   background-color: #00a3ff;
   padding: 5px;
   color: white;
   border-radius: 8px;
-  align-self: flex-start;
   transform: scaleY(-1);
 `;
 
@@ -234,7 +231,6 @@ const OtherMessage = styled.div`
   background-color: #f0f0f0;
   padding: 5px;
   border-radius: 8px;
-  align-self: flex-end;
   transform: scaleY(-1);
 `;
 
