@@ -9,24 +9,26 @@ const ScorePage = () => {
   return (
     <Layout>
       <CategoryBox>
-        <ThreeComponentBox>
-          <FourCategory onClick={() => navigate('/')}>
-            <MapIcon />
-            &nbsp;지도
-          </FourCategory>
-          <FourCategory onClick={() => navigate('/listpage')}>
-            <ListIcon />
-            &nbsp;리스트
-          </FourCategory>
-          <FourCategory>
-            <GlobalBlackIcon />
-            <SelectedPageComment>&nbsp;동네별 활동점수</SelectedPageComment>
-          </FourCategory>
-          <FourCategory onClick={() => navigate('/newspage')}>
-            <StarIcon />
-            &nbsp;동네소식
-          </FourCategory>
-        </ThreeComponentBox>
+        <SecondHeader>
+          <ThreeComponentBox>
+            <FourCategory onClick={() => navigate('/')}>
+              <MapIcon />
+              &nbsp;지도
+            </FourCategory>
+            <FourCategory onClick={() => navigate('/listpage')}>
+              <ListIcon />
+              &nbsp;리스트
+            </FourCategory>
+            <FourCategory>
+              <GlobalBlackIcon />
+              <SelectedPageComment>&nbsp;동네별 활동점수</SelectedPageComment>
+            </FourCategory>
+            <FourCategory onClick={() => navigate('/newspage')}>
+              <StarIcon />
+              &nbsp;동네소식
+            </FourCategory>
+          </ThreeComponentBox>
+        </SecondHeader>
       </CategoryBox>
       <Score />
     </Layout>
@@ -34,13 +36,26 @@ const ScorePage = () => {
 };
 
 const Layout = styled.div`
-  padding-top: 61.25px;
+  padding-top: 111px;
+`;
+
+const SecondHeader = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 1280px;
 `;
 
 const CategoryBox = styled.div`
+  position: fixed;
+  top: 61.25px;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-evenly;
-  height: 50px;
+  background-color: white;
+  height: 65px;
+  z-index: 9;
 `;
 
 const ThreeComponentBox = styled.div`

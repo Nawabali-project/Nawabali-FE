@@ -82,16 +82,33 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       showAlertModal('게시글 작성이 완료되었어요 :)');
       queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
     },
-    onError: (error: any) => {
-      if (error.response.status === 400) {
-        setAlertType('error');
-        showAlertModal('게시글 형식을 모두 작성해주세요 :)');
-      }
-    },
+    onError: () => {},
   });
 
   // 생성 form 제출
   const onSubmitHandler: SubmitHandler<FormValue> = (data) => {
+    if (!data.file || data.file.length === 0) {
+      setAlertType('error');
+      showAlertModal('사진을 하나 이상 올려주세요 :)');
+      return;
+    } else if (!data.contents) {
+      setAlertType('error');
+      showAlertModal('내용을 작성해주세요 :)');
+      return;
+    } else if (!data.category) {
+      setAlertType('error');
+      showAlertModal('카테고리 선택을 깜박하셨네요 :)');
+      return;
+    } else if (data.district !== localStorage.getItem('district')) {
+      setAlertType('error');
+      showAlertModal([
+        '본인이 사는 ',
+        <strong>&nbsp;'구'&nbsp;</strong>,
+        '에만 작성할 수 있어요 :)',
+      ]);
+      return;
+    }
+
     const formData = new FormData();
 
     const requestDto = {
@@ -106,24 +123,24 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
 
     formData.append('requestDto', JSON.stringify(requestDto));
 
-    // // 기존 방식
-    // let files: File[] = [];
-    // data.file.forEach((file: any) => {
-    //   files.push(file);
-    // });
-
-    // files.forEach((file: File) => {
-    //   formData.append('files', file);
-    // });
-
-    // webp 적용 방식
-    data.file.forEach((file) => {
-      const newFile = new File([file], file.name, {
-        type: file.type,
-        lastModified: file.lastModified,
-      });
-      formData.append('files', newFile);
+    // 기존 방식
+    let files: File[] = [];
+    data.file.forEach((file: any) => {
+      files.push(file);
     });
+
+    files.forEach((file: File) => {
+      formData.append('files', file);
+    });
+
+    // // webp 적용 방식
+    // data.file.forEach((file) => {
+    //   const newFile = new File([file], file.name, {
+    //     type: file.type,
+    //     lastModified: file.lastModified,
+    //   });
+    //   formData.append('files', newFile);
+    // });
 
     console.log('폼 데이터 값 출력');
     for (let [key, value] of formData.entries()) {
@@ -152,7 +169,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               <SubmitInput type="submit" value="업로드" />
             </ContentHeader>
             <ContentTextArea
-              {...register('contents', { required: true, minLength: 1 })}
+              {...register('contents', { minLength: 1 })}
               cols={10}
               rows={5}
               placeholder="문구를 입력해주세요..."

@@ -8,6 +8,9 @@ import {
 import { deleteComment, editComment, getComments } from '@/api/comment';
 import { useEffect, useState } from 'react';
 import AlertModal from '../modal/AlertModal';
+import { NoCommentIcon } from '@/utils/icons';
+import { formatDistanceToNow, addHours } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 interface CommentListType {
   postId: number;
@@ -196,12 +199,20 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
                     onKeyDown={(e) => handleKeyPress(e, post.commentId)}
                   />
                 )}
+                <CommentTime>
+                  {formatDistanceToNow(addHours(new Date(post.createdAt), 9), {
+                    addSuffix: true,
+                    locale: ko,
+                  })}
+                </CommentTime>
               </div>
             </Comment>
           )),
         )
       ) : (
-        <InfoComment>첫 댓글을 남겨주세요 :)</InfoComment>
+        <InfoComment>
+          <NoCommentIcon />
+        </InfoComment>
       )}
       {isAlertModalOpen && (
         <AlertModal
@@ -214,6 +225,12 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
     </CommentsBox>
   );
 };
+
+const CommentTime = styled.div`
+  margin: 0 0 0 2px;
+  color: gray;
+  font-size: 11px;
+`;
 
 const EditComment = styled.input`
   width: 292px;
@@ -236,7 +253,7 @@ const EditDelete = styled.div`
 `;
 
 const InfoComment = styled.div`
-  padding: 120px 0px 0px 160px;
+  padding: 105px 0px 0px 160px;
   font-size: 12px;
   color: gray;
 `;
@@ -311,7 +328,7 @@ const UserGrade = styled.div`
 
 const UserComment = styled.div`
   box-sizing: border-box;
-  width: 100%;
+  width: 85px;
   height: 30px;
   border: none;
   font-size: 15px;

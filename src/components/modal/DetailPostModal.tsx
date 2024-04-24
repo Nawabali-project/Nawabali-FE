@@ -462,11 +462,12 @@ const BookMarkBox = styled.div`
 
 const LocationBox = styled.div`
   position: absolute;
-  left: 21.5%;
-  top: 25px;
+  left: 26%;
+  top: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: translate(-50%, -50%);
   padding: 7px 10px;
   color: white;
   background-color: #000000;
@@ -591,7 +592,7 @@ const NickName = styled.div`
 
 const ContentText = styled.div`
   box-sizing: border-box;
-  width: 100%;
+  width: 85%;
   height: 120px;
   border: none;
   font-size: 15px;
