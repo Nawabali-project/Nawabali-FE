@@ -5,6 +5,7 @@ import {
 } from '@/utils/icons';
 import { useState } from 'react';
 import styled from 'styled-components';
+import imageCompression from 'browser-image-compression';
 
 interface UploadBoxProps {
   onImagesChange: (images: File[]) => void;
@@ -24,23 +25,59 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
     event.preventDefault();
   };
 
-  const handleImageUpload = (files: FileList) => {
+  // 이미지 업로드 webp 변환
+  const handleImageUpload = async (files: FileList) => {
     const imagesArray: UploadedImageInfo[] = [];
 
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        imagesArray.push({
-          file,
-          imageUrl: reader.result as string,
-        });
-        if (imagesArray.length === files.length) {
-          setUploadedImages(imagesArray);
-          onImagesChange(imagesArray.map((info) => info.file)); // File 객체 배열을 상위 컴포넌트로 전달
-        }
+    // Array.from(files).forEach((file) => {
+    //   const reader = new FileReader();
+    //   reader.onload = () => {
+    //     imagesArray.push({
+    //       file,
+    //       imageUrl: reader.result as string,
+    //     });
+    //     if (imagesArray.length === files.length) {
+    //       setUploadedImages(imagesArray);
+    //       onImagesChange(imagesArray.map((info) => info.file)); // File 객체 배열을 상위 컴포넌트로 전달
+    //     }
+    //   };
+    //   reader.readAsDataURL(file);
+    // });
+    for (const file of Array.from(files)) {
+      console.log(`원본 파일 size: ${file.size / 1024 / 1024} MB`);
+      console.log(`원본 파일 type: ${file.type}`);
+
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: 'image/webp',
       };
-      reader.readAsDataURL(file);
-    });
+
+      try {
+        const compressedFile = await imageCompression(file, options);
+
+        console.log(
+          `변환된 파일 size: ${compressedFile.size / 1024 / 1024} MB`,
+        );
+        console.log(`변환된 파일 type: ${compressedFile.type}`);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          imagesArray.push({
+            file: compressedFile,
+            imageUrl: reader.result as string,
+          });
+          if (imagesArray.length === files.length) {
+            setUploadedImages(imagesArray);
+            onImagesChange(imagesArray.map((info) => info.file)); // 변환된 File 객체 배열을 상위 컴포넌트로 전달
+          }
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Error converting image to WebP', error);
+      }
+    }
   };
 
   const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {

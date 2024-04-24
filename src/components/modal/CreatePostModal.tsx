@@ -7,13 +7,14 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost } from '@/api/post';
+import AlertModal from './AlertModal';
 
 interface CreatePostProps {
   setIsAddPostModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface CategoryButtonProps {
-  isSelected: boolean;
+  $isSelected: boolean;
 }
 
 interface FormValue {
@@ -32,6 +33,8 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   const [, setImages] = useState<File[]>([]);
   const [content, setContent] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
 
   const handleCloseModal = () => {
     props.setIsAddPostModalOpen(false);
@@ -56,6 +59,12 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     setValue('placeAddr', placeAddr);
   };
 
+  // 경고창 열기
+  const showAlertModal = (message: React.ReactNode) => {
+    setAlertMessage(message);
+    setIsAlertModalOpen(true);
+  };
+
   // 카테고리 클릭
   const handleCategoryClick = (category: string) => {
     setValue('category', category);
@@ -70,12 +79,12 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     onSuccess: () => {
       handleCloseModal();
       // queryClient.invalidateQueries({ queryKey: ['allPosts'] });
-      alert('게시물 추가 성공 :)');
       queryClient.invalidateQueries();
+      showAlertModal('게시글 작성이 완료되었어요 :)');
     },
     onError: (error: any) => {
       if (error.response.status === 400) {
-        alert('게시물 형식을 모두 작성해주세요 :)');
+        showAlertModal('게시글 형식을 모두 작성해주세요 :)');
       }
     },
   });
@@ -96,13 +105,23 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
 
     formData.append('requestDto', JSON.stringify(requestDto));
 
-    let files: File[] = [];
-    data.file.forEach((file: any) => {
-      files.push(file);
-    });
+    // // 기존 방식
+    // let files: File[] = [];
+    // data.file.forEach((file: any) => {
+    //   files.push(file);
+    // });
 
-    files.forEach((file: File) => {
-      formData.append('files', file);
+    // files.forEach((file: File) => {
+    //   formData.append('files', file);
+    // });
+
+    // webp 적용 방식
+    data.file.forEach((file) => {
+      const newFile = new File([file], file.name, {
+        type: file.type,
+        lastModified: file.lastModified,
+      });
+      formData.append('files', newFile);
     });
 
     console.log('폼 데이터 값 출력');
@@ -114,7 +133,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   };
 
   return (
-    <Modal>
+    <Modal isAlertModalOpen={isAlertModalOpen}>
       <form onSubmit={handleSubmit(onSubmitHandler)}>
         <MainLayout>
           <ImageBox>
@@ -149,7 +168,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
             <CategoryBox>
               <CategoryButton
                 type="button"
-                isSelected={selectedCategory === 'FOOD'}
+                $isSelected={selectedCategory === 'FOOD'}
                 onClick={() => handleCategoryClick('FOOD')}
                 color="#FE6847"
               >
@@ -157,7 +176,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               </CategoryButton>
               <CategoryButton
                 type="button"
-                isSelected={selectedCategory === 'CAFE'}
+                $isSelected={selectedCategory === 'CAFE'}
                 onClick={() => handleCategoryClick('CAFE')}
                 color="#9BCF53"
               >
@@ -165,7 +184,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               </CategoryButton>
               <CategoryButton
                 type="button"
-                isSelected={selectedCategory === 'PHOTOZONE'}
+                $isSelected={selectedCategory === 'PHOTOZONE'}
                 onClick={() => handleCategoryClick('PHOTOZONE')}
                 color="#00A3FF"
               >
@@ -180,6 +199,12 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
           </ContentBox>
         </MainLayout>
       </form>
+      {isAlertModalOpen && (
+        <AlertModal
+          message={alertMessage}
+          closeAlert={() => setIsAlertModalOpen(false)}
+        />
+      )}
     </Modal>
   );
 };
@@ -316,8 +341,8 @@ const CategoryBox = styled.div`
 `;
 
 const CategoryButton = styled.button<CategoryButtonProps>`
-  background-color: ${(props) => (props.isSelected ? props.color : 'white')};
-  color: ${(props) => (props.isSelected ? 'white' : 'black')};
+  background-color: ${(props) => (props.$isSelected ? props.color : 'white')};
+  color: ${(props) => (props.$isSelected ? 'white' : 'black')};
   border: 2px solid #dfdfdf;
   border-radius: 10px;
   padding: 5px 10px;
