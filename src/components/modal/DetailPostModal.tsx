@@ -42,6 +42,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   const [isPostEditing, setIsPostEditing] = useState(false);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
+  const [alertType, setAlertType] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -101,9 +102,11 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
       editPost(postId, contents),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [postId] });
-      showAlertModal('게시글 수정 성공 :)');
+      setAlertType('complete');
+      showAlertModal('게시물 수정이 완료되었어요!');
     },
     onError: () => {
+      setAlertType('error');
       showAlertModal('게시글 수정 실패 ㅠㅠ');
     },
   });
@@ -130,9 +133,11 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     onSuccess: async () => {
       setIsDetailPostModalOpen(false);
       queryClient.invalidateQueries();
+      setAlertType('complete');
       showAlertModal('게시글을 삭제하였습니다.');
     },
     onError: () => {
+      setAlertType('error');
       showAlertModal('게시글 삭제 실패ㅠㅠ');
     },
   });
@@ -147,17 +152,21 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   // 주민추천 클릭 동작
   const checkLocalLikeMutation = useMutation({
     mutationFn: checkLocalLike,
-    onSuccess: async () => {},
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
+    },
     onError: (error: any) => {
       setIsLocalLiked(!isLocalLiked);
       setLocalLikesCount(localLikesCount - 1);
       if (error.response.status === 403) {
+        setAlertType('error');
         showAlertModal([
           '앗, 주민추천은',
           <br />,
           '로그인 후 이용 가능합니다 :)',
         ]);
       } else if (error.response.status === 400) {
+        setAlertType('error');
         showAlertModal([
           '앗, 주민추천은',
           <br />,
@@ -176,11 +185,14 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   // 좋아요 클릭 동작
   const checkLikeMutation = useMutation({
     mutationFn: checkLike,
-    onSuccess: async () => {},
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
+    },
     onError: (error: any) => {
       setIsLiked(!isLiked);
       setLikesCount(likesCount - 1);
       if (error.response.status === 403) {
+        setAlertType('error');
         showAlertModal([
           '앗, 좋아요는',
           <br />,
@@ -199,10 +211,13 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
   // 북마크 클릭 동작
   const checkBookMarkMUtation = useMutation({
     mutationFn: checkBookmark,
-    onSuccess: async () => {},
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
+    },
     onError: (error: any) => {
       setIsBookmarked(!isBookmarked);
       if (error.response.status === 403) {
+        setAlertType('error');
         showAlertModal([
           '앗, 북마크는',
           <br />,
@@ -240,7 +255,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
         </CloseBox>
         <LocationBox>
           <LocationWhiteIcon />
-          &nbsp;{data.district}
+          &nbsp;{data.placeName == '' ? data.placeAddr : data.placeName}
         </LocationBox>
 
         <MainLayout>
@@ -386,6 +401,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
         <AlertModal
           message={alertMessage}
           closeAlert={() => setIsAlertModalOpen(false)}
+          alertType={alertType}
         />
       )}
     </>

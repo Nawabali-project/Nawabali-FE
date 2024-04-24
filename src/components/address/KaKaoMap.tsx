@@ -67,6 +67,8 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   //     );
   //   });
   // }, []);
+
+  // 1. 카카오맵 불러오기
   useEffect(() => {
     window.kakao.maps.load(() => {
       const container = document.getElementById('map');
@@ -82,6 +84,7 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
     });
   }, []);
 
+  // 주소 검색
   const handleSearch = () => {
     const ps = new window.kakao.maps.services.Places();
     ps.keywordSearch(inputText, (data: any[], status: any) => {
@@ -96,13 +99,15 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   const handleResultClick = (result: any) => {
     const { y, x, address_name, road_address_name, place_name } = result;
     const newAddr = road_address_name || address_name;
+    const newPos = new window.kakao.maps.LatLng(y, x);
+
     setPointAddr(newAddr);
     setPlaceName(place_name);
-    const newPos = new window.kakao.maps.LatLng(y, x);
+
     marker.setPosition(newPos);
     marker.setMap(map);
     map.panTo(newPos);
-    onLocationChange(y, x, newAddr.split(' ')[1], placeName, newAddr); // 구 지역 정보를 상위 컴포넌트에 전달
+    onLocationChange(y, x, newAddr.split(' ')[1], place_name, newAddr); // 구 지역 정보를 상위 컴포넌트에 전달
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -162,6 +167,8 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
               marker.setMap(map);
 
               let district = newPointAddr.split(' ')[1];
+              let placeName = '';
+              let pointAddr = newPointAddr;
               updateMarkerAndLocation(
                 mouseEvent.latLng,
                 district,

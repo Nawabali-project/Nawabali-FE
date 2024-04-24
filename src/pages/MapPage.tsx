@@ -264,7 +264,7 @@ const KindBox = styled.div<{ $isSelected?: boolean; kind: string }>`
   justify-content: center;
   align-items: center;
   margin-right: 10px;
-  padding: 10px 15px;
+  padding: 6px 9px;
   background-color: ${(props) => {
     if (!props.$isSelected) {
       return 'none';
