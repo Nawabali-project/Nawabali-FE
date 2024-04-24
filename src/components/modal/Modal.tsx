@@ -52,7 +52,7 @@ const ModalWrapper = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(79, 79, 79, 0.6);
+  background-color: rgba(79, 79, 79, 0.7);
   z-index: 10;
 `;
 

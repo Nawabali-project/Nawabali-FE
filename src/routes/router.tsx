@@ -3,13 +3,16 @@ import GlobalStyles from '@/styles/GlobalStyle';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import App from '@/App';
-import EditUser from '@/components/mypage/EditUser';
-import Mypage from '@/pages/Mypage';
-import ListPage from '@/pages/ListPage';
-import MapPage from '@/pages/MapPage';
-import NewsPage from '@/pages/NewsPage';
-import ScorePage from '@/pages/ScorePage';
-import ChatMain from '@/pages/ChatPage';
+import React, { Suspense } from 'react';
+
+// React.lazy로 컴포넌트를 동적 import
+const EditUser = React.lazy(() => import('@/components/mypage/EditUser'));
+const Mypage = React.lazy(() => import('@/pages/Mypage'));
+const ListPage = React.lazy(() => import('@/pages/ListPage'));
+const MapPage = React.lazy(() => import('@/pages/MapPage'));
+const NewsPage = React.lazy(() => import('@/pages/NewsPage'));
+const ScorePage = React.lazy(() => import('@/pages/ScorePage'));
+const ChatMain = React.lazy(() => import('@/pages/ChatPage'));
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -24,8 +27,10 @@ export const router = createBrowserRouter([
   {
     element: (
       <>
-        <GlobalStyles />
-        <App />
+        <Suspense fallback={<div>로딩중...</div>}>
+          <GlobalStyles />
+          <App />
+        </Suspense>
       </>
     ),
     children: [

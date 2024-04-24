@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query';
 import { deleteComment, editComment, getComments } from '@/api/comment';
 import { useEffect, useState } from 'react';
+import AlertModal from '../modal/AlertModal';
 
 interface CommentListType {
   postId: number;
@@ -25,6 +26,14 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState<IsEditingType>({});
   const [editContent, setEditContent] = useState<EditContentType>({});
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
+  const [alertType, setAlertType] = useState('');
+
+  const showAlertModal = (message: React.ReactNode) => {
+    setAlertMessage(message);
+    setIsAlertModalOpen(true);
+  };
 
   // 댓글 전체 조회 (무한스크롤)
   const {
@@ -61,7 +70,9 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
     mutationFn: deleteComment,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['scrollComments'] });
-      alert('댓글 삭제 성공 :)');
+      queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
+      setAlertType('complete');
+      showAlertModal('댓글 삭제 완료!');
     },
     onError: () => {
       alert('댓글 삭제 실패 ㅠㅠ');
@@ -108,7 +119,6 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
     }) => editComment(commentId, content),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scrollComments', postId] });
-      alert('댓글 수정 성공 :)');
     },
     onError: () => {
       alert('댓글 수정 실패 ㅠㅠ');
@@ -192,6 +202,13 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
         )
       ) : (
         <InfoComment>첫 댓글을 남겨주세요 :)</InfoComment>
+      )}
+      {isAlertModalOpen && (
+        <AlertModal
+          message={alertMessage}
+          closeAlert={() => setIsAlertModalOpen(false)}
+          alertType={alertType}
+        />
       )}
       {isFetchingNextPage && <h3>Loading...</h3>}
     </CommentsBox>
