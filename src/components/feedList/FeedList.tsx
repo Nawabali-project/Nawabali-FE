@@ -17,10 +17,6 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     setIsDetailPostModalOpen(true);
   };
   const { ref, inView } = useInView();
-  const effectiveDistrict =
-    district && district !== '서울특별시'
-      ? district.replace('서울특별시 ', '')
-      : null;
 
   const {
     data,
@@ -34,8 +30,8 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     queryFn: ({ pageParam = 0 }) =>
       getPostsByFilter({
         pageParam,
-        category: category,
-        district: effectiveDistrict,
+        category,
+        district,
       }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {

@@ -22,7 +22,8 @@ const ListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const district = `서울특별시 ${query.get('district')}`;
+  const districtQuery = query.get('district');
+  const district = districtQuery ? `서울특별시 ${districtQuery}` : '서울특별시';
   const category = query.get('category');
 
   useEffect(() => {
