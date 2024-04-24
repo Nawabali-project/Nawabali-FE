@@ -1,9 +1,10 @@
-import { create } from 'zustand';
+import { createWithEqualityFn } from 'zustand/traditional';
 import { Cookies } from 'react-cookie';
 import { AuthState, AuthUser } from '@/interfaces/user/user.interface';
 import { useEffect } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   isLoggedIn: false,
   user: null,
   messages: [],
@@ -82,24 +83,29 @@ function SSEListener() {
   return null;
 }
 
-function initializeUser() {
-  const cookies = new Cookies();
-  const accessToken = cookies.get('accessToken');
+function initializeUser(navigate: NavigateFunction) {
+  const cookie = new Cookies();
+
+  const accessToken = cookie.get('accessToken');
+  console.log('쿠키에서 읽은 토큰:', accessToken);
+
   const storedUser = localStorage.getItem('user');
   if (accessToken && storedUser) {
     const user: AuthUser = JSON.parse(storedUser);
     useAuthStore.getState().login(user);
+    navigate('/');
   } else {
     useAuthStore.getState().logout();
   }
 }
 
 function AppInitializer() {
-  useEffect(() => {
-    initializeUser();
-  }, []);
+  const navigate = useNavigate();
+
+  console.log('AppInitializer 실행');
+  initializeUser(navigate);
 
   return <SSEListener />;
 }
 
-export { AppInitializer, initializeUser, SSEListener };
+export { AppInitializer };

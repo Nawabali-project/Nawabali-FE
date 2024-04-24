@@ -13,9 +13,10 @@ import {
   BigLocationIcon,
 } from '@/utils/icons';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -28,6 +29,24 @@ const MapPage = () => {
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
+
+  const location = useLocation();
+  const cookie = new Cookies();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const token = urlParams.get('accessToken')?.split(' ')[1];
+    console.log('URL 토큰:', token, { path: '/', secure: false });
+    const accessToken = urlParams.get('accessToken');
+    console.log('파람에서 추출한 accessToken: ', accessToken);
+
+    if (token) {
+      console.log('토큰 존재:', token);
+      cookie.set('accessToken', token);
+    } else {
+      console.log('토큰 없음');
+    }
+  }, [location]);
 
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);

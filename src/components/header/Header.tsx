@@ -29,9 +29,7 @@ const Header: React.FC = () => {
 
   const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const hasNotifications = useAuthStore((state) => state.hasNotifications);
-  const setHasNotifications = useAuthStore(
-    (state) => state.setHasNotifications,
-  );
+  const { setHasNotifications } = useAuthStore.getState();
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
