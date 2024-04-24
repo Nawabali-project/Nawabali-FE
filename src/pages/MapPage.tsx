@@ -17,6 +17,8 @@ import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
+import useAuthStore from '@/store/AuthState';
+import { getUserInfo } from '@/api/auth';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -32,20 +34,33 @@ const MapPage = () => {
 
   const location = useLocation();
   const cookie = new Cookies();
+  const { login } = useAuthStore();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('accessToken')?.split(' ')[1];
-    console.log('URL 토큰:', token, { path: '/', secure: false });
-    const accessToken = urlParams.get('accessToken');
-    console.log('파람에서 추출한 accessToken: ', accessToken);
+    // 비동기 작업을 수행할 함수를 정의합니다.
+    const fetchData = async () => {
+      const urlParams = new URLSearchParams(location.search);
+      const token = urlParams.get('accessToken')?.split(' ')[1];
+      console.log('URL 토큰:', token, { path: '/', secure: false });
+      const accessToken = urlParams.get('accessToken');
+      console.log('파람에서 추출한 accessToken: ', accessToken);
 
-    if (token) {
-      console.log('토큰 존재:', token);
-      cookie.set('accessToken', token);
-    } else {
-      console.log('토큰 없음');
-    }
+      if (token) {
+        console.log('토큰 존재:', token);
+        cookie.set('accessToken', token);
+        try {
+          const userInfo = await getUserInfo();
+
+          login(userInfo);
+        } catch (error) {
+          console.error('사용자 정보를 불러오는 중 오류 발생:', error);
+        }
+      } else {
+        console.log('토큰 없음');
+      }
+    };
+
+    fetchData();
   }, [location]);
 
   const handleSelectArea = (areaName: string) => {
