@@ -1,4 +1,4 @@
-import { CommentIcon, LikeIcon } from '@/utils/icons';
+import { CommentIcon, LikeIcon, ThumbOutlineIcon } from '@/utils/icons';
 import styled from 'styled-components';
 import { getPostsByFilter } from '@/api/post';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -87,13 +87,15 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
               </PostType>
             </ImgBox>
             <LikeCommentBox>
+              <ThumbOutlineIcon />
+              <CountBox>{post.localLikesCount}</CountBox>
               <LikeIcon />
-              <LikesCountBox>{post.likesCount}</LikesCountBox>
+              <CountBox>{post.likesCount}</CountBox>
               <CommentIcon />
-              <CommentsCountBox>{post.commentCount}</CommentsCountBox>
+              <CountBox>{post.commentCount}</CountBox>
             </LikeCommentBox>
             <LocationBox>
-              {post.district}&nbsp;
+              {post.placeName == '' ? post.placeAddr : post.placeName}&nbsp;
               <LocationIcon />
             </LocationBox>
             <ContentsBox>{post.contents}</ContentsBox>
@@ -212,11 +214,7 @@ const LikeCommentBox = styled.div`
   padding: 5px;
 `;
 
-const LikesCountBox = styled.div`
-  margin: 0px 20px 0px 5px;
-`;
-
-const CommentsCountBox = styled.div`
+const CountBox = styled.div`
   margin: 0px 20px 0px 5px;
 `;
 

@@ -66,8 +66,8 @@ const ScoreMap: React.FC = () => {
       let polygon = new kakao.maps.Polygon({
         map: map,
         path: path,
-        strokeWeight: 2,
-        strokeColor: 'white',
+        strokeWeight: 1.5,
+        strokeColor: '#2464c3',
         strokeOpacity: 0.8,
         strokeStyle: 'solid',
         fillColor: 'white',
@@ -79,22 +79,37 @@ const ScoreMap: React.FC = () => {
 
       const index = areaData.indexOf(districtData);
       let areaPowerColor = '';
+      let areaOpacity = '';
       if (index < 5) {
-        areaPowerColor = 'rgba(0, 163, 255, 0.9)';
+        areaPowerColor = '#40b9ff';
+        areaOpacity = '0.85';
       } else if (index >= 5 && index < 14) {
-        areaPowerColor = 'rgba(0, 163, 255, 0.55)';
+        areaPowerColor = '#89d4ff';
+        areaOpacity = '0.75';
       } else {
-        areaPowerColor = 'rgba(0, 163, 255, 0.3)';
+        areaPowerColor = '#d4f1ff';
+        areaOpacity = '0.75';
       }
 
-      polygon.setOptions({ fillColor: areaPowerColor });
+      polygon.setOptions({
+        fillColor: areaPowerColor,
+        fillOpacity: areaOpacity,
+      });
 
       kakao.maps.event.addListener(polygon, 'mouseover', function () {
-        polygon.setOptions({ strokeWeight: 20, strokeOpacity: 1 });
+        polygon.setOptions({
+          strokeWeight: 20,
+          strokeOpacity: 1,
+          strokeColor: 'white',
+        });
       });
 
       kakao.maps.event.addListener(polygon, 'mouseout', function () {
-        polygon.setOptions({ strokeWeight: 2, strokeOpacity: 1 });
+        polygon.setOptions({
+          strokeWeight: 1.5,
+          strokeOpacity: 1,
+          strokeColor: '#2464c3',
+        });
       });
 
       window.closeOverlay = () => {

@@ -2,22 +2,38 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { addComment } from '@/api/comment';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import AlertModal from '../modal/AlertModal';
 
 const CommentInput = ({ postId }: { postId: number }) => {
   const [newComment, setNewComment] = useState('');
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
+  const [alertType, setAlertType] = useState('');
   const queryClient = useQueryClient();
+
+  const showAlertModal = (message: React.ReactNode) => {
+    setAlertMessage(message);
+    setIsAlertModalOpen(true);
+  };
 
   // 댓글 생성
   const createCommentMutation = useMutation({
     mutationFn: () => addComment(postId, newComment),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['scrollComments'] });
-      alert('댓글 추가 성공 :)');
+      queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
+      setAlertType('complete');
+      showAlertModal('댓글 작성 완료!');
       setNewComment('');
     },
     onError: (error: any) => {
       if (error.response.status === 403) {
-        alert('댓글작성은 로그인 후 이용 가능합니다 :)');
+        setAlertType('error');
+        showAlertModal([
+          '앗, 댓글작성은',
+          <br />,
+          '로그인 후 이용 가능합니다 :)',
+        ]);
       }
     },
   });
@@ -39,6 +55,13 @@ const CommentInput = ({ postId }: { postId: number }) => {
           onKeyDown={handleKeyDown}
         ></MyCommentInput>
       </MyCommentBox>
+      {isAlertModalOpen && (
+        <AlertModal
+          message={alertMessage}
+          closeAlert={() => setIsAlertModalOpen(false)}
+          alertType={alertType}
+        />
+      )}
     </>
   );
 };

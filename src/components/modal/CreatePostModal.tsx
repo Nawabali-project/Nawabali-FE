@@ -35,6 +35,8 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
+  const [alertType, setAlertType] = useState('');
+  const queryClient = useQueryClient();
 
   const handleCloseModal = () => {
     props.setIsAddPostModalOpen(false);
@@ -72,18 +74,17 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
   };
 
   // 게시글 생성 통신
-  const queryClient = useQueryClient();
-
   const createPostMutation = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
       handleCloseModal();
-      // queryClient.invalidateQueries({ queryKey: ['allPosts'] });
-      queryClient.invalidateQueries();
+      setAlertType('complete');
       showAlertModal('게시글 작성이 완료되었어요 :)');
+      queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
     },
     onError: (error: any) => {
       if (error.response.status === 400) {
+        setAlertType('error');
         showAlertModal('게시글 형식을 모두 작성해주세요 :)');
       }
     },
@@ -203,6 +204,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
         <AlertModal
           message={alertMessage}
           closeAlert={() => setIsAlertModalOpen(false)}
+          alertType={alertType}
         />
       )}
     </Modal>
