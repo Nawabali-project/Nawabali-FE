@@ -26,7 +26,12 @@ const Header: React.FC = () => {
   const [isSearchbarOpen, setSearchbarOpen] = useState<boolean>(false);
   const [isAddPostModalOpen, setIsAddPostModalOpen] = useState<boolean>(false);
   const [isSearchFocused, setSearchFocused] = useState<boolean>(false);
+
   const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const hasNotifications = useAuthStore((state) => state.hasNotifications);
+  const setHasNotifications = useAuthStore(
+    (state) => state.setHasNotifications,
+  );
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
@@ -128,10 +133,11 @@ const Header: React.FC = () => {
                 <GoBell
                   style={{
                     fontSize: '25px',
-                    color: 'gray',
+                    color: hasNotifications ? 'red' : 'gray',
                     margin: '8px',
                     cursor: 'pointer',
                   }}
+                  onClick={() => setHasNotifications(false)}
                 />
                 <ProfileContainer>
                   <Profile

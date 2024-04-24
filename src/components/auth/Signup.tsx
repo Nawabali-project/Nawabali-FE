@@ -227,7 +227,11 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
     input.district && !selectedDistrict && results.length > 0;
 
   return (
-    <Modal size="auth" onClose={() => setIsModalOpen(false)}>
+    <Modal
+      isAlertModalOpen={false}
+      size="auth"
+      onClose={() => setIsModalOpen(false)}
+    >
       <form onSubmit={handleSubmit} style={{ marginTop: '-70px' }}>
         <Logo />
 

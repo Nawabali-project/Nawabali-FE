@@ -83,7 +83,11 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   };
 
   return (
-    <Modal size="auth" onClose={() => setIsModalOpen(false)}>
+    <Modal
+      isAlertModalOpen={false}
+      size="auth"
+      onClose={() => setIsModalOpen(false)}
+    >
       <div style={{ padding: '20px', marginTop: '-90px' }}>
         <Logo />
         <p style={{ textAlign: 'center', fontWeight: '900', fontSize: '20px' }}>

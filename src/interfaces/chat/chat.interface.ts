@@ -17,7 +17,7 @@ export interface ReturnedMessageForm {
   userId: number;
   sender: string;
   message: string;
-  createdAt: string;
+  createdMessageAt: string;
 }
 
 export interface ChatRoom {

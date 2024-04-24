@@ -13,7 +13,9 @@ function ChatMain() {
 
   useEffect(() => {
     const connectWebSocket = () => {
-      const socket = new SockJS(`https://hhboard.shop/ws-stomp`);
+      const socket = new SockJS(
+        `${import.meta.env.VITE_APP_BASE_URL}/ws-stomp`,
+      );
       const client = Stomp.over(socket);
       const accessToken = new Cookies().get('accessToken');
 

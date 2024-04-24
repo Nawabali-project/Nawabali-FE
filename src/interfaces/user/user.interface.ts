@@ -37,4 +37,8 @@ export interface AuthState {
   user: AuthUser | null;
   login: (user: AuthUser) => void;
   logout: () => void;
+  messages: any[];
+  addMessage: (message: any) => void;
+  hasNotifications: boolean;
+  setHasNotifications: (hasNotifications: boolean) => void;
 }
