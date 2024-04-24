@@ -1,4 +1,9 @@
-import { CommentIcon, LikeIcon, ThumbOutlineIcon } from '@/utils/icons';
+import {
+  CommentIcon,
+  LikeIcon,
+  NoPostIcon,
+  ThumbOutlineIcon,
+} from '@/utils/icons';
 import styled from 'styled-components';
 import { getPostsByFilter } from '@/api/post';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -50,6 +55,19 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
+
+  if (
+    status === 'success' &&
+    data.pages[0]?.data?.content.length === 0 &&
+    !isFetchingNextPage
+  ) {
+    return (
+      <NoPostBox>
+        <NoPostIcon />
+        <NoPostComment>해당 게시물이 아직 없어요.</NoPostComment>
+      </NoPostBox>
+    );
+  }
 
   if (status === 'pending') {
     return <p>Loading...</p>;
@@ -112,6 +130,20 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     </>
   );
 };
+
+const NoPostBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75vh;
+  flex-direction: column;
+`;
+
+const NoPostComment = styled.div`
+  margin: 30px 0 0 0;
+  font-size: 30px;
+  font-weight: 400;
+`;
 
 const LocationBox = styled.div`
   display: flex;

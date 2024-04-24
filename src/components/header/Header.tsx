@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { FaRegEdit } from 'react-icons/fa';
 import { HiOutlineChatBubbleLeftRight } from 'react-icons/hi2';
-import { GoBell } from 'react-icons/go';
 import SearchBar from '../modal/SearchBarModal';
 import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
@@ -28,8 +27,6 @@ const Header: React.FC = () => {
   const [isSearchFocused, setSearchFocused] = useState<boolean>(false);
 
   const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const hasNotifications = useAuthStore((state) => state.hasNotifications);
-  const { setHasNotifications } = useAuthStore.getState();
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
@@ -78,91 +75,85 @@ const Header: React.FC = () => {
   return (
     <>
       <HeaderLayout>
-        <LogoBox
-          onClick={() => {
-            navigate('/');
-          }}
-        >
-          <LogoIcon />
-        </LogoBox>
+        <SecondHeader>
+          <LogoBox
+            onClick={() => {
+              navigate('/');
+            }}
+          >
+            <LogoIcon />
+          </LogoBox>
 
-        <Items>
-          <SearchDiv style={{ position: 'relative' }}>
-            <IoIosSearch style={{ color: 'gray' }} />
-            <input
-              value={content}
-              type="text"
-              placeholder="제목으로 검색할 수 있어요!"
-              onChange={(e) => setContent(e.target.value)}
-              onFocus={handleSearchFocus}
-              onBlur={handleSearchBlur}
-            />
-            {isSearchFocused && (
-              <SearchBar
-                content={content}
-                $isOpen={isSearchbarOpen}
-                onPostSelect={handleOpenDetailModal}
+          <Items>
+            <SearchDiv style={{ position: 'relative' }}>
+              <IoIosSearch style={{ color: 'gray' }} />
+              <input
+                value={content}
+                type="text"
+                placeholder="제목으로 검색할 수 있어요!"
+                onChange={(e) => setContent(e.target.value)}
+                onFocus={handleSearchFocus}
+                onBlur={handleSearchBlur}
               />
-            )}
-          </SearchDiv>
+              {isSearchFocused && (
+                <SearchBar
+                  content={content}
+                  $isOpen={isSearchbarOpen}
+                  onPostSelect={handleOpenDetailModal}
+                />
+              )}
+            </SearchDiv>
 
-          {!useIsLoggedIn ? (
-            <Items style={{ width: '150px' }}>
-              <HeaderSpan onClick={handleLogin}>로그인</HeaderSpan>
-              <div
-                style={{ width: '1px', height: '15px', background: 'gray' }}
-              />
-              <HeaderSpan onClick={handleSignup}>회원가입</HeaderSpan>
-            </Items>
-          ) : (
-            <>
-              <Items style={{ width: '150px' }}>
-                <HiOutlineChatBubbleLeftRight
-                  style={{
-                    fontSize: '25px',
-                    color: 'gray',
-                    margin: '8px',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    navigate('/chat');
-                  }}
+            {!useIsLoggedIn ? (
+              <Items style={{ width: '130px' }}>
+                <HeaderSpan onClick={handleLogin}>로그인</HeaderSpan>
+                <div
+                  style={{ width: '1px', height: '15px', background: 'gray' }}
                 />
-                <GoBell
-                  style={{
-                    fontSize: '25px',
-                    color: hasNotifications ? 'red' : 'gray',
-                    margin: '8px',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => setHasNotifications(false)}
-                />
-                <ProfileContainer>
-                  <Profile
-                    src={localStorage.getItem('profileImageUrl') ?? undefined}
-                    onClick={handleOpenInfoModal}
-                  />
-                  {isMyInfoModalOpen && (
-                    <BalloonModal
-                      isOpen={isMyInfoModalOpen}
-                      onClose={handleCloseInfoModal}
-                    />
-                  )}
-                </ProfileContainer>
+                <HeaderSpan onClick={handleSignup}>회원가입</HeaderSpan>
               </Items>
+            ) : (
+              <>
+                <Items style={{ width: '110px' }}>
+                  <HiOutlineChatBubbleLeftRight
+                    style={{
+                      fontSize: '25px',
+                      color: 'gray',
+                      margin: '8px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      navigate('/chat');
+                    }}
+                  />
 
-              <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
-                <HeaderSpan style={{ margin: '0', color: 'white' }}>
-                  글쓰기
-                </HeaderSpan>
-                <FaRegEdit style={{ color: 'white' }} />
-              </WriteButton>
-            </>
-          )}
-          {isAddPostModalOpen && (
-            <CreatePostModal setIsAddPostModalOpen={setIsAddPostModalOpen} />
-          )}
-        </Items>
+                  <ProfileContainer>
+                    <Profile
+                      src={localStorage.getItem('profileImageUrl') ?? undefined}
+                      onClick={handleOpenInfoModal}
+                    />
+                    {isMyInfoModalOpen && (
+                      <BalloonModal
+                        isOpen={isMyInfoModalOpen}
+                        onClose={handleCloseInfoModal}
+                      />
+                    )}
+                  </ProfileContainer>
+                </Items>
+
+                <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
+                  <HeaderSpan style={{ margin: '0', color: 'white' }}>
+                    글쓰기
+                  </HeaderSpan>
+                  <FaRegEdit style={{ color: 'white' }} />
+                </WriteButton>
+              </>
+            )}
+            {isAddPostModalOpen && (
+              <CreatePostModal setIsAddPostModalOpen={setIsAddPostModalOpen} />
+            )}
+          </Items>
+        </SecondHeader>
       </HeaderLayout>
       {isModalOpen && (
         <>
@@ -192,6 +183,13 @@ const Header: React.FC = () => {
 
 export default Header;
 
+const SecondHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 1280px;
+`;
+
 const HeaderLayout = styled.div`
   display: flex;
   justify-content: space-around;
@@ -203,17 +201,19 @@ const HeaderLayout = styled.div`
   height: 60px;
   z-index: 900;
   background-color: white;
-  border-bottom: 1px solid #a1a1a1;
+  border-bottom: 1px solid #d9d9d9;
   padding: 0px 0px 0px 50px;
 `;
 
 const LogoBox = styled.div`
+  margin: 20px;
   cursor: pointer;
 `;
 
 const Items = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  margin: 0 5px 0 0px;
   align-items: center;
 `;
 
@@ -248,8 +248,10 @@ const WriteButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 50px;
   border-radius: 5px;
   background-color: #00a3ff;
+  margin: 0 9px 0 0;
   padding: 7px 10px;
   cursor: pointer;
 `;
