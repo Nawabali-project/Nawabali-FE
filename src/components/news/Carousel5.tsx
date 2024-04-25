@@ -15,8 +15,10 @@ import {
 import { useCallback, useRef, useState } from 'react';
 import { CarouselProps, PostItem } from '@/interfaces/main/news.interface';
 import DetailPostModal from '../modal/DetailPostModal';
+import { useNavigate } from 'react-router-dom';
 
 function Carousel5({ iconCategory, category }: CarouselProps) {
+  const navigate = useNavigate();
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
@@ -66,6 +68,10 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
     arrows: false,
   };
 
+  const goToAllPosts = () => {
+    navigate(`/listpage?district=${encodeURIComponent(safeData.district)}`);
+  };
+
   if (isLoadingBestDistrict || isLoadingPosts) {
     return <div>Loading...</div>;
   }
@@ -113,7 +119,7 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
                     alignItems: 'center',
                   }}
                 >
-                  <span>게시글 전체보기</span>
+                  <span onClick={goToAllPosts}>게시글 전체보기</span>
                   <img
                     src="/assets/svgs/arrowIcon.svg"
                     alt="Arrow Icon"
