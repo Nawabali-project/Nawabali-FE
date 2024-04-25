@@ -249,7 +249,9 @@ const MyInfo = () => {
             fontWeight: '600',
           }}
         >
-          아직 작성된 게시글이 없어요
+          {type === 'contents'
+            ? '아직 작성된 게시글이 없어요'
+            : '저장된 게시글이 없어요'}
         </div>
       )}
       {isDetailPostModalOpen && selectedPost && (

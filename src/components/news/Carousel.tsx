@@ -71,6 +71,13 @@ function Carousel() {
   const handleMouseEnter = () => setIsHovering(true);
   const handleMouseLeave = () => setIsHovering(false);
 
+  const getRandomSVGName = () => {
+    const svgNames = ['FOOD', 'CAFE', 'PHOTOZONE'];
+    const randomIndex = Math.floor(Math.random() * svgNames.length);
+    return svgNames[randomIndex];
+  };
+  const iconCategory = getRandomSVGName();
+
   return (
     <div style={{ backgroundColor: '#fafafa' }}>
       <Container>
@@ -147,9 +154,7 @@ function Carousel() {
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <span style={{ fontSize: '13px', color: '#616161' }}>
-                      아직 TOP7의 자리가 남아있습니다!
-                    </span>
+                    <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
                   </EmptyPost>
                 </ImageContainer>
               );
@@ -348,6 +353,10 @@ top: 0px !important;
     .stop-icon {
       visibility: visible;
     }
+  }
+
+  img {
+    width: 150px;
   }
 `;
 

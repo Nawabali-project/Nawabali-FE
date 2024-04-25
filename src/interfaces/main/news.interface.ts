@@ -5,11 +5,13 @@ export interface PostItem {
   contents: string;
   category: string;
   district: string;
+  placeName: string;
+  placeAddr: string;
   latitude: number | null;
   longitude: number | null;
   createdAt: string;
   modifiedAt: string;
-  mainImageUrl: 'string';
+  mainImageUrl: string;
   multiImages: true;
   likesCount: number;
   localLikesCount: number;

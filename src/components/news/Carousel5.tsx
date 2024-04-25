@@ -10,7 +10,7 @@ import {
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import {
   useGetAllPostsByDistrictOrCategory,
-  useGetCountOfPostsByDistrict,
+  useGetCountOfPostsAndDistrictByCategory,
 } from '@/api/news';
 import { useCallback, useRef, useState } from 'react';
 import { CarouselProps, PostItem } from '@/interfaces/main/news.interface';
@@ -19,15 +19,17 @@ import { useNavigate } from 'react-router-dom';
 
 function Carousel5({ iconCategory, category }: CarouselProps) {
   const navigate = useNavigate();
-  const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
-    useState<boolean>(false);
+  const [isDetailPostModalOpen, setIsDetailPostModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
+
   const slickRef = useRef<Slider | null>(null);
+
   const {
     data: bestDistrict,
     isLoading: isLoadingBestDistrict,
     isError: isErrorBestDistrict,
-  } = useGetCountOfPostsByDistrict(iconCategory);
+  } = useGetCountOfPostsAndDistrictByCategory(iconCategory);
+  console.log('data: ', bestDistrict, iconCategory);
 
   const {
     data: postsData,
@@ -36,10 +38,14 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
   } = useGetAllPostsByDistrictOrCategory(
     bestDistrict?.district,
     iconCategory,
-    10,
+    9,
   );
 
-  const safeData = bestDistrict || { district: '', postCount: 0, content: [] };
+  const safeData = postsData || { district: '', postCount: 0, content: [] };
+
+  const totalSlides = 9;
+  const actualSlides = safeData?.content?.length || 0;
+  const emptySlidesCount = Math.max(0, totalSlides - actualSlides);
 
   const handlePostClick = (item: PostItem) => {
     setSelectedPost(item);
@@ -69,7 +75,7 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
   };
 
   const goToAllPosts = () => {
-    navigate(`/listpage?district=${encodeURIComponent(safeData.district)}`);
+    navigate(`/listpage?district=${encodeURIComponent(bestDistrict.district)}`);
   };
 
   if (isLoadingBestDistrict || isLoadingPosts) {
@@ -104,11 +110,12 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
             </div>
             <s.Col>
               <s.TitleSpan>
-                {safeData.district} {category} 구경하기
+                {bestDistrict.district} {category} 구경하기
               </s.TitleSpan>
               <span style={{ fontSize: '9px' }}>
-                {safeData.district}는 한 달간 {category} 게시물이{' '}
-                {safeData.postCount}개 작성되어 {category} 동네로 선정되었어요!
+                {bestDistrict.district}는 한 달간 {category} 게시물이{' '}
+                {bestDistrict.postCount}개 작성되어 {category} 동네로
+                선정되었어요!
               </span>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div
@@ -149,7 +156,7 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
                     margin: '10px 0',
                   }}
                 >
-                  파스타앤코
+                  {item.placeName}
                 </span>
                 <span
                   style={{
@@ -158,8 +165,8 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
                     marginBottom: '5px',
                   }}
                 >
-                  서울특별시 연남동 48-7 1층
-                  <FaMapMarkerAlt />
+                  {item.placeAddr}
+                  <FaMapMarkerAlt style={{ marginLeft: '3px' }} />
                 </span>
                 <span
                   style={{
@@ -175,6 +182,13 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
               </s.Col>
             </ImageContainer>
           ))}
+        {[...Array(emptySlidesCount)].map((_, idx) => (
+          <ImageContainer key={`empty-${idx}`}>
+            <EmptyPost>
+              <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
+            </EmptyPost>
+          </ImageContainer>
+        ))}
       </StyledSlider>
       {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
@@ -221,6 +235,21 @@ export const Post = styled.div<{
   height: 234px;
   display: block;
   border-radius: 20px 0 20px 0;
+`;
+
+const EmptyPost = styled.div`
+  width: 234px;
+  height: 234px;
+  background-color: #e1e1e1;
+  border-radius: 20px 0 20px 0;
+  border: 1px solid #e2e2e2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 150px;
+  }
 `;
 
 const Arrows = styled.div`
