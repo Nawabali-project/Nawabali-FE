@@ -124,6 +124,7 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       handleSearch();
+      event.preventDefault();
     }
   };
 

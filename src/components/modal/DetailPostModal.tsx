@@ -478,7 +478,7 @@ const LocationBox = styled.div`
 
 const LeftIconBox = styled.button`
   position: absolute;
-  top: 270px;
+  top: 290px;
   left: 5px;
   width: 32px;
   height: 32px;
@@ -491,7 +491,7 @@ const LeftIconBox = styled.button`
 
 const RightIconBox = styled.button`
   position: absolute;
-  top: 270px;
+  top: 290px;
   right: 495px;
   width: 32px;
   height: 32px;
