@@ -66,8 +66,8 @@ const ScoreMap: React.FC = () => {
       let polygon = new kakao.maps.Polygon({
         map: map,
         path: path,
-        strokeWeight: 1.5,
-        strokeColor: '#2464c3',
+        strokeWeight: 4,
+        strokeColor: 'white',
         strokeOpacity: 0.8,
         strokeStyle: 'solid',
         fillColor: 'white',
@@ -100,15 +100,13 @@ const ScoreMap: React.FC = () => {
         polygon.setOptions({
           strokeWeight: 20,
           strokeOpacity: 1,
-          strokeColor: 'white',
         });
       });
 
       kakao.maps.event.addListener(polygon, 'mouseout', function () {
         polygon.setOptions({
-          strokeWeight: 1.5,
+          strokeWeight: 4,
           strokeOpacity: 1,
-          strokeColor: '#2464c3',
         });
       });
 

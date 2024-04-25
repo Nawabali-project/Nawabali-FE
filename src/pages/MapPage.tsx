@@ -116,73 +116,75 @@ const MapPage = () => {
   return (
     <Layout>
       <CategoryBox>
-        <AreaBox onClick={toggleDropdown}>
-          <BigLocationIcon />
-          &nbsp; {selectedArea}&nbsp;
-          <BottomArrowIcon />
-          {showDropdown && (
-            <DropdownMenu>
-              {seoulDistricts.map((area) => (
-                <DropdownItem
-                  key={area.name}
-                  onClick={() => handleSelectArea(area.name)}
-                >
-                  {area.name}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          )}
-        </AreaBox>
-
-        <ThreeKindBox>
-          <KindBox
-            kind="FOOD"
-            $isSelected={clickedKind === 'FOOD'}
-            onClick={() => handleKindClick('FOOD')}
-          >
-            {clickedKind === 'FOOD' ? <FoodIcon /> : <FoodFilledIcon />}
-            &nbsp;맛집
-          </KindBox>
-          <KindBox
-            kind="CAFE"
-            $isSelected={clickedKind === 'CAFE'}
-            onClick={() => handleKindClick('CAFE')}
-          >
-            {clickedKind === 'CAFE' ? <CafeIcon /> : <CafeFilledIcon />}
-            &nbsp;카페
-          </KindBox>
-          <KindBox
-            kind="PHOTOZONE"
-            $isSelected={clickedKind === 'PHOTOZONE'}
-            onClick={() => handleKindClick('PHOTOZONE')}
-          >
-            {clickedKind === 'PHOTOZONE' ? (
-              <CameraIcon2 />
-            ) : (
-              <CameraFilledIcon />
+        <SecondHeader>
+          <AreaBox onClick={toggleDropdown}>
+            <BigLocationIcon />
+            &nbsp; {selectedArea}&nbsp;
+            <BottomArrowIcon />
+            {showDropdown && (
+              <DropdownMenu>
+                {seoulDistricts.map((area) => (
+                  <DropdownItem
+                    key={area.name}
+                    onClick={() => handleSelectArea(area.name)}
+                  >
+                    {area.name}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
             )}
-            &nbsp;사진스팟
-          </KindBox>
-        </ThreeKindBox>
+          </AreaBox>
 
-        <ThreeComponentBox>
-          <FourCategory>
-            <MapBlackIcon />
-            <SelectedPageComment>&nbsp;지도</SelectedPageComment>
-          </FourCategory>
-          <FourCategory onClick={() => navigate('/listpage')}>
-            <ListIcon />
-            &nbsp;리스트
-          </FourCategory>
-          <FourCategory onClick={() => navigate('/scorepage')}>
-            <GlobalIcon />
-            &nbsp;동네별 활동점수
-          </FourCategory>
-          <FourCategory onClick={() => navigate('/newspage')}>
-            <StarIcon />
-            &nbsp;동네소식
-          </FourCategory>
-        </ThreeComponentBox>
+          <ThreeKindBox>
+            <KindBox
+              kind="FOOD"
+              $isSelected={clickedKind === 'FOOD'}
+              onClick={() => handleKindClick('FOOD')}
+            >
+              {clickedKind === 'FOOD' ? <FoodIcon /> : <FoodFilledIcon />}
+              &nbsp;맛집
+            </KindBox>
+            <KindBox
+              kind="CAFE"
+              $isSelected={clickedKind === 'CAFE'}
+              onClick={() => handleKindClick('CAFE')}
+            >
+              {clickedKind === 'CAFE' ? <CafeIcon /> : <CafeFilledIcon />}
+              &nbsp;카페
+            </KindBox>
+            <KindBox
+              kind="PHOTOZONE"
+              $isSelected={clickedKind === 'PHOTOZONE'}
+              onClick={() => handleKindClick('PHOTOZONE')}
+            >
+              {clickedKind === 'PHOTOZONE' ? (
+                <CameraIcon2 />
+              ) : (
+                <CameraFilledIcon />
+              )}
+              &nbsp;사진스팟
+            </KindBox>
+          </ThreeKindBox>
+
+          <FourComponentBox>
+            <FourCategory>
+              <MapBlackIcon />
+              <SelectedPageComment>&nbsp;지도</SelectedPageComment>
+            </FourCategory>
+            <FourCategory onClick={() => navigate('/listpage')}>
+              <ListIcon />
+              &nbsp;리스트
+            </FourCategory>
+            <FourCategory onClick={() => navigate('/scorepage')}>
+              <GlobalIcon />
+              &nbsp;동네별 활동점수
+            </FourCategory>
+            <FourCategory onClick={() => navigate('/newspage')}>
+              <StarIcon />
+              &nbsp;동네소식
+            </FourCategory>
+          </FourComponentBox>
+        </SecondHeader>
       </CategoryBox>
 
       <CustomMap
@@ -196,6 +198,13 @@ const MapPage = () => {
     </Layout>
   );
 };
+
+const SecondHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 1280px;
+`;
 
 const DropdownMenu = styled.div`
   position: absolute;
@@ -233,22 +242,28 @@ const DropdownItem = styled.div`
 `;
 
 const Layout = styled.div`
-  padding-top: 61.25px;
+  padding-top: 111px;
 `;
 
 const AreaBox = styled.div`
   position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-right: 10px;
+  min-width: 180px;
+  margin: 0 10px 0 20px;
   cursor: pointer;
 `;
 
 const CategoryBox = styled.div`
+  position: fixed;
+  top: 61.25px;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-evenly;
-  height: 50px;
+  background-color: white;
+  height: 65px;
+  z-index: 9;
 `;
 
 const ThreeKindBox = styled.div`
@@ -265,6 +280,9 @@ const KindBox = styled.div<{ $isSelected?: boolean; kind: string }>`
   align-items: center;
   margin-right: 10px;
   padding: 6px 9px;
+  width: ${(props) => {
+    return props.kind == 'PHOTOZONE' ? '84px' : '60px';
+  }};
   background-color: ${(props) => {
     if (!props.$isSelected) {
       return 'none';
@@ -284,10 +302,11 @@ const KindBox = styled.div<{ $isSelected?: boolean; kind: string }>`
   cursor: pointer;
 `;
 
-const ThreeComponentBox = styled.div`
+const FourComponentBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 392px;
   cursor: pointer;
 `;
 
