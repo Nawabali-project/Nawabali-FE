@@ -12,7 +12,6 @@ import {
 import Button from '@/components/button/Button';
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
-import { useState } from 'react';
 import { AxiosError } from 'axios';
 
 interface LoginProps {
@@ -22,13 +21,10 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   const cookie = new Cookies();
-  const [hover, setHover] = useState(false);
   const [{ email, password }, onInputChange, resetInput] = useInput({
     email: '',
     password: '',
   });
-
-  const isFormFilled = email.length > 0 && password.length > 0;
 
   const { login } = useAuthStore();
 
@@ -61,9 +57,6 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     }
   };
 
-  const handleMouseEnter = () => setHover(true);
-  const handleMouseLeave = () => setHover(false);
-
   const handleKakaoLogin = async () => {
     const REDIRECT_URI = `${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
     const CLIENT_ID = `${import.meta.env.VITE_KAKAO_RESTAPI_KEY}`;
@@ -88,9 +81,9 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
       size="auth"
       onClose={() => setIsModalOpen(false)}
     >
-      <div style={{ padding: '20px', marginTop: '-90px' }}>
+      <div style={{ padding: '0 20px' }}>
         <Logo />
-        <p style={{ textAlign: 'center', fontWeight: '900', fontSize: '20px' }}>
+        <p style={{ textAlign: 'center', fontWeight: '600', fontSize: '20px' }}>
           로그인
         </p>
         <div
@@ -108,7 +101,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             value={email}
             onChange={onInputChange}
             placeholder="이메일"
-            style={{ width: '238px' }}
+            style={{ width: '278px' }}
           />
         </AuthDiv>
         <AuthDiv>
@@ -119,32 +112,29 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             value={password}
             onChange={onInputChange}
             placeholder="비밀번호"
-            style={{ width: '238px', marginBottom: '15px' }}
+            style={{ width: '278px', marginBottom: '15px' }}
             onKeyDown={handleKeyDown}
           />
         </AuthDiv>
-        <Button disabled={!isFormFilled} color="blue" onClick={handleSubmit}>
+        <Button color="blue" onClick={handleSubmit}>
           로그인
         </Button>
         <img
           src="/assets/images/kakaoLoginImg.png"
           style={{
             cursor: 'pointer',
-            width: '260px',
+            width: '300px',
             height: '35px',
             objectFit: 'cover',
             borderRadius: '5px',
             margin: '5px 0',
-            opacity: hover ? 1 : 0.5,
           }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
           onClick={handleKakaoLogin}
           alt="kakao login"
         />
         <SideDiv
           style={{
-            width: '260px',
+            width: '295px',
             height: '13px',
             display: 'flex',
             justifyContent: 'flex-end',
@@ -156,7 +146,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
             아이디 / 비밀번호 찾기
           </span>
         </SideDiv>
-        <BottomDiv style={{ marginTop: '260px', fontSize: '13px' }}>
+        <BottomDiv style={{ marginTop: '60px', fontSize: '13px' }}>
           <span>함께 동네를 꾸며볼까요?</span>
           <span
             style={{

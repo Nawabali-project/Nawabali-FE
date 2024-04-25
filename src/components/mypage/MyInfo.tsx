@@ -58,6 +58,10 @@ const MyInfo = () => {
     initialPageParam: 0,
   });
 
+  const hasNoPosts = data?.pages?.every(
+    (page) => page.data.content.length === 0,
+  );
+
   useEffect(() => {
     if (inView && hasNextPage) {
       console.log('Fetching page number:', data!.pages.length + 1);
@@ -222,6 +226,22 @@ const MyInfo = () => {
           )),
         )}
       </Row>
+      {hasNoPosts && (
+        <div
+          style={{
+            height: '400px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0px',
+            color: '#A1A1A1',
+            fontSize: '25px',
+            fontWeight: '600',
+          }}
+        >
+          아직 작성된 게시글이 없어요
+        </div>
+      )}
       {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
           postId={selectedPost.postId}

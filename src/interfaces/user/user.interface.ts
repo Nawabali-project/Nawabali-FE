@@ -26,7 +26,7 @@ export interface AuthUser {
   nickname: string;
   profileImageUrl: string;
   district: string;
-  rank: string;
+  rankName: string;
   totalLikesCount: number;
   totalLocalLikesCount: number;
 }
