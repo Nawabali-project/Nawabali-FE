@@ -3,6 +3,7 @@ import useDidMountEffect from '@/hooks/useDidMountEffect';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MyLocationIcon, SearchIcon, LocationIcon } from '@/utils/icons';
+import AlertModal from '../modal/AlertModal';
 
 declare global {
   interface Window {
@@ -29,6 +30,15 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
   const [placeName, setPlaceName] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [inputText, setInputText] = useState<string>('');
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
+  const [alertType, setAlertType] = useState('');
+
+  // 경고창 열기
+  const showAlertModal = (message: React.ReactNode) => {
+    setAlertMessage(message);
+    setIsAlertModalOpen(true);
+  };
 
   // 1. 카카오맵 불러오기
   // useEffect(() => {
@@ -91,7 +101,8 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
       if (status === window.kakao.maps.services.Status.OK) {
         setSearchResults(data);
       } else {
-        alert('검색 결과가 없습니다.');
+        setAlertType('error');
+        showAlertModal('검색 결과가 없습니다 ㅠㅠ');
       }
     });
   };
@@ -247,6 +258,13 @@ const KaKaoMap = ({ width, height, onLocationChange }: KaKaoMapProps) => {
           <MyLocationIcon />
         </MyLocationBtn>
       </MapContainer>
+      {isAlertModalOpen && (
+        <AlertModal
+          message={alertMessage}
+          closeAlert={() => setIsAlertModalOpen(false)}
+          alertType={alertType}
+        />
+      )}
     </Layout>
   );
 };

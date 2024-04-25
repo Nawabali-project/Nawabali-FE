@@ -328,11 +328,26 @@ const UserGrade = styled.div`
 
 const UserComment = styled.div`
   box-sizing: border-box;
-  width: 85px;
+  width: 280px;
   height: 30px;
   border: none;
   font-size: 15px;
   resize: none;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: gray;
+  }
 `;
 
 export default CommentList;

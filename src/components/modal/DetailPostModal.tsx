@@ -592,7 +592,7 @@ const NickName = styled.div`
 
 const ContentText = styled.div`
   box-sizing: border-box;
-  width: 85%;
+  width: 80%;
   height: 120px;
   border: none;
   font-size: 15px;

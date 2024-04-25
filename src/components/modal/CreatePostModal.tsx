@@ -150,9 +150,15 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     createPostMutation.mutate(formData);
   };
 
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+  };
+
   return (
     <Modal isAlertModalOpen={isAlertModalOpen}>
-      <form onSubmit={handleSubmit(onSubmitHandler)}>
+      <form onSubmit={handleSubmit(onSubmitHandler)} onKeyDown={handleKeyDown}>
         <MainLayout>
           <ImageBox>
             <UploadBox onImagesChange={handleImagesChange} />
