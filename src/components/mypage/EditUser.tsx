@@ -75,8 +75,7 @@ const EditUser: React.FC = () => {
   const [imageAction, setImageAction] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const previewImageUrl =
-    localStorage.getItem('profileImageUrl')?.split('"')[1] || undefined;
+  const previewImageUrl = localStorage.getItem('profileImageUrl') || undefined;
 
   const { mutate: deletePhotoMutate } = useDeletePhoto();
   const { mutate: updatePhotoMutate } = useUpdatePhoto();
@@ -268,9 +267,11 @@ const EditUser: React.FC = () => {
       input.writtenNickname
     ) {
       changedData.nickname = input.writtenNickname;
+      localStorage.setItem('nickname', changedData.nickname);
     }
     if (initialData.district !== input.district && input.district) {
       changedData.district = input.district.replace('서울특별시 ', '');
+      localStorage.setItem('district', changedData.district);
     }
 
     return changedData;

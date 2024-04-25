@@ -24,6 +24,13 @@ function useFetchPosts(district: string) {
   return { data };
 }
 
+const getRandomSVGName = () => {
+  const svgNames = ['FOOD', 'CAFE', 'PHOTOZONE'];
+  const randomIndex = Math.floor(Math.random() * svgNames.length);
+  return svgNames[randomIndex];
+};
+const iconCategory = getRandomSVGName();
+
 function useFetchCarouslPosts(district: string, category: string) {
   const queryParams = {
     district: district,
@@ -193,9 +200,7 @@ function Carousel4() {
             {[...Array(emptySlidesCount)].map((_, idx) => (
               <ImageContainer key={`empty-${idx}`}>
                 <EmptyPost>
-                  <span style={{ fontSize: '13px', color: '#616161' }}>
-                    아직 TOP7의 자리가 남아있습니다!
-                  </span>
+                  <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
                 </EmptyPost>
               </ImageContainer>
             ))}
@@ -225,15 +230,20 @@ const EmptyPost = styled.div`
   width: 170px;
   height: 238px;
   border: 1px solid #e2e2e2;
+  background-color: #e1e1e1;
   display: flex;
   border-radius: 20px;
   align-items: center;
   justify-content: center;
+
+  img {
+    width: 150px;
+  }
 `;
 
 const StyledSlider = styled(Slider)`
   margin: 0 0 0 30px;
-  padding: 50px 0;
+  padding-top: 30px;
   width: 530px;
   .slick-prev::before,
   .slick-next::before {

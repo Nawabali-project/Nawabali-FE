@@ -15,6 +15,7 @@ import {
 } from '@/interfaces/chat/chat.interface';
 import { Client } from '@stomp/stompjs';
 import Button from '../button/Button';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
@@ -24,8 +25,10 @@ export const ChatRoomsList: React.FC<{
   const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [userNickname, setUserNickname] = useState('');
+  const [selectedUserNickname, setSelectedUserNickname] = useState('');
   const [searchWord, setSearchWord] = useState<string>('');
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const debouncedUserNickname = useDebounce(userNickname, 300);
 
   useEffect(() => {
     fetchChatRooms();
@@ -50,26 +53,44 @@ export const ChatRoomsList: React.FC<{
     }
   };
 
-  const handleSearchUserNickname = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setUserNickname(e.target.value);
-    if (e.target.value.trim() === '') {
-      setSearchResults([]);
-      return;
-    }
-    try {
-      const response = await searchUserByNickname(userNickname);
-      console.log('API response:', response);
-      setSearchResults(response);
-    } catch (error) {
-      console.error('Error searching user by nickname', error);
-      setSearchResults([]);
-    }
-  };
+  // const handleSearchUserNickname = async (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  // ) => {
+  //   setUserNickname(e.target.value);
+  //   if (e.target.value.trim() === '') {
+  //     setSearchResults([]);
+  //     return;
+  //   }
+  //   try {
+  //     const response = await searchUserByNickname(userNickname);
+  //     console.log('API response:', response);
+  //     setSearchResults(response);
+  //   } catch (error) {
+  //     console.error('Error searching user by nickname', error);
+  //     setSearchResults([]);
+  //   }
+  // };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (debouncedUserNickname.trim() === '') {
+        setSearchResults([]);
+        return;
+      }
+      try {
+        const response = await searchUserByNickname(debouncedUserNickname);
+        setSearchResults(response);
+      } catch (error) {
+        console.error('Error searching user by nickname', error);
+        setSearchResults([]);
+      }
+    };
+
+    fetchUsers();
+  }, [debouncedUserNickname]);
 
   const handleSelectUser = (nickname: string) => {
-    setUserNickname(nickname);
+    setSelectedUserNickname(nickname);
   };
 
   const handleCreateRoom = async () => {
@@ -85,7 +106,7 @@ export const ChatRoomsList: React.FC<{
     }
   };
 
-  const handleRoomClick = (roomId: number, roomName: string) => {
+  const handleRoomClick = (roomId: number) => {
     if (client) {
       const messageForm = {
         sender: localStorage.getItem('nickname')!,
@@ -96,7 +117,7 @@ export const ChatRoomsList: React.FC<{
       };
       setSelectedRoomId(roomId);
       onRoomSelect(roomId);
-      onRoomNameSelect(roomName);
+      onRoomNameSelect(selectedUserNickname);
       enterChatRoom(client, messageForm);
       console.log('채팅방 입장');
     }
@@ -110,7 +131,7 @@ export const ChatRoomsList: React.FC<{
           <input
             type="text"
             value={userNickname}
-            onChange={handleSearchUserNickname}
+            onChange={(e) => setUserNickname(e.target.value)}
             placeholder="유저닉네임 검색"
           />
         </SearchDiv>
@@ -147,7 +168,7 @@ export const ChatRoomsList: React.FC<{
             <ChatRooms
               key={room.roomId}
               $isSelected={selectedRoomId === room.roomId}
-              onClick={() => handleRoomClick(room.roomId, room.roomName)}
+              onClick={() => handleRoomClick(room.roomId)}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <ProfileImg $profileImg={room.imgUrls[0]} />
