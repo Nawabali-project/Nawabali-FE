@@ -87,6 +87,12 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
 
   // 생성 form 제출
   const onSubmitHandler: SubmitHandler<FormValue> = (data) => {
+    const userDistrict = localStorage
+      .getItem('district')
+      ?.replace(/"/g, '')
+      .trim();
+    const formDistrict = data.district.replace(/"/g, '').trim();
+
     if (!data.file || data.file.length === 0) {
       setAlertType('error');
       showAlertModal('사진을 하나 이상 올려주세요 :)');
@@ -99,14 +105,13 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       setAlertType('error');
       showAlertModal('카테고리 선택을 깜박하셨네요 :)');
       return;
-    } else if (data.district !== localStorage.getItem('district')) {
+    } else if (userDistrict !== formDistrict) {
       setAlertType('error');
       showAlertModal([
         '본인이 사는 ',
         <strong>&nbsp;'구'&nbsp;</strong>,
         '에만 작성할 수 있어요 :)',
       ]);
-      return;
     }
 
     const formData = new FormData();
