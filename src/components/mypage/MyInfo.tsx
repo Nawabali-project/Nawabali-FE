@@ -21,8 +21,7 @@ import {
 const MyInfo = () => {
   const navigate = useNavigate();
   const rankName = localStorage.getItem('rankName') ?? 'Unknown';
-  const profileImg =
-    localStorage.getItem('profileImageUrl')?.split('"')[1] ?? undefined;
+  const profileImg = localStorage.getItem('profileImageUrl') ?? undefined;
   const nickname = localStorage.getItem('nickname') ?? 'Unknown';
   const district = localStorage.getItem('district') ?? 'Unknown';
   const needLikes = localStorage.getItem('needLikes') ?? 0;

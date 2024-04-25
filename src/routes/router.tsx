@@ -79,7 +79,7 @@ export const router = createBrowserRouter([
         element: <OtherUserPage />,
       },
       {
-        path: '/search/:keword',
+        path: '/search/:keyword',
         element: <SearchResponsePage />,
       },
 

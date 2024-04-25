@@ -130,7 +130,7 @@ export const ChatRoom: React.FC<{
       {roomName && userInfo && (
         <UserInfo>
           <UserProfileImg
-            src={userInfo.imgUrl}
+            src={userInfo?.imgUrl}
             alt={`${roomName}의 프로필`}
             onClick={() => goToUserProfile(roomName)}
           />

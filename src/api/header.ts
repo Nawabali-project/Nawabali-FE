@@ -3,7 +3,7 @@ import { authInstance } from '../axios';
 import { useQuery } from '@tanstack/react-query';
 
 const searchPostsByContents = async (query: string) => {
-  const { data } = await authInstance.get(`/posts/search?query=${query}`);
+  const { data } = await authInstance.get(`/posts/search?contents=${query}`);
   return data;
 };
 

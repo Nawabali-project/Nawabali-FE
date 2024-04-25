@@ -75,8 +75,7 @@ const EditUser: React.FC = () => {
   const [imageAction, setImageAction] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const previewImageUrl =
-    localStorage.getItem('profileImageUrl')?.split('"')[1] || undefined;
+  const previewImageUrl = localStorage.getItem('profileImageUrl') || undefined;
 
   const { mutate: deletePhotoMutate } = useDeletePhoto();
   const { mutate: updatePhotoMutate } = useUpdatePhoto();
