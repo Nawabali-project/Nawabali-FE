@@ -33,6 +33,8 @@ export const signUp = async (user: SignUpUser) => {
 export const login = async (user: LoginUser) => {
   try {
     const res = await authInstance.post('/users/login', user);
+    console.log('로그인정보: ', res);
+
     return res;
   } catch (error) {
     const axiosError = error as AxiosError<ErrorResponse>;
@@ -47,6 +49,8 @@ export const login = async (user: LoginUser) => {
 export const getUserInfo = async (): Promise<AuthUser> => {
   try {
     const response = await authInstance.get('/users/my-info');
+    localStorage.setItem('user', JSON.stringify(response.data));
+    console.log('내정보: ', response.data);
     return response.data;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;

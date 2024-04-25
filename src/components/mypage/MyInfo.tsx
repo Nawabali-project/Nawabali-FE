@@ -20,12 +20,12 @@ import {
 
 const MyInfo = () => {
   const navigate = useNavigate();
-  const userString = localStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
-  const rankName = user ? user.rankName : 'Unknown';
+  const rankName = localStorage.getItem('rankName') ?? 'Unknown';
   const profileImg = localStorage.getItem('profileImageUrl') ?? undefined;
   const nickname = localStorage.getItem('nickname') ?? 'Unknown';
   const district = localStorage.getItem('district') ?? 'Unknown';
+  const needLikes = localStorage.getItem('needLikes') ?? 0;
+  const needPosts = localStorage.getItem('needPosts') ?? 0;
   const [type, setType] = useState<string>('contents');
   const { ref, inView } = useInView();
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -137,8 +137,8 @@ const MyInfo = () => {
             </c.MiddleTitle>
             {rankName !== '터줏대감' && (
               <c.LightSpan>
-                다음 등급인 {nextRankName}까지 게시물 {user.needPosts}개 /
-                좋아요 {user.needLikes}개 남았어요 :)
+                다음 등급인 {nextRankName}까지 게시물 {needPosts}개 / 좋아요{' '}
+                {needLikes}개 남았어요 :)
               </c.LightSpan>
             )}
           </Col>

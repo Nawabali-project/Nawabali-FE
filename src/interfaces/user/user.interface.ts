@@ -29,6 +29,8 @@ export interface AuthUser {
   rankName: string;
   totalLikesCount: number;
   totalLocalLikesCount: number;
+  needPosts: number;
+  needLikes: number;
 }
 
 export interface AuthState {
