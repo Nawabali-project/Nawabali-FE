@@ -8,9 +8,9 @@ function SearchResponsePage() {
       <Container>
         <NoResults>
           <NoResultIcon src="/assets/svgs/searchWithNoAnswers.svg" />
-          <div>
-            <span>'{keword}'</span>
-            <span>에 대한 검새결과를 찾지 못했어요.</span>
+          <div style={{ fontSize: '30px' }}>
+            <span style={{ fontWeight: '800' }}>'{keword}'</span>
+            <span>에 대한 검색결과를 찾지 못했어요.</span>
           </div>
         </NoResults>
       </Container>
@@ -21,7 +21,7 @@ function SearchResponsePage() {
 export default SearchResponsePage;
 
 const Container = styled.div`
-  height: 800px;
+  height: 1000px;
   width: 1000px;
   margin: 0 auto;
 `;
@@ -31,10 +31,11 @@ const NoResults = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  justify-content: center;
+  align-items: center;
 `;
 
 const NoResultIcon = styled.img`
-  width: 500px;
-  height: 500px;
-  object-fit: cover;
+  width: 150px;
+  height: 300px;
 `;

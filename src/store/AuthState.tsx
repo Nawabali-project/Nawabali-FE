@@ -10,35 +10,33 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   messages: [],
   hasNotifications: false,
 
+  initializeLoginState: () => {
+    const cookies = new Cookies();
+    try {
+      const accessToken = cookies.get('accessToken');
+      const userJson = localStorage.getItem('user');
+      if (accessToken && userJson) {
+        const user = JSON.parse(userJson);
+        set({
+          isLoggedIn: true,
+          user,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to initialize login state:', error);
+    }
+  },
+
   login: (user: AuthUser) => {
-    localStorage.setItem('userId', JSON.stringify(user.id));
-    localStorage.setItem('nickname', user.nickname);
-    localStorage.setItem('profileImageUrl', user.profileImageUrl);
-    localStorage.setItem('district', user.district);
-    localStorage.setItem('rank', user.rankName);
-    localStorage.setItem(
-      'totalLikeCount',
-      JSON.stringify(user.totalLikesCount),
-    );
-    localStorage.setItem(
-      'totalLocalLikesCount',
-      JSON.stringify(user.totalLocalLikesCount),
-    );
     localStorage.setItem('user', JSON.stringify(user));
-    set({
-      isLoggedIn: true,
-      user,
-    });
+    set({ isLoggedIn: true, user });
   },
 
   logout: () => {
     localStorage.clear();
     new Cookies().remove('accessToken');
-    set({
-      isLoggedIn: false,
-      user: null,
-    });
-    alert('로그아웃 되었습니다.');
+    set({ isLoggedIn: false, user: null });
+    alert('로그아웃 성공!');
   },
 
   setIsLoggedIn: (isLoggedIn: boolean) => {

@@ -142,14 +142,18 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
 
   useEffect(() => {
     if (debouncedConfirmPassword.length > 0) {
-      input.confirmPassword === input.password
-        ? setPwConfirmOkMessage('비밀번호가 일치해요.')
-        : setPwConfirmMessage('비밀번호가 일치하지 않습니다.');
+      if (input.confirmPassword === input.password) {
+        setPwConfirmOkMessage('비밀번호가 일치해요.');
+        setPwConfirmMessage('');
+      } else {
+        setPwConfirmOkMessage('');
+        setPwConfirmMessage('비밀번호가 일치하지 않습니다.');
+      }
     } else {
-      setPwValidityMessage('');
       setPwConfirmOkMessage('');
+      setPwConfirmMessage('');
     }
-  }, [debouncedConfirmPassword]);
+  }, [debouncedConfirmPassword, input.confirmPassword, input.password]);
 
   useEffect(() => {
     const checkNickname = async () => {
