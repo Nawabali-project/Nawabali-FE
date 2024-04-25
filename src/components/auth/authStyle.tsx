@@ -47,6 +47,11 @@ export const WarnSpan = styled.span`
   font-size: 0.7rem;
 `;
 
+export const OkSpan = styled.span`
+  color: #00a3ff;
+  font-size: 0.7rem;
+`;
+
 export const InfoSpan = styled.span`
   color: black;
   font-size: 0.7rem;

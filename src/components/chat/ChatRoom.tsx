@@ -9,6 +9,7 @@ import {
   User,
 } from '@/interfaces/chat/chat.interface';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 export const ChatRoom: React.FC<{
   roomId: number;
@@ -22,6 +23,7 @@ export const ChatRoom: React.FC<{
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const stompClient = client;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -119,11 +121,19 @@ export const ChatRoom: React.FC<{
     console.log('메시지 전송: ', chatMessage);
   };
 
+  const goToUserProfile = (userNick: string) => {
+    navigate(`/userProfile/${userNick}`);
+  };
+
   return (
     <ChatContainer>
       {roomName && userInfo && (
         <UserInfo>
-          <UserProfileImg src={userInfo.imgUrl} alt={`${roomName}의 프로필`} />
+          <UserProfileImg
+            src={userInfo.imgUrl}
+            alt={`${roomName}의 프로필`}
+            onClick={() => goToUserProfile(roomName)}
+          />
           <h3>{roomName}</h3>
         </UserInfo>
       )}
@@ -266,6 +276,7 @@ const UserProfileImg = styled.img`
   background-size: cover;
   border-radius: 50%;
   margin-right: 10px;
+  cursor: pointer;
 `;
 
 const ProfileImg = styled.img`

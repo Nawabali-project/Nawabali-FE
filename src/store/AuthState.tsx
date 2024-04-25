@@ -15,7 +15,7 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
     localStorage.setItem('nickname', user.nickname);
     localStorage.setItem('profileImageUrl', user.profileImageUrl);
     localStorage.setItem('district', user.district);
-    localStorage.setItem('rank', user.rank);
+    localStorage.setItem('rank', user.rankName);
     localStorage.setItem(
       'totalLikeCount',
       JSON.stringify(user.totalLikesCount),

@@ -13,6 +13,10 @@ const MapPage = React.lazy(() => import('@/pages/MapPage'));
 const NewsPage = React.lazy(() => import('@/pages/NewsPage'));
 const ScorePage = React.lazy(() => import('@/pages/ScorePage'));
 const ChatMain = React.lazy(() => import('@/pages/ChatPage'));
+const OtherUserPage = React.lazy(() => import('@/pages/OtherUserPage'));
+const SearchResponsePage = React.lazy(
+  () => import('@/pages/SearchResponsePage'),
+);
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -65,6 +69,14 @@ export const router = createBrowserRouter([
       {
         path: '/*',
         element: <MapPage />,
+      },
+      {
+        path: '/userProfile/:nickname',
+        element: <OtherUserPage />,
+      },
+      {
+        path: '/search/:keword',
+        element: <SearchResponsePage />,
       },
 
       {

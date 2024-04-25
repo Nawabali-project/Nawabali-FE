@@ -33,6 +33,8 @@ export interface User {
   id: number;
   nickname: string;
   imgUrl: string;
+  rankName: string;
+  district: string;
 }
 
 export interface NewChatRoom {

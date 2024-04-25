@@ -74,13 +74,9 @@ const buttonType = {
     }
   `,
   yellow: css`
-    background-color: #fee5007f;
-    color: grey;
+    background-color: #fee500;
+    color: black;
     border: none;
-    &:hover {
-      background-color: #fee500;
-      color: black;
-    }
   `,
   default: css`
     background-color: white;
