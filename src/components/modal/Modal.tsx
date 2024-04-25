@@ -53,7 +53,7 @@ const ModalWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(79, 79, 79, 0.7);
-  z-index: 10;
+  z-index: 900;
 `;
 
 const ModalContent = styled.div<{ size?: 'auth' | 'regular' }>`

@@ -219,24 +219,24 @@ const ImgBox = styled.div`
 
 const PostType = styled.div<{ category: string }>`
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 3px 10px;
+  top: 12px;
+  right: 12px;
+  padding: 7px 12px;
   background-color: ${(props) => {
     switch (props.category) {
       case 'FOOD':
-        return '#FE6847'; // 맛집 카테고리의 배경색
+        return '#FE6847';
       case 'CAFE':
-        return '#9BCF53'; // 카페 카테고리의 배경색
+        return '#9BCF53';
       case 'PHOTOZONE':
-        return '#00A3FF'; // 사진 존 카테고리의 배경색
+        return '#00A3FF';
       default:
-        return '#ccc'; // 기본 배경색
+        return '#ccc';
     }
   }};
   color: white;
   border-radius: 20px;
-  font-size: 9px;
+  font-size: 15px;
   z-index: 5;
 `;
 

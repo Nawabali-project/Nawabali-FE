@@ -47,7 +47,14 @@ const CommentInput = ({ postId }: { postId: number }) => {
   return (
     <>
       <MyCommentBox>
-        <MyProfile src={localStorage.getItem('profileImageUrl') ?? undefined} />
+        <MyProfile
+          src={
+            localStorage.getItem('profileImageUrl')?.split('"')[1] ??
+            'public/assets/images/DefaultProfile.png'
+          }
+          alt=""
+        />
+
         <MyCommentInput
           placeholder="댓글 달기"
           value={newComment}

@@ -125,32 +125,35 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
               borderBottomRightRadius: '140px',
             }}
           />
-          <div>
-            <LeftIconBox
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                goToPreviousImage();
-              }}
-            >
-              <LeftTranslucentIcon />
-            </LeftIconBox>
+          <ReSelectBtn>사진 재선택</ReSelectBtn>
+          {uploadedImages.length > 1 && (
+            <div>
+              <LeftIconBox
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPreviousImage();
+                }}
+              >
+                <LeftTranslucentIcon />
+              </LeftIconBox>
 
-            <RightIconBox
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                goToNextImage();
-              }}
-            >
-              <RightTranslucentIcon />
-            </RightIconBox>
-            <DotsBox>
-              {uploadedImages.map((_, index) => (
-                <Dot key={index} $active={currentIndex === index} />
-              ))}
-            </DotsBox>
-          </div>
+              <RightIconBox
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNextImage();
+                }}
+              >
+                <RightTranslucentIcon />
+              </RightIconBox>
+              <DotsBox>
+                {uploadedImages.map((_, index) => (
+                  <Dot key={index} $active={currentIndex === index} />
+                ))}
+              </DotsBox>
+            </div>
+          )}
         </>
       )}
       {!uploadedImages.length && (
@@ -164,6 +167,20 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
     </label>
   );
 };
+
+const ReSelectBtn = styled.div`
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 13px 13px;
+  background-color: gray;
+  border-radius: 5px;
+  color: white;
+  cursor: white;
+`;
 
 const SelectImg = styled.div`
   display: flex;
@@ -180,7 +197,7 @@ const SelectImg = styled.div`
 
 const LeftIconBox = styled.button`
   position: absolute;
-  top: 270px;
+  top: 290px;
   left: 5px;
   width: 32px;
   height: 32px;
@@ -193,7 +210,7 @@ const LeftIconBox = styled.button`
 
 const RightIconBox = styled.button`
   position: absolute;
-  top: 270px;
+  top: 290px;
   right: 495px;
   width: 32px;
   height: 32px;

@@ -81,6 +81,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       setAlertType('complete');
       showAlertModal('게시글 작성이 완료되었어요 :)');
       queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
+      queryClient.invalidateQueries({ queryKey: ['allPosts'] });
     },
     onError: () => {},
   });
@@ -91,7 +92,9 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       .getItem('district')
       ?.replace(/"/g, '')
       .trim();
-    const formDistrict = data.district.replace(/"/g, '').trim();
+    const formDistrict = data.district
+      ? data.district.replace(/"/g, '').trim()
+      : '';
 
     if (!data.file || data.file.length === 0) {
       setAlertType('error');
@@ -105,6 +108,10 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       setAlertType('error');
       showAlertModal('카테고리 선택을 깜박하셨네요 :)');
       return;
+    } else if (!data.district) {
+      setAlertType('error');
+      showAlertModal('주소를 입력해주세요 :)');
+      return;
     } else if (userDistrict !== formDistrict) {
       setAlertType('error');
       showAlertModal([
@@ -112,6 +119,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
         <strong>&nbsp;'구'&nbsp;</strong>,
         '에만 작성할 수 있어요 :)',
       ]);
+      return;
     }
 
     const formData = new FormData();
@@ -155,15 +163,9 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     createPostMutation.mutate(formData);
   };
 
-  const handleKeyDown = (event: any) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-    }
-  };
-
   return (
     <Modal isAlertModalOpen={isAlertModalOpen}>
-      <form onSubmit={handleSubmit(onSubmitHandler)} onKeyDown={handleKeyDown}>
+      <form onSubmit={handleSubmit(onSubmitHandler)}>
         <MainLayout>
           <ImageBox>
             <UploadBox onImagesChange={handleImagesChange} />
@@ -172,7 +174,10 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
             <ContentHeader>
               <ProfileBox>
                 <ProfileImg
-                  src={localStorage.getItem('profileImageUrl') ?? undefined}
+                  src={
+                    localStorage.getItem('profileImageUrl')?.split('"')[1] ??
+                    undefined
+                  }
                 />
               </ProfileBox>
               <NickName>{localStorage.getItem('nickname')} </NickName>
@@ -185,12 +190,17 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               rows={5}
               placeholder="문구를 입력해주세요..."
               value={content}
+              maxLength={500}
               onChange={(e) => {
                 setContent(e.target.value);
                 setValue('contents', e.target.value);
               }}
             />
-            <CharacterCount>{content.length}/500</CharacterCount>
+            <CharacterCount
+              style={{ color: content.length === 500 ? 'red' : 'gray' }}
+            >
+              {content.length}/500
+            </CharacterCount>
             <CategorySelectInfo>
               1개의 카테고리를 선택해주세요.
             </CategorySelectInfo>
