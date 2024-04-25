@@ -2,8 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useLogout } from '@/api/auth';
 import { useNavigate } from 'react-router-dom';
-import { Cookies } from 'react-cookie';
-import useAuthStore from '@/store/AuthState';
 
 interface BalloonModalProps {
   isOpen: boolean;
@@ -11,7 +9,6 @@ interface BalloonModalProps {
 }
 
 const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
-  const cookie = new Cookies();
   const navigate = useNavigate();
   const modalRef = useRef<HTMLDivElement>(null);
   const logout = useLogout();
@@ -32,15 +29,15 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
     };
   }, [onClose]);
 
-  const goToMypage = () => {
-    navigate('/mypage');
-  };
-
   const handleLogout = async () => {
     await logout();
-    cookie.remove('accessToken');
-    useAuthStore.getState().logout();
     onClose();
+  };
+
+  if (!isOpen) return null;
+
+  const goToMypage = () => {
+    navigate('/mypage');
   };
 
   if (!isOpen) return null;

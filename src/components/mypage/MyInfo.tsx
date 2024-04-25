@@ -39,6 +39,13 @@ const MyInfo = () => {
 
   const fetchFunction = type === 'contents' ? getMyContents : getMyBookMarks;
 
+  const rankMappings: { [key: string]: string } = {
+    주민: '토박이',
+    토박이: '터줏대감',
+  };
+
+  const nextRankName = rankMappings[rankName] || '';
+
   const {
     data,
     status,
@@ -128,9 +135,12 @@ const MyInfo = () => {
             <c.MiddleTitle>
               {district} {rankName}
             </c.MiddleTitle>
-            <c.LightSpan>
-              다음등급인 터줏대감까지 게시물 3개 / 좋아요 23개 남았어요 :)
-            </c.LightSpan>
+            {rankName !== '터줏대감' && (
+              <c.LightSpan>
+                다음 등급인 {nextRankName}까지 게시물 {user.needPosts}개 /
+                좋아요 {user.needLikes}개 남았어요 :)
+              </c.LightSpan>
+            )}
           </Col>
         </Col>
       </Row>

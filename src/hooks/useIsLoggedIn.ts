@@ -1,8 +1,7 @@
-import useUserStore from '@/store/AuthState';
+import useAuthStore from '@/store/AuthState';
 
 const useIsLoggedIn = () => {
-  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
-  return isLoggedIn;
+  return useAuthStore((state) => state.isLoggedIn);
 };
 
 export default useIsLoggedIn;

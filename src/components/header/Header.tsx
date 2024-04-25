@@ -72,6 +72,13 @@ const Header: React.FC = () => {
     setIsDetailModalOpen(true);
   };
 
+  const handleSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && content.trim()) {
+      navigate(`/search/${content.trim()}`);
+      setContent('');
+    }
+  };
+
   return (
     <>
       <HeaderLayout>
@@ -94,6 +101,7 @@ const Header: React.FC = () => {
                 onChange={(e) => setContent(e.target.value)}
                 onFocus={handleSearchFocus}
                 onBlur={handleSearchBlur}
+                onKeyDown={handleSearchSubmit}
               />
               {isSearchFocused && (
                 <SearchBar

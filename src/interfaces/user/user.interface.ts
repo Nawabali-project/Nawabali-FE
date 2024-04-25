@@ -35,6 +35,7 @@ export interface AuthState {
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   user: AuthUser | null;
+  initializeLoginState: () => void;
   login: (user: AuthUser) => void;
   logout: () => void;
   messages: any[];

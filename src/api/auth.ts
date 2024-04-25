@@ -88,11 +88,17 @@ export const nicknameDupCheck = async (nickname: string) => {
 export const useLogout = () => {
   const navigate = useNavigate();
   const cookie = new Cookies();
-  const token = cookie.get('accessToken');
-  const param = `Bearer ${token}`;
 
   return async () => {
-    await instance.post(`/users/logout?accessToken=${param}`);
+    const token = cookie.get('accessToken');
+    const param = `Bearer ${token}`;
+
+    try {
+      await instance.post(`/users/logout?accessToken=${param}`);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+
     cookie.remove('accessToken', { path: '/' });
     useAuthStore.getState().logout();
     navigate('/');

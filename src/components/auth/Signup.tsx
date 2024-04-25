@@ -142,14 +142,18 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
 
   useEffect(() => {
     if (debouncedConfirmPassword.length > 0) {
-      input.confirmPassword === input.password
-        ? setPwConfirmOkMessage('비밀번호가 일치해요.')
-        : setPwConfirmMessage('비밀번호가 일치하지 않습니다.');
+      if (input.confirmPassword === input.password) {
+        setPwConfirmOkMessage('비밀번호가 일치해요.');
+        setPwConfirmMessage('');
+      } else {
+        setPwConfirmOkMessage('');
+        setPwConfirmMessage('비밀번호가 일치하지 않습니다.');
+      }
     } else {
-      setPwValidityMessage('');
       setPwConfirmOkMessage('');
+      setPwConfirmMessage('');
     }
-  }, [debouncedConfirmPassword]);
+  }, [debouncedConfirmPassword, input.confirmPassword, input.password]);
 
   useEffect(() => {
     const checkNickname = async () => {
@@ -212,11 +216,12 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
     input.email.length > 0 &&
     emailCheck(input.email) &&
     input.nickname.length > 0 &&
-    nicknameCheck(input.nickname);
-  input.password.length > 0 &&
+    nicknameCheck(input.nickname) &&
+    input.password.length > 0 &&
     pwCheck(input.password) &&
     input.confirmPassword === input.password &&
-    input.district.trim().length > 0;
+    input.district.trim().length > 0 &&
+    validNumberOkMessage === '인증번호가 일치해요.';
 
   const showAlertModal = (message: React.ReactNode) => {
     setAlertMessage(message);
@@ -226,28 +231,32 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
   // 회원가입 처리
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await signUp({
-        email: input.email,
-        nickname: input.nickname,
-        password: input.password,
-        confirmPassword: input.confirmPassword,
-        city: '서울특별시',
-        district: input.district.split(' ')[1],
-      });
-      resetInput();
-      setIsModalOpen(false);
-      setAlertType('complete');
-      showAlertModal('회원가입이 완료되었어요!');
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error('회원가입 오류:', error.message);
-        alert(
-          '회원가입 실패: ' + (error.response?.data.message || error.message),
-        );
-      } else {
-        console.error('Unexpected error:', error);
-        alert('회원가입 실패: 알 수 없는 오류가 발생했습니다.');
+    if (!isFormValid) {
+      showAlertModal('입력값을 확인해주세요.');
+    } else {
+      try {
+        await signUp({
+          email: input.email,
+          nickname: input.nickname,
+          password: input.password,
+          confirmPassword: input.confirmPassword,
+          city: '서울특별시',
+          district: input.district.split(' ')[1],
+        });
+        resetInput();
+        setIsModalOpen(false);
+        setAlertType('complete');
+        showAlertModal('회원가입이 완료되었어요!');
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error('회원가입 오류:', error.message);
+          alert(
+            '회원가입 실패: ' + (error.response?.data.message || error.message),
+          );
+        } else {
+          console.error('Unexpected error:', error);
+          alert('회원가입 실패: 알 수 없는 오류가 발생했습니다.');
+        }
       }
     }
   };
