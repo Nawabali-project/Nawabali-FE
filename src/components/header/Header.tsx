@@ -137,7 +137,11 @@ const Header: React.FC = () => {
 
                   <ProfileContainer>
                     <Profile
-                      src={localStorage.getItem('profileImageUrl') ?? undefined}
+                      src={
+                        localStorage
+                          .getItem('profileImageUrl')
+                          ?.split('"')[1] ?? undefined
+                      }
                       onClick={handleOpenInfoModal}
                     />
                     {isMyInfoModalOpen && (
