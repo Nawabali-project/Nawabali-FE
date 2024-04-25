@@ -28,21 +28,24 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   },
 
   login: (user: AuthUser) => {
-    localStorage.setItem('district', JSON.stringify(user.district));
+    localStorage.setItem('district', user.district);
     localStorage.setItem(
-      'profileImageUrl: ',
+      'profileImageUrl',
       JSON.stringify(user.profileImageUrl),
     );
-    localStorage.setItem('rankName: ', JSON.stringify(user.rankName));
+    localStorage.setItem('rankName', user.rankName);
+    localStorage.setItem('userId', user.id);
     localStorage.setItem(
-      'totalLikesCount: ',
+      'totalLikesCount',
       JSON.stringify(user.totalLikesCount),
     );
     localStorage.setItem(
-      'totalLocalLikesCount: ',
+      'totalLocalLikesCount',
       JSON.stringify(user.totalLocalLikesCount),
     );
-    localStorage.setItem('nickname: ', JSON.stringify(user.nickname));
+    localStorage.setItem('nickname', user.nickname);
+    localStorage.setItem('needPosts', JSON.stringify(user.needPosts));
+    localStorage.setItem('needLikes', JSON.stringify(user.needLikes));
     set({ isLoggedIn: true, user });
   },
 

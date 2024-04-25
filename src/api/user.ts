@@ -27,6 +27,7 @@ export const editUserInfo = async (userInfo: UserInfo) => {
     return '';
   }
 };
+
 export const checkPassWord = async (password: string) => {
   try {
     const response = await authInstance.get(
