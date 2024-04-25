@@ -10,7 +10,6 @@ import {
   Logo,
 } from '@/components/auth/authStyle';
 import Button from '@/components/button/Button';
-import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { AxiosError } from 'axios';
 
@@ -20,7 +19,6 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
-  const cookie = new Cookies();
   const [{ email, password }, onInputChange, resetInput] = useInput({
     email: '',
     password: '',
@@ -39,7 +37,6 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
       resetInput();
       setIsModalOpen(false);
       const token = userToken['authorization'].slice(7);
-      cookie.set('accessToken', token);
       if (token) {
         const userInfo = await getUserInfo();
         login(userInfo);

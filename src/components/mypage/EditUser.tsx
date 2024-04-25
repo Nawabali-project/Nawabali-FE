@@ -326,7 +326,7 @@ const EditUser: React.FC = () => {
         <Col style={{ width: '700px', margin: '0 auto' }}>
           <c.Title>프로필 편집</c.Title>
           <Line />
-          <Row style={{ padding: '20px' }}>
+          <Row style={{ position: 'relative', padding: '20px' }}>
             <ProfileImageContainer onClick={handleImageClick}>
               <ProfileImage src={previewImageUrl} alt="Profile" />
               <ProfileImageIcon>
@@ -686,8 +686,8 @@ const ProfileImageIcon = styled.div`
 const Modal = styled.div`
   position: absolute;
   width: 50px;
-  top: 290px;
-  left: 196px;
+  top: 135px;
+  left: 40px;
   text-align: center;
   z-index: 10;
   background: white;
