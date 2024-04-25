@@ -23,7 +23,7 @@ function useFetchPosts(district: string, category: string) {
       CategoryMappings[category] !== 'ALL'
         ? CategoryMappings[category]
         : undefined,
-    size: 10,
+    size: 9,
   };
 
   const { data, isLoading, isError, refetch } =
@@ -56,7 +56,7 @@ function Carousel2() {
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
 
-  const totalSlides = 7;
+  const totalSlides = 9;
   const actualSlides = data?.content.length || 0;
   const emptySlidesCount = Math.max(0, totalSlides - actualSlides);
 
@@ -107,6 +107,13 @@ function Carousel2() {
     slidesToScroll: 3,
     arrows: false,
   };
+
+  const getRandomSVGName = () => {
+    const svgNames = ['FOOD', 'CAFE', 'PHOTOZONE'];
+    const randomIndex = Math.floor(Math.random() * svgNames.length);
+    return svgNames[randomIndex];
+  };
+  const iconCategory = getRandomSVGName();
 
   return (
     <>
@@ -183,7 +190,7 @@ function Carousel2() {
                 alignItems: 'center',
               }}
             >
-              서울특별시 연남동 48-7 1층
+              {item.placeName ? item.placeName : item.placeAddr}
               <FaMapMarkerAlt />
             </div>
             <p
@@ -203,9 +210,7 @@ function Carousel2() {
         {[...Array(emptySlidesCount)].map((_, idx) => (
           <ImageContainer key={`empty-${idx}`}>
             <EmptyPost>
-              <span style={{ fontSize: '13px', color: '#616161' }}>
-                아직 TOP7의 자리가 남아있습니다!
-              </span>
+              <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
             </EmptyPost>
           </ImageContainer>
         ))}
@@ -273,9 +278,14 @@ const EmptyPost = styled.div`
   height: 234px;
   border-radius: 20px 0 20px 0;
   border: 1px solid #e2e2e2;
+  background-color: #e1e1e1;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  img {
+    width: 150px;
+  }
 `;
 
 const Arrows = styled.div`

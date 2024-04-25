@@ -65,16 +65,18 @@ export const useGetCategoryCountsByDistrict = (district: string) => {
   });
 };
 
-export const getCountOfPostsByDistrict = async (district: string) => {
+export const getCountOfPostsAndDistrictByCategory = async (
+  category: string,
+) => {
   const response = await authInstance.get(
-    `posts/top-district?district=${district}&period=MONTH`,
+    `posts/top-district?category=${category}&period=MONTH`,
   );
   return response.data;
 };
 
-export const useGetCountOfPostsByDistrict = (district: string) => {
+export const useGetCountOfPostsAndDistrictByCategory = (district: string) => {
   return useQuery({
     queryKey: [district],
-    queryFn: () => getCountOfPostsByDistrict(district),
+    queryFn: () => getCountOfPostsAndDistrictByCategory(district),
   });
 };
