@@ -268,9 +268,11 @@ const EditUser: React.FC = () => {
       input.writtenNickname
     ) {
       changedData.nickname = input.writtenNickname;
+      localStorage.setItem('nickname', changedData.nickname);
     }
     if (initialData.district !== input.district && input.district) {
       changedData.district = input.district.replace('서울특별시 ', '');
+      localStorage.setItem('district', changedData.district);
     }
 
     return changedData;
