@@ -19,6 +19,7 @@ import CustomMap from '@/components/customMap/CustomMap';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import { getUserInfo } from '@/api/auth';
+import { useQuery } from '@tanstack/react-query';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -35,13 +36,13 @@ const MapPage = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    console.log('urlparam: ', urlParams);
+    // console.log('urlparam: ', urlParams);
 
     const token = urlParams.get('accessToken');
-    console.log('파람에서 추출한 accessToken: ', token);
+    // console.log('파람에서 추출한 accessToken: ', token);
 
     if (token) {
-      cookie.set('accessToken', token.split(' ')[1]);
+      cookie.set('accessToken', token.replace('Bearer ', ''));
       console.log('accessToken토큰 :', cookie.get('accessToken'));
 
       // try {
@@ -56,7 +57,13 @@ const MapPage = () => {
     }
   }, [location]);
 
-  getUserInfo();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: getUserInfo,
+  });
+
+  console.log(data, isLoading, isError);
+  // getUserInfo();
 
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);
