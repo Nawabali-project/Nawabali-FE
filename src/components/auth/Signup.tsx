@@ -66,6 +66,15 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
   const debouncedNickname = useDebounce(input.nickname, 500);
   const debouncedDistrict = useDebounce(input.district, 500);
 
+  // 추가 사항 0426
+  const handleKakaoLogin = async () => {
+    const REDIRECT_URI = `${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+    const CLIENT_ID = `${import.meta.env.VITE_KAKAO_RESTAPI_KEY}`;
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+    location.replace(`${KAKAO_AUTH_URL}`);
+  };
+
   // 이메일 유효성 검사
   useEffect(() => {
     if (debouncedEmail.length > 0) {
@@ -443,7 +452,12 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
               회원가입하기
             </Button>
           </div>
-          <Button type="button" size="default" color="yellow">
+          <Button
+            type="button"
+            size="default"
+            color="yellow"
+            onClick={handleKakaoLogin}
+          >
             카카오로 3초만에 시작하기
           </Button>
         </form>
