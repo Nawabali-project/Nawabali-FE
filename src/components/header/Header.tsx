@@ -97,7 +97,7 @@ const Header: React.FC = () => {
               <input
                 value={content}
                 type="text"
-                placeholder="제목으로 검색할 수 있어요!"
+                placeholder="내용으로 검색할 수 있어요!"
                 onChange={(e) => setContent(e.target.value)}
                 onFocus={handleSearchFocus}
                 onBlur={handleSearchBlur}
