@@ -49,10 +49,16 @@ const MapPage = () => {
   }, [location]);
 
   // 유저정보
-  useQuery({
+  const { isSuccess } = useQuery({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/');
+    }
+  }, [isSuccess, navigate]);
 
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);
