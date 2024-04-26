@@ -7,6 +7,7 @@ import {
   checkDuplicateNickname,
   checkPassWord,
   editUserInfo,
+  updatePhoto,
   useDeletePhoto,
   useDeleteUser,
   useUpdatePhoto,
@@ -107,16 +108,22 @@ const EditUser: React.FC = () => {
   }, []);
 
   // 프로필이미지 수정
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        localStorage.setItem('profileImageUrl', reader.result as string);
-        setProfileImage(file);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const data = await updatePhoto(file);
+        const quotedImageUrl = `"${data.imgUrl}"`;
+        localStorage.setItem('profileImageUrl', quotedImageUrl);
         setImageAction('modify');
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('프로필 이미지 업로드 실패:', error);
+      }
     }
   };
 
@@ -330,7 +337,13 @@ const EditUser: React.FC = () => {
           <Line />
           <Row style={{ position: 'relative', padding: '20px' }}>
             <ProfileImageContainer onClick={handleImageClick}>
-              <ProfileImage src={previewImageUrl} alt="Profile" />
+              <ProfileImage
+                src={
+                  localStorage.getItem('profileImageUrl')?.split('"')[1] ??
+                  undefined
+                }
+                alt="Profile"
+              />
               <ProfileImageIcon>
                 <ImCamera />
               </ProfileImageIcon>
@@ -664,6 +677,7 @@ const ProfileImage = styled.img`
   height: 110px;
   border-radius: 50%;
   border: 1px solid #e7e7e7;
+  object-fit: cover;
 `;
 
 const ProfileImageInput = styled.input`

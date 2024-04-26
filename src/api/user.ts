@@ -88,11 +88,17 @@ export const updatePhoto = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  await authInstance.patch('/profileImage', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  try {
+    const response = await authInstance.patch('/profileImage', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('프로필 이미지 업데이트 실패:', error);
+    throw error;
+  }
 };
 
 export const useUpdatePhoto = () => {

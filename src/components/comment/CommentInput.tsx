@@ -52,6 +52,10 @@ const CommentInput = ({ postId }: { postId: number }) => {
             localStorage.getItem('profileImageUrl')?.split('"')[1] ??
             'public/assets/images/DefaultProfile.png'
           }
+          // src={
+          //   localStorage.getItem('profileImageUrl') ??
+          //   'public/assets/images/DefaultProfile.png'
+          // }
           alt=""
         />
 

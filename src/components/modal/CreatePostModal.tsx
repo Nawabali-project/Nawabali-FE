@@ -178,6 +178,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
                     localStorage.getItem('profileImageUrl')?.split('"')[1] ??
                     undefined
                   }
+                  // src={localStorage.getItem('profileImageUrl') ?? undefined}
                 />
               </ProfileBox>
               <NickName>{localStorage.getItem('nickname')} </NickName>
