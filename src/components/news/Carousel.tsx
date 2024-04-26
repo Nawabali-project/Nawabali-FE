@@ -35,7 +35,7 @@ function Carousel() {
       autoplaySpeed: 2000,
       slidesToShow: 3,
       slidesToScroll: 1,
-      beforeChange: (oldIndex: number, newIndex: number) => {
+      beforeChange: (newIndex: number) => {
         setCurrentSlide(newIndex);
       },
       arrows: false,
