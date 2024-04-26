@@ -27,8 +27,8 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
     }
   },
 
-  login: (user: AuthUser) => {
-    set({ isLoggedIn: true, user });
+  login: () => {
+    set({ isLoggedIn: true });
   },
 
   logout: () => {
