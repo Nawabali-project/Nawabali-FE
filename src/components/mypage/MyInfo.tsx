@@ -142,7 +142,7 @@ const MyInfo = () => {
             </c.MiddleTitle>
             {rankName !== '터줏대감' && (
               <c.LightSpan>
-                다음 등급인 {nextRankName}까지 게시물 {needPosts}개 / 좋아요{' '}
+                다음 등급인 {nextRankName}까지 게시물 {needPosts}개 / 주민추천{' '}
                 {needLikes}개 남았어요 :)
               </c.LightSpan>
             )}
