@@ -19,6 +19,7 @@ export const ChatRoom: React.FC<{
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
   const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const accessToken = new Cookies().get('accessToken');
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -29,7 +30,11 @@ export const ChatRoom: React.FC<{
     const fetchUserInfo = async () => {
       try {
         const user = await searchUserByNickname(roomName);
-        setUserInfo(user[0]);
+        if (user && user.length > 0) {
+          setUserInfo(user[0]);
+        } else {
+          setUserInfo(null);
+        }
       } catch (error) {
         console.error('Failed to fetch user info', error);
       }
@@ -73,16 +78,26 @@ export const ChatRoom: React.FC<{
   }, [roomId, client, accessToken]);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchMessages = async () => {
       try {
-        const fetchedMessages: ReturnedMessageForm[] = await showChat(roomId);
-        setMessages(fetchedMessages);
+        const fetchedMessages = await showChat(roomId);
+        if (fetchedMessages && fetchedMessages.length > 0) {
+          setMessages(fetchedMessages);
+        } else {
+          setMessages([]);
+          console.error('메시지가 없습니다.');
+        }
       } catch (error) {
-        console.error('Failed to load messages', error);
+        console.error('메시지를 불러오는데 실패했습니다', error);
+        setMessages([]);
       }
+      setIsLoading(false);
     };
 
-    fetchMessages();
+    if (roomId) {
+      fetchMessages();
+    }
   }, [roomId]);
 
   useEffect(() => {
@@ -127,40 +142,49 @@ export const ChatRoom: React.FC<{
 
   return (
     <ChatContainer>
-      {roomName && userInfo && (
-        <UserInfo>
-          <UserProfileImg
-            src={userInfo?.imgUrl}
-            alt={`${roomName}의 프로필`}
-            onClick={() => goToUserProfile(roomName)}
-          />
-          <h3>{roomName}</h3>
-        </UserInfo>
-      )}
-      <Chat>
-        {messages.map((msg, index) =>
-          msg.sender === myNickname ? (
-            <Row key={index} style={{ alignSelf: 'flex-end' }}>
-              <ProfileImg
-                src={localStorage.getItem('profileImageUrl')!}
-                alt="내 프로필"
+      {isLoading ? (
+        <div>로딩 중...</div>
+      ) : (
+        <>
+          {roomName && userInfo && (
+            <UserInfo>
+              <UserProfileImg
+                src={userInfo?.imgUrl}
+                alt={`${roomName}의 프로필`}
+                onClick={() => goToUserProfile(roomName)}
               />
-              <MyMessage>
-                <span>{msg.message}</span>
-                <span>({new Date(msg.createdMessageAt).toLocaleString()})</span>
-              </MyMessage>
-            </Row>
-          ) : (
-            <Row key={index} style={{ alignSelf: 'flex-start' }}>
-              <ProfileImg src={userInfo!.imgUrl} alt={`상대방 프로필`} />
-              <OtherMessage>
-                {msg.message} {new Date(msg.createdMessageAt).toLocaleString()}
-              </OtherMessage>
-            </Row>
-          ),
-        )}
-        <div ref={chatEndRef} />
-      </Chat>
+              <h3>{roomName}</h3>
+            </UserInfo>
+          )}
+          <Chat>
+            {messages.map((msg, index) =>
+              msg.sender === myNickname ? (
+                <Row key={index} style={{ alignSelf: 'flex-end' }}>
+                  <ProfileImg
+                    src={localStorage.getItem('profileImageUrl')!}
+                    alt="내 프로필"
+                  />
+                  <MyMessage>
+                    <span>{msg.message}</span>
+                    <span>
+                      ({new Date(msg.createdMessageAt).toLocaleString()})
+                    </span>
+                  </MyMessage>
+                </Row>
+              ) : (
+                <Row key={index} style={{ alignSelf: 'flex-start' }}>
+                  <ProfileImg src={userInfo?.imgUrl} alt={`상대방 프로필`} />
+                  <OtherMessage>
+                    {msg.message}{' '}
+                    {new Date(msg.createdMessageAt).toLocaleString()}
+                  </OtherMessage>
+                </Row>
+              ),
+            )}
+            <div ref={chatEndRef} />
+          </Chat>
+        </>
+      )}
 
       <InputDiv>
         <input
