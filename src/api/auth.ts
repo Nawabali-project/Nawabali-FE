@@ -8,7 +8,6 @@ import type {
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { useNavigate } from 'react-router-dom';
-import { AuthUser } from '@/interfaces/user/user.interface';
 
 export interface ErrorResponse {
   statusCode: number;
@@ -44,10 +43,32 @@ export const login = async (user: LoginUser) => {
   }
 };
 
-export const getUserInfo = async (): Promise<AuthUser> => {
+export const getUserInfo = async () => {
   try {
     const response = await authInstance.get('/users/my-info');
     localStorage.setItem('user', JSON.stringify(response.data));
+    const user: any = localStorage.getItem('user');
+    if (user) {
+      localStorage.setItem('district', user.district);
+      localStorage.setItem(
+        'profileImageUrl',
+        JSON.stringify(user.profileImageUrl),
+      );
+      localStorage.setItem('rankName', user.rankName);
+      localStorage.setItem('userId', user.id);
+      localStorage.setItem(
+        'totalLikesCount',
+        JSON.stringify(user.totalLikesCount),
+      );
+      localStorage.setItem(
+        'totalLocalLikesCount',
+        JSON.stringify(user.totalLocalLikesCount),
+      );
+      localStorage.setItem('nickname', user.nickname);
+      localStorage.setItem('needPosts', JSON.stringify(user.needPosts));
+      localStorage.setItem('needLikes', JSON.stringify(user.needLikes));
+    }
+
     return response.data;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;

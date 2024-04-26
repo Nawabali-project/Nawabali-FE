@@ -36,34 +36,19 @@ const MapPage = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    // console.log('urlparam: ', urlParams);
 
     const token = urlParams.get('accessToken');
-    // console.log('파람에서 추출한 accessToken: ', token);
 
     if (token) {
       cookie.set('accessToken', token.replace('Bearer ', ''));
-      console.log('accessToken토큰 :', cookie.get('accessToken'));
-
-      // try {
-      //   const userInfo = getUserInfo();
-
-      //   login(userInfo);
-      // } catch (error) {
-      //   console.error('사용자 정보를 불러오는 중 오류 발생:', error);
-      // }
-    } else {
-      console.log('토큰 없음');
     }
   }, [location]);
 
-  const { data, isLoading, isError } = useQuery({
+  // 유저정보
+  useQuery({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
   });
-
-  console.log(data, isLoading, isError);
-  // getUserInfo();
 
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);
