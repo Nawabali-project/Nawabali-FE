@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import { getUserInfo } from '@/api/auth';
 import { useQuery } from '@tanstack/react-query';
+import useAuthStore from '@/store/AuthState';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -29,6 +30,8 @@ const MapPage = () => {
   );
   const navigate = useNavigate();
   const cookie = new Cookies();
+
+  const { setIsLoggedIn } = useAuthStore();
 
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -41,6 +44,7 @@ const MapPage = () => {
 
     if (token) {
       cookie.set('accessToken', token.replace('Bearer ', ''));
+      setIsLoggedIn(true);
     }
   }, [location]);
 
