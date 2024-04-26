@@ -16,10 +16,9 @@ import {
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Cookies } from 'react-cookie';
-import useAuthStore from '@/store/AuthState';
+import { useNavigate } from 'react-router-dom';
 import { getUserInfo } from '@/api/auth';
+import useAuthStore from '@/store/AuthState';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -28,36 +27,36 @@ const MapPage = () => {
     null,
   );
   const navigate = useNavigate();
+  const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const { login } = useAuthStore();
 
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
-  const location = useLocation();
-  const cookie = new Cookies();
-  const { login } = useAuthStore();
-
   useEffect(() => {
-    // 비동기 작업을 수행할 함수를 정의합니다.
-    const fetchData = async () => {
-      const urlParams = new URLSearchParams(location.search);
-      const token = urlParams.get('accessToken')?.split(' ')[1];
-      // const accessToken = urlParams.get('accessToken');
+    async function fetchAndLogin() {
+      const storedUser = localStorage.getItem('user');
+      console.log('Effect running', useIsLoggedIn, storedUser);
 
-      if (token) {
-        cookie.set('accessToken', token);
+      if (useIsLoggedIn && (!storedUser || storedUser === '')) {
         try {
           const userInfo = await getUserInfo();
-
-          login(userInfo);
+          if (userInfo) {
+            console.log('User Info:', userInfo);
+            localStorage.setItem('user', JSON.stringify(userInfo));
+            login(userInfo);
+          } else {
+            console.error('No user info available');
+          }
         } catch (error) {
-          console.error('사용자 정보를 불러오는 중 오류 발생:', error);
+          console.error('Failed to fetch user info:', error);
         }
       }
-    };
+    }
 
-    fetchData();
-  }, [location]);
+    fetchAndLogin();
+  }, [useIsLoggedIn]);
 
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);

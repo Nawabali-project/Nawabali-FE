@@ -54,44 +54,6 @@ const CustomMap = ({
   const [overlays, setOverlays] = useState<CustomOverlay[]>([]);
   const data: any = AllPosts();
 
-  // 1. 맨 처음 지도 내 위치로 렌더링
-  // useEffect(() => {
-  //   window.kakao.maps.load(() => {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (pos) => {
-  //         const coords = new window.kakao.maps.LatLng(
-  //           pos.coords.latitude,
-  //           pos.coords.longitude,
-  //         );
-
-  //         const container = document.getElementById('map');
-  //         const options = {
-  //           center: coords,
-  //           level: 4,
-  //         };
-
-  //         const createdMap = new window.kakao.maps.Map(container, options);
-  //         setMap(createdMap);
-
-  //         const newMarker = new window.kakao.maps.Marker({
-  //           position: coords,
-  //           zIndex: 300,
-  //         });
-  //         newMarker.setMap(createdMap);
-  //         setMarker(newMarker);
-  //       },
-  //       () => {
-  //         alert('위치 정보 가져오기 실패');
-  //       },
-  //       {
-  //         enableHighAccuracy: true,
-  //         maximumAge: 30000,
-  //         timeout: 27000,
-  //       },
-  //     );
-  //   });
-  // }, []);
-
   // 1. 맨 처음 지도 서울로 렌더링
   useEffect(() => {
     window.kakao.maps.load(() => {

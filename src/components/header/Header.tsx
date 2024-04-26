@@ -30,7 +30,7 @@ const Header: React.FC = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
-  const debouncedContent = useDebounce(content, 1000);
+  const debouncedContent = useDebounce(content, 10);
 
   useEffect(() => {
     setSearchbarOpen(!!debouncedContent.trim());
@@ -131,7 +131,7 @@ const Header: React.FC = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      navigate('/chat');
+                      alert('앗, 채팅은 아직 구현중입니다 :)');
                     }}
                   />
 

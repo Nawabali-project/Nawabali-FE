@@ -88,7 +88,7 @@ const SearchResponsePage = () => {
                 <MapIcon />
                 &nbsp;지도
               </FourCategory>
-              <FourCategory>
+              <FourCategory onClick={() => navigate('/listpage')}>
                 <ListBlackIcon />
                 <SelectedPageComment>&nbsp;리스트</SelectedPageComment>
               </FourCategory>
