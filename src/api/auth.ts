@@ -8,13 +8,11 @@ import type {
 import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { useNavigate } from 'react-router-dom';
-
 export interface ErrorResponse {
   statusCode: number;
   message: string;
   error: string;
 }
-
 export const signUp = async (user: SignUpUser) => {
   try {
     const res = await instance.post('/users/signup', user);
@@ -28,7 +26,6 @@ export const signUp = async (user: SignUpUser) => {
     throw new Error('Network error');
   }
 };
-
 export const login = async (user: LoginUser) => {
   try {
     const res = await authInstance.post('/users/login', user);
@@ -42,13 +39,13 @@ export const login = async (user: LoginUser) => {
     throw new Error('Network error');
   }
 };
-
 export const getUserInfo = async () => {
   try {
     const response = await authInstance.get('/users/my-info');
     localStorage.setItem('user', JSON.stringify(response.data));
-    const user: any = localStorage.getItem('user');
-    if (user) {
+    const userStr: any = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
       localStorage.setItem('district', user.district);
       localStorage.setItem(
         'profileImageUrl',
@@ -68,13 +65,11 @@ export const getUserInfo = async () => {
       localStorage.setItem('needPosts', JSON.stringify(user.needPosts));
       localStorage.setItem('needLikes', JSON.stringify(user.needLikes));
     }
-
     return response.data;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
   }
 };
-
 export const sendVerificationCode = async (email: string) => {
   try {
     await instance.post(`/email-verification?email=${email}`);
@@ -82,7 +77,6 @@ export const sendVerificationCode = async (email: string) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
-
 export const varifyNumberCheck = async (user: VarifyCheck) => {
   const { email, code } = user;
   try {
@@ -95,7 +89,6 @@ export const varifyNumberCheck = async (user: VarifyCheck) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
-
 export const nicknameDupCheck = async (nickname: string) => {
   try {
     const res = await instance.get(
@@ -106,21 +99,17 @@ export const nicknameDupCheck = async (nickname: string) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
-
 export const useLogout = () => {
   const navigate = useNavigate();
   const cookie = new Cookies();
-
   return async () => {
     const token = cookie.get('accessToken');
     const param = `Bearer ${token}`;
-
     try {
       await instance.post(`/users/logout?accessToken=${param}`);
     } catch (error) {
       console.error('Logout failed:', error);
     }
-
     cookie.remove('accessToken', { path: '/' });
     useAuthStore.getState().logout();
     navigate('/');
