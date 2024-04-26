@@ -11,6 +11,7 @@ import {
   CameraFilledIcon,
   CafeFilledIcon,
   BigLocationIcon,
+  TopArrowIcon,
 } from '@/utils/icons';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
@@ -120,7 +121,7 @@ const MapPage = () => {
           <AreaBox onClick={toggleDropdown}>
             <BigLocationIcon />
             &nbsp; {selectedArea}&nbsp;
-            <BottomArrowIcon />
+            {showDropdown ? <TopArrowIcon /> : <BottomArrowIcon />}
             {showDropdown && (
               <DropdownMenu>
                 {seoulDistricts.map((area) => (

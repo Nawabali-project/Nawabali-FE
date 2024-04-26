@@ -102,7 +102,9 @@ const CustomMap = ({
       };
 
       const mapInstance = new window.kakao.maps.Map(container, options);
-      const markerInstance = new window.kakao.maps.Marker();
+      const markerInstance = new window.kakao.maps.Marker({
+        zIndex: 999,
+      });
       setMap(mapInstance);
       setMarker(markerInstance);
     });
@@ -222,6 +224,7 @@ const CustomMap = ({
     </>
   );
 };
+
 const Layout = styled.div`
   padding: 10px;
 `;

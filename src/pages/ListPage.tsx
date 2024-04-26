@@ -4,6 +4,7 @@ import {
   GlobalIcon,
   StarIcon,
   BottomArrowIcon,
+  TopArrowIcon,
   FoodIcon,
   FoodFilledIcon,
   CameraIcon2,
@@ -86,7 +87,7 @@ const ListPage = () => {
           <AreaBox onClick={toggleDropdown}>
             <BigLocationIcon />
             &nbsp; {selectedArea}&nbsp;
-            <BottomArrowIcon />
+            {showDropdown ? <TopArrowIcon /> : <BottomArrowIcon />}
             {showDropdown && (
               <DropdownMenu>
                 {seoulDistricts.map((area) => (

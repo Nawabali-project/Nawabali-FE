@@ -1511,6 +1511,24 @@ export const BottomArrowIcon = () => (
   </svg>
 );
 
+export const TopArrowIcon = () => (
+  <svg
+    width="16"
+    height="9"
+    viewBox="0 0 16 9"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M15 8L8 1L1 8"
+      stroke="black"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const BottomArrowGrayIcon = () => (
   <svg
     width="16"
