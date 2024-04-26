@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
+import { getUserInfo } from '@/api/auth';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -40,8 +41,9 @@ const MapPage = () => {
     console.log('파람에서 추출한 accessToken: ', token);
 
     if (token) {
-      console.log('토큰 존재:', token);
-      cookie.set('accessToken', token);
+      cookie.set('accessToken', token.split(' ')[1]);
+      console.log('accessToken토큰 :', cookie.get('accessToken'));
+
       // try {
       //   const userInfo = getUserInfo();
 
@@ -53,6 +55,8 @@ const MapPage = () => {
       console.log('토큰 없음');
     }
   }, [location]);
+
+  getUserInfo();
 
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);
