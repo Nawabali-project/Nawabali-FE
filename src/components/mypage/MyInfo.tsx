@@ -71,7 +71,6 @@ const MyInfo = () => {
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      console.log('Fetching page number:', data!.pages.length + 1);
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, data]);

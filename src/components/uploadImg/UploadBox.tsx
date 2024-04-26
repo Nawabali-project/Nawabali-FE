@@ -44,9 +44,6 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
       reader.readAsDataURL(file);
     });
     // for (const file of Array.from(files)) {
-    //   console.log(`원본 파일 size: ${file.size / 1024 / 1024} MB`);
-    //   console.log(`원본 파일 type: ${file.type}`);
-
     //   const options = {
     //     maxSizeMB: 1,
     //     maxWidthOrHeight: 1920,
@@ -56,12 +53,6 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
 
     //   try {
     //     const compressedFile = await imageCompression(file, options);
-
-    //     console.log(
-    //       `변환된 파일 size: ${compressedFile.size / 1024 / 1024} MB`,
-    //     );
-    //     console.log(`변환된 파일 type: ${compressedFile.type}`);
-
     //     const reader = new FileReader();
     //     reader.onload = () => {
     //       imagesArray.push({

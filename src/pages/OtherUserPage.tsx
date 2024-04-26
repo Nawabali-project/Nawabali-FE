@@ -44,7 +44,6 @@ const OtherUserPage = () => {
       try {
         const user = await searchUserByNickname(nickname!);
         setUser(user);
-        console.log('setUser:', user);
       } catch (error) {
         console.error('Failed to fetch user info', error);
       }
@@ -55,10 +54,7 @@ const OtherUserPage = () => {
     }
   }, [nickname]);
 
-  useEffect(() => {
-    console.log('User state changed:', user);
-    console.log('Category state changed:', category);
-  }, [user, category]);
+  useEffect(() => {}, [user, category]);
 
   const {
     data,
@@ -80,7 +76,6 @@ const OtherUserPage = () => {
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      console.log('Fetching page number:', data!.pages.length + 1);
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, data]);
@@ -92,7 +87,6 @@ const OtherUserPage = () => {
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      console.log('Fetching page number:', data!.pages.length + 1);
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, data]);

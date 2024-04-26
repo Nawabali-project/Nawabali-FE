@@ -32,9 +32,6 @@ function ChatMain() {
       return () => {
         if (client) {
           socket.close();
-          client.disconnect(() => {
-            console.log('Disconnected');
-          });
         }
       };
     };

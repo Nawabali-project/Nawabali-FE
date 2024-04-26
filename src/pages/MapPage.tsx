@@ -42,12 +42,9 @@ const MapPage = () => {
     const fetchData = async () => {
       const urlParams = new URLSearchParams(location.search);
       const token = urlParams.get('accessToken')?.split(' ')[1];
-      console.log('URL 토큰:', token, { path: '/', secure: false });
-      const accessToken = urlParams.get('accessToken');
-      console.log('파람에서 추출한 accessToken: ', accessToken);
+      // const accessToken = urlParams.get('accessToken');
 
       if (token) {
-        console.log('토큰 존재:', token);
         cookie.set('accessToken', token);
         try {
           const userInfo = await getUserInfo();
@@ -56,8 +53,6 @@ const MapPage = () => {
         } catch (error) {
           console.error('사용자 정보를 불러오는 중 오류 발생:', error);
         }
-      } else {
-        console.log('토큰 없음');
       }
     };
 

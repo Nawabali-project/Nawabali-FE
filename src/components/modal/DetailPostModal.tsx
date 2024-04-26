@@ -232,8 +232,6 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
     checkBookMarkMUtation.mutate(postId);
   };
 
-  console.log('id: ', postId);
-  console.log('detail data: ', data);
   if (isFetching) {
     return <p>Loading...</p>;
   }
@@ -425,6 +423,20 @@ const ContentTextArea = styled.textarea`
   border-radius: 5px;
   font-size: 15px;
   resize: none;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: gray;
+  }
 `;
 
 const CancelConfirmMent = styled.div`
@@ -592,11 +604,26 @@ const NickName = styled.div`
 
 const ContentText = styled.div`
   box-sizing: border-box;
-  width: 80%;
+  width: 320px;
   height: 120px;
   border: none;
   font-size: 15px;
   resize: none;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: gray;
+  }
 `;
 
 const ThreePointIconBox = styled.div`

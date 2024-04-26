@@ -18,12 +18,7 @@ export const getOtherUsersContents = async (
   if (category) {
     params.append('category', category);
   }
-  console.log(
-    'Making API request with URL:',
-    `${endpoint}${params.toString()}`,
-  );
   const response = await authInstance.get(`${endpoint}${params.toString()}`);
-  console.log('타유저: ', response.data);
 
   return response.data;
 };

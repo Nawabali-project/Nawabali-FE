@@ -78,8 +78,6 @@ const ListPage = () => {
     '서울특별시 중랑구',
   ];
 
-  console.log(selectedArea[1]);
-
   return (
     <Layout>
       <CategoryBox>

@@ -22,8 +22,6 @@ import DetailPostModal from '@/components/modal/DetailPostModal';
 
 const SearchResponsePage = () => {
   const { keyword } = useParams();
-  console.log('keyword: ', keyword);
-
   const navigate = useNavigate();
   const [clickedKind, setClickedKind] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);

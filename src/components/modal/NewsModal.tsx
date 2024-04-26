@@ -30,7 +30,6 @@ function NewsModal({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleCloseModal = (event: MouseEvent) => {
-    console.log(modalRef.current);
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       onClose();
     }

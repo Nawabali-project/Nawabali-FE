@@ -29,7 +29,6 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
     isLoading: isLoadingBestDistrict,
     isError: isErrorBestDistrict,
   } = useGetCountOfPostsAndDistrictByCategory(iconCategory);
-  console.log('data: ', bestDistrict, iconCategory);
 
   const {
     data: postsData,

@@ -8,7 +8,6 @@ import { Cookies } from 'react-cookie';
 export const getChatRooms = async (): Promise<any[]> => {
   try {
     const response = await authInstance.get('/chat/rooms');
-    console.log('chatrooms res: ', response);
     return response.data.content;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
@@ -20,7 +19,6 @@ export const createRoom = async (userNickname: string): Promise<number> => {
     const response = await authInstance.post(
       `/chat/room?roomName=${userNickname}&type=PERSONAL`,
     );
-    console.log('chat createRoom: ', response);
     return response.data.roomId;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
@@ -55,14 +53,11 @@ export const sendMessage = (client: Client, messageForm: MessageForm) => {
   const accessToken = new Cookies().get('accessToken');
   try {
     if (client && client.active) {
-      console.log('Sending message:', messageForm);
-      console.log('Using accessToken:', accessToken);
       client.publish({
         destination: '/pub/chat/message',
         headers: { Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(messageForm),
       });
-      console.log('Message sent successfully');
     } else {
       console.error('WebSocket connection is not active.');
     }

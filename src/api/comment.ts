@@ -27,7 +27,6 @@ export const getComments = async ({
   const response = await instance.get(
     `comments/check/posts/${postId}?${pageable.toString()}`,
   );
-  console.log('getComments api 댓글들 가져오기 response: ', response);
   return response;
 };
 

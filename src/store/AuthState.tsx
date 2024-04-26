@@ -78,7 +78,6 @@ function SSEListener() {
     const eventSource = new EventSource(
       `${import.meta.env.VITE_APP_BASE_URL}/sub/notification/subscibe`,
     );
-    console.log('알림구독 완료!');
 
     eventSource.onmessage = (event) => {
       const newMessage = JSON.parse(event.data);
@@ -102,7 +101,6 @@ function initializeUser(navigate: NavigateFunction) {
   const cookie = new Cookies();
 
   const accessToken = cookie.get('accessToken');
-  console.log('쿠키에서 읽은 토큰:', accessToken);
 
   const storedUser = localStorage.getItem('user');
   if (accessToken && storedUser) {
@@ -117,7 +115,6 @@ function initializeUser(navigate: NavigateFunction) {
 function AppInitializer() {
   const navigate = useNavigate();
 
-  console.log('AppInitializer 실행');
   initializeUser(navigate);
 
   return <SSEListener />;

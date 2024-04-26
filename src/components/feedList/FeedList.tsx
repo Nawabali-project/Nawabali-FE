@@ -47,11 +47,8 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     },
   });
 
-  console.log('choi data', data);
-
   useEffect(() => {
     if (inView && hasNextPage) {
-      console.log('다음 페이지 로딩 중...');
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);

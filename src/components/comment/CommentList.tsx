@@ -58,12 +58,9 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
     },
   });
 
-  console.log('choi comment list', data);
-
   // 무한스크롤 옵저버
   useEffect(() => {
     if (inView && hasNextPage) {
-      console.log('Fire!');
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);

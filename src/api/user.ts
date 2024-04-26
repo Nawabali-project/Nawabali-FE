@@ -53,7 +53,6 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       clearCookies();
       localStorage.clear();
-      console.log('회원탈퇴 성공');
     },
     onError: (error) => {
       console.error('회원탈퇴 중 에러 발생: ', error);

@@ -63,7 +63,6 @@ export const ChatRoomsList: React.FC<{
   //   }
   //   try {
   //     const response = await searchUserByNickname(userNickname);
-  //     console.log('API response:', response);
   //     setSearchResults(response);
   //   } catch (error) {
   //     console.error('Error searching user by nickname', error);
@@ -119,7 +118,6 @@ export const ChatRoomsList: React.FC<{
       onRoomSelect(roomId);
       onRoomNameSelect(selectedUserNickname);
       enterChatRoom(client, messageForm);
-      console.log('채팅방 입장');
     }
   };
 

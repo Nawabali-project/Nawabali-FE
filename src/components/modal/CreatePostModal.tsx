@@ -155,11 +155,6 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     //   formData.append('files', newFile);
     // });
 
-    console.log('폼 데이터 값 출력');
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: `, value);
-    }
-
     createPostMutation.mutate(formData);
   };
 

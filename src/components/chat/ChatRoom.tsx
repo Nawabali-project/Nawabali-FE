@@ -64,7 +64,6 @@ export const ChatRoom: React.FC<{
               ...parsedMessage,
               createdMessageAt: new Date(parsedMessage.createdMessageAt),
             };
-            console.log('Received message:', receivedMessage);
             setMessages((prevMessages) => [...prevMessages, receivedMessage]);
           } catch (error) {
             console.error('Failed to parse message:', message.body, error);
@@ -72,8 +71,6 @@ export const ChatRoom: React.FC<{
         },
         headers,
       );
-
-      console.log('구독 성공');
     }
   }, [roomId, client, accessToken]);
 
@@ -133,7 +130,6 @@ export const ChatRoom: React.FC<{
     });
 
     setMessage('');
-    console.log('메시지 전송: ', chatMessage);
   };
 
   const goToUserProfile = (userNick: string) => {
