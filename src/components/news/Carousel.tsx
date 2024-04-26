@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { useGetAllPostsByDistrictOrCategory } from '@/api/news';
 import * as s from './CasouselStyle';
@@ -27,19 +27,23 @@ function Carousel() {
 
   const [isHovering, setIsHovering] = useState(false);
 
-  let settings = {
-    dots: false,
-    infinite: true,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    beforeChange: (newIndex: number) => {
-      setCurrentSlide(newIndex);
-    },
-    arrows: false,
-    centerPadding: '0px',
-  };
+  const settings = useMemo(
+    () => ({
+      dots: false,
+      infinite: true,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      beforeChange: (oldIndex: number, newIndex: number) => {
+        console.log('Changing from', oldIndex, 'to', newIndex);
+        setCurrentSlide(newIndex);
+      },
+      arrows: false,
+      centerPadding: '0px',
+    }),
+    [],
+  );
 
   const slickRef = useRef<Slider | null>(null);
 
@@ -47,12 +51,14 @@ function Carousel() {
 
   const previous = useCallback(() => {
     if (slickRef.current) {
+      console.log('Current Slide before prev:', currentSlide);
       slickRef.current.slickPrev();
     }
   }, [currentSlide]);
 
   const next = useCallback(() => {
     if (slickRef.current) {
+      console.log('Current Slide before next:', currentSlide);
       slickRef.current.slickNext();
     }
   }, [currentSlide]);
@@ -102,6 +108,7 @@ function Carousel() {
         </StyledCol>
         <CarouselContainer>
           <StyledSlider ref={slickRef} {...settings}>
+            {console.log('Rendering actual posts')}
             {data?.content.map((item: PostItem, idx: number) => {
               const isCenter = idx === centerIndex;
               const position =
@@ -110,6 +117,9 @@ function Carousel() {
                   : idx > centerIndex
                     ? 'right'
                     : 'center';
+              console.log(
+                `Actual Post - Index: ${idx}, CurrentSlide: ${currentSlide}, Position: ${position}, Is it special case? ${currentSlide === 5 && idx === 6}`,
+              );
               return (
                 <ImageContainer key={idx}>
                   <MemoizedPost
@@ -124,6 +134,7 @@ function Carousel() {
                 </ImageContainer>
               );
             })}
+            {console.log('Rendering empty posts')}
             {[...Array(emptySlidesCount)].map((_, idx) => {
               const emptyIndex = actualSlides + idx;
               const isCenter = emptyIndex === centerIndex;
@@ -133,6 +144,9 @@ function Carousel() {
                   : emptyIndex > centerIndex
                     ? 'right'
                     : 'center';
+              console.log(
+                `Empty Post - Index: ${emptyIndex}, CurrentSlide: ${currentSlide}, Position: ${position}, Is it special case? ${currentSlide === 5 && emptyIndex === 6}`,
+              );
               return (
                 <ImageContainer key={`empty-${emptyIndex}`}>
                   <EmptyPost

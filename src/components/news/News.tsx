@@ -1,19 +1,27 @@
+import React from 'react';
 import Carousel2 from './Carousel2';
 import Carousel3 from './Carousel3';
 import Carousel4 from './Carousel4';
 import Carousel5 from './Carousel5';
 import Carousel from './Carousel';
 
+// 불필요한 리렌더링 방지
+const MemoCarousel = React.memo(Carousel);
+const MemoCarousel2 = React.memo(Carousel2);
+const MemoCarousel3 = React.memo(Carousel3);
+const MemoCarousel4 = React.memo(Carousel4);
+const MemoCarousel5 = React.memo(Carousel5);
+
 function News() {
   return (
     <>
-      <Carousel />
-      <Carousel2 />
-      <Carousel3 />
-      <Carousel4 />
-      <Carousel5 iconCategory="FOOD" category="맛집" />
-      <Carousel5 iconCategory="CAFE" category="카페" />
-      <Carousel5 iconCategory="PHOTOZONE" category="사진스팟" />
+      <MemoCarousel />
+      <MemoCarousel2 />
+      <MemoCarousel3 />
+      <MemoCarousel4 />
+      <MemoCarousel5 iconCategory="FOOD" category="맛집" />
+      <MemoCarousel5 iconCategory="CAFE" category="카페" />
+      <MemoCarousel5 iconCategory="PHOTOZONE" category="사진스팟" />
     </>
   );
 }
