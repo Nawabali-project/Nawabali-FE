@@ -147,6 +147,9 @@ const MyInfo = () => {
                 {needLikes}개 남았어요 :)
               </c.LightSpan>
             )}
+            {rankName === '터줏대감' && (
+              <c.LightSpan>축하축하~ 현재 최고 직책입니다 :)</c.LightSpan>
+            )}
           </Col>
         </Col>
       </Row>
