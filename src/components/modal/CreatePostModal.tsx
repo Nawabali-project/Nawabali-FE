@@ -86,6 +86,15 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     onError: () => {},
   });
 
+  // 글자 수 500자 제한
+  const handleContentChange = (e: any) => {
+    const newText = e.target.value;
+    if (newText.length <= 500) {
+      setContent(newText);
+      setValue('contents', newText);
+    }
+  };
+
   // 생성 form 제출
   const onSubmitHandler: SubmitHandler<FormValue> = (data) => {
     const userDistrict = localStorage
@@ -187,10 +196,7 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
               placeholder="문구를 입력해주세요..."
               value={content}
               maxLength={500}
-              onChange={(e) => {
-                setContent(e.target.value);
-                setValue('contents', e.target.value);
-              }}
+              onChange={handleContentChange}
             />
             <CharacterCount
               style={{ color: content.length === 500 ? 'red' : 'gray' }}
