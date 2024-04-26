@@ -17,8 +17,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
 import { useNavigate } from 'react-router-dom';
-import { getUserInfo } from '@/api/auth';
-import useAuthStore from '@/store/AuthState';
+import { Cookies } from 'react-cookie';
 
 const MapPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -27,36 +26,33 @@ const MapPage = () => {
     null,
   );
   const navigate = useNavigate();
-  const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const { login } = useAuthStore();
+  const cookie = new Cookies();
 
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   useEffect(() => {
-    async function fetchAndLogin() {
-      const storedUser = localStorage.getItem('user');
-      console.log('Effect running', useIsLoggedIn, storedUser);
+    const urlParams = new URLSearchParams(location.search);
+    console.log('urlparam: ', urlParams);
 
-      if (useIsLoggedIn && (!storedUser || storedUser === '')) {
-        try {
-          const userInfo = await getUserInfo();
-          if (userInfo) {
-            console.log('User Info:', userInfo);
-            localStorage.setItem('user', JSON.stringify(userInfo));
-            login(userInfo);
-          } else {
-            console.error('No user info available');
-          }
-        } catch (error) {
-          console.error('Failed to fetch user info:', error);
-        }
-      }
+    const token = urlParams.get('accessToken');
+    console.log('파람에서 추출한 accessToken: ', token);
+
+    if (token) {
+      console.log('토큰 존재:', token);
+      cookie.set('accessToken', token);
+      // try {
+      //   const userInfo = getUserInfo();
+
+      //   login(userInfo);
+      // } catch (error) {
+      //   console.error('사용자 정보를 불러오는 중 오류 발생:', error);
+      // }
+    } else {
+      console.log('토큰 없음');
     }
-
-    fetchAndLogin();
-  }, [useIsLoggedIn]);
+  }, [location]);
 
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);
