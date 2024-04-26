@@ -47,6 +47,8 @@ const Layout = styled.div`
   height: 300px;
   background-color: white;
   border-radius: 150px;
+  box-shadow: 0px 0px 15px gray;
+  // box-shadow: 5px 5px 10px gray;
   z-index: 200;
 `;
 
