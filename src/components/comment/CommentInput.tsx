@@ -50,7 +50,7 @@ const CommentInput = ({ postId }: { postId: number }) => {
         <MyProfile
           src={
             localStorage.getItem('profileImageUrl')?.split('"')[1] ??
-            'public/assets/images/DefaultProfile.png'
+            '/assets/images/DefaultProfile.png'
           }
           // src={
           //   localStorage.getItem('profileImageUrl') ??
