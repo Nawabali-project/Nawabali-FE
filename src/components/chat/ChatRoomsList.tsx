@@ -24,11 +24,10 @@ export const ChatRoomsList: React.FC<{
 }> = ({ onRoomSelect, onRoomNameSelect, client }) => {
   const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [userNickname, setUserNickname] = useState('');
-  const [selectedUserNickname, setSelectedUserNickname] = useState('');
+  const [searchNickname, setSearchNickname] = useState('');
   const [searchWord, setSearchWord] = useState<string>('');
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
-  const debouncedUserNickname = useDebounce(userNickname, 300);
+  const debouncedUserNickname = useDebounce(searchNickname, 300);
 
   useEffect(() => {
     fetchChatRooms();
@@ -38,37 +37,19 @@ export const ChatRoomsList: React.FC<{
     try {
       const rooms = await getChatRooms();
       const roomsWithUserImages = await Promise.all(
-        rooms.map(async (room) => {
+        rooms.map(async (room: any) => {
           const users = await searchUserByNickname(room.roomName);
-
           const imgUrls = users.map((user: User) => user.imgUrl);
-
           return { ...room, imgUrls };
         }),
       );
       setChatRooms(roomsWithUserImages);
+      console.log(roomsWithUserImages);
     } catch (error) {
       console.error('Failed to load chat rooms or user data', error);
       setChatRooms([]);
     }
   };
-
-  // const handleSearchUserNickname = async (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ) => {
-  //   setUserNickname(e.target.value);
-  //   if (e.target.value.trim() === '') {
-  //     setSearchResults([]);
-  //     return;
-  //   }
-  //   try {
-  //     const response = await searchUserByNickname(userNickname);
-  //     setSearchResults(response);
-  //   } catch (error) {
-  //     console.error('Error searching user by nickname', error);
-  //     setSearchResults([]);
-  //   }
-  // };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -88,24 +69,20 @@ export const ChatRoomsList: React.FC<{
     fetchUsers();
   }, [debouncedUserNickname]);
 
-  const handleSelectUser = (nickname: string) => {
-    setSelectedUserNickname(nickname);
-  };
-
-  const handleCreateRoom = async () => {
-    if (!userNickname.trim()) {
+  const handleCreateRoom = async (nickname: string) => {
+    if (!searchNickname.trim()) {
       alert('상대방 닉네임을 입력하세요');
       return;
     }
     try {
-      await createRoom(userNickname);
+      await createRoom(nickname);
     } catch (error) {
       console.error('채팅방 생성 실패', error);
       alert('채팅 생성에 실패했습니다.');
     }
   };
 
-  const handleRoomClick = (roomId: number) => {
+  const handleRoomClick = (roomId: number, roomName: string) => {
     if (client) {
       const messageForm = {
         sender: localStorage.getItem('nickname')!,
@@ -116,7 +93,7 @@ export const ChatRoomsList: React.FC<{
       };
       setSelectedRoomId(roomId);
       onRoomSelect(roomId);
-      onRoomNameSelect(selectedUserNickname);
+      onRoomNameSelect(roomName);
       enterChatRoom(client, messageForm);
     }
   };
@@ -128,21 +105,24 @@ export const ChatRoomsList: React.FC<{
         <SearchDiv>
           <input
             type="text"
-            value={userNickname}
-            onChange={(e) => setUserNickname(e.target.value)}
+            value={searchNickname}
+            onChange={(e) => setSearchNickname(e.target.value)}
             placeholder="유저닉네임 검색"
           />
         </SearchDiv>
         {searchResults.length > 0 && (
           <SearchedUserDiv>
             {searchResults.map((user: User, index: number) => (
-              <div key={index} onClick={() => handleSelectUser(user.nickname)}>
+              <div key={index}>
                 <Row>
                   <UserNicknamesDiv>
                     <ProfileImg $profileImg={user.imgUrl} />
                     {user.nickname}
                   </UserNicknamesDiv>
-                  <Button size="chat" onClick={handleCreateRoom}>
+                  <Button
+                    size="chat"
+                    onClick={() => handleCreateRoom(user.nickname)}
+                  >
                     채팅 생성
                   </Button>
                 </Row>
@@ -166,12 +146,13 @@ export const ChatRoomsList: React.FC<{
             <ChatRooms
               key={room.roomId}
               $isSelected={selectedRoomId === room.roomId}
-              onClick={() => handleRoomClick(room.roomId)}
+              onClick={() => handleRoomClick(room.roomId, room.roomName)}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <ProfileImg $profileImg={room.imgUrls[0]} />
                 <span>{room.roomName}</span>
               </div>
+              <ChatMessage>{room.chatMessage}</ChatMessage>
             </ChatRooms>
           ))}
         </Col>
@@ -251,7 +232,7 @@ const SearchDiv = styled.div`
 
 const ChatRooms = styled.div<ChatRoomProps>`
   width: 300px;
-  height: 50px;
+  height: 70px;
   background-color: ${(props) => (props.$isSelected ? '#e9e9e9' : 'white')};
   cursor: pointer;
   line-height: 50px;
@@ -270,4 +251,16 @@ const UserNicknamesDiv = styled.div`
   width: 200px;
   display: flex;
   align-items: center;
+`;
+
+const ChatMessage = styled.span`
+  display: block;
+  width: 250px;
+  margin-left: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #a1a1a1;
+  padding: 0;
 `;

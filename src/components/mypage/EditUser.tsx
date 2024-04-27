@@ -289,6 +289,11 @@ const EditUser: React.FC = () => {
 
     const changedData = getChangedData();
 
+    if (prevPwValidityMessage !== '') {
+      alert('현재 비밀번호가 유효하지 않습니다.');
+      return;
+    }
+
     if (Object.keys(changedData).length === 0) {
       alert('변경 사항이 없습니다. 정보를 수정한 후에 제출해주세요.');
       return;
