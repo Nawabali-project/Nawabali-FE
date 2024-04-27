@@ -14,7 +14,7 @@ import { useState } from 'react';
 
 const ScorePage = () => {
   const navigate = useNavigate();
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(true);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   return (

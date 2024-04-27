@@ -40,6 +40,7 @@ const CommentInput = ({ postId }: { postId: number }) => {
 
   const handleKeyDown = async (event: any) => {
     if (event.key === 'Enter' && newComment.trim()) {
+      if (event.nativeEvent.isComposing) return;
       createCommentMutation.mutate();
     }
   };
@@ -64,6 +65,7 @@ const CommentInput = ({ postId }: { postId: number }) => {
           value={newComment}
           onChange={(event) => setNewComment(event.target.value)}
           onKeyDown={handleKeyDown}
+          maxLength={100}
         ></MyCommentInput>
       </MyCommentBox>
       {isAlertModalOpen && (
