@@ -42,13 +42,19 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
     set({ isLoggedIn });
   },
 
-  addMessage: (message: any) =>
-    set((state) => ({
-      messages: [...state.messages, message],
-      hasNotifications: true,
-    })),
+  addMessage: (message) => {
+    console.log('Adding message:', message); // 로그 추가
+    set((state) => {
+      console.log('Current messages:', state.messages); // 현재 메시지 배열 로그
+      return {
+        messages: [...state.messages, message],
+        hasNotifications: true,
+      };
+    });
+  },
 
-  setHasNotifications: (hasNotifications: boolean) => {
+  setHasNotifications: (hasNotifications) => {
+    console.log(`Setting notifications status: ${hasNotifications}`); // 로그 추가
     set({ hasNotifications });
   },
 }));
@@ -72,6 +78,17 @@ export function SSEListener() {
         heartbeatTimeout: 90000,
       },
     );
+    eventSource.onopen = () => {
+      console.log('EventSource 연결 성공');
+    };
+
+    eventSource.addEventListener('message', (event: any) => {
+      if (!event?.data) {
+        return;
+      }
+      const { data } = event;
+      console.log(JSON.parse(data));
+    });
 
     eventSource.onmessage = (event: any) => {
       const newMessage = JSON.parse(event.data);
@@ -91,7 +108,7 @@ export function SSEListener() {
     return () => {
       eventSource.close();
     };
-  }, [isLoggedIn, user]);
+  }, [isLoggedIn, user, accessToken]);
 
   return null;
 }

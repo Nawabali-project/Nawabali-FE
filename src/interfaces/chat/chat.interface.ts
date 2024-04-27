@@ -38,7 +38,7 @@ export interface User {
 }
 
 export interface NewChatRoom {
-  chatMessage: any;
+  chatMessage: string;
   chatRoomEnum: string;
   roomId: number;
   roomName: string;

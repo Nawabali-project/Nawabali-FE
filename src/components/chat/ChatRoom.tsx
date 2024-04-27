@@ -10,7 +10,6 @@ import {
 } from '@/interfaces/chat/chat.interface';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
 export const ChatRoom: React.FC<{
   roomId: number;
   roomName: string;
@@ -31,7 +30,7 @@ export const ChatRoom: React.FC<{
       try {
         const user = await searchUserByNickname(roomName);
         if (user && user.length > 0) {
-          setUserInfo(user);
+          setUserInfo(user[0]);
           console.log('user: ', user);
         } else {
           setUserInfo(null);
@@ -174,20 +173,36 @@ export const ChatRoom: React.FC<{
               msg.sender === myNickname ? (
                 <Row key={index} style={{ alignSelf: 'flex-end' }}>
                   <ProfileImg
-                    src={localStorage.getItem('profileImageUrl')!}
+                    src={localStorage.getItem('profileImageUrl')?.split('"')[1]}
                     alt="내 프로필"
                   />
                   <MyMessage>
                     <span>{msg.message}</span>
-                    <span>{formatMessageDate(msg.createdMessageAt)}</span>
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        color: '#dfdfdf',
+                        width: '50px',
+                      }}
+                    >
+                      {formatMessageDate(msg.createdMessageAt)}
+                    </div>
                   </MyMessage>
                 </Row>
               ) : (
                 <Row key={index} style={{ alignSelf: 'flex-start' }}>
                   <ProfileImg src={userInfo?.imgUrl} alt={`상대방 프로필`} />
                   <OtherMessage>
-                    {msg.message}{' '}
-                    {new Date(msg.createdMessageAt).toLocaleString()}
+                    {msg.message}
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        color: '#3f3f3f',
+                        width: '50px',
+                      }}
+                    >
+                      {formatMessageDate(msg.createdMessageAt)}
+                    </div>
                   </OtherMessage>
                 </Row>
               ),
@@ -225,7 +240,7 @@ const Row = styled.div`
 const ChatContainer = styled.div`
   margin-top: 100px;
   margin-left: 20px;
-  height: 850px;
+  height: 760px;
   width: 60vw;
   background-color: white;
   border-radius: 20px;
@@ -243,6 +258,7 @@ const Chat = styled.div`
   display: flex;
   flex-direction: column;
   height: 550px;
+  margin-top: 10px;
   overflow: auto;
   padding: 0 20px 20px;
 
@@ -262,18 +278,25 @@ const MyMessage = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: flex-end;
   width: 300px;
   background-color: #00a3ff;
   padding: 5px;
   color: white;
   border-radius: 8px;
+  margin: 3px 0;
 `;
 
 const OtherMessage = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
   width: 300px;
   background-color: #f0f0f0;
   padding: 5px;
   border-radius: 8px;
+  margin: 3px 0;
 `;
 
 const InputDiv = styled.div`

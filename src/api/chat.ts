@@ -5,7 +5,7 @@ import { ErrorResponse } from 'react-router-dom';
 import { Client } from '@stomp/stompjs';
 import { Cookies } from 'react-cookie';
 
-export const getChatRooms = async (): Promise<any[]> => {
+export const getChatRooms = async () => {
   try {
     const response = await authInstance.get('/chat/rooms');
     return response.data.content;
