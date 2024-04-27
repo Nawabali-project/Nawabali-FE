@@ -78,8 +78,11 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     mutationFn: createPost,
     onSuccess: () => {
       handleCloseModal();
-      setAlertType('complete');
-      showAlertModal('게시글 작성이 완료되었어요 :)');
+      setTimeout(() => {
+        setAlertType('complete');
+        showAlertModal('게시글 작성이 완료되었어요 :)');
+        setIsAlertModalOpen(true);
+      }, 300);
       queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
       queryClient.invalidateQueries({ queryKey: ['allPosts'] });
     },

@@ -19,6 +19,7 @@ import { IoHeartOutline } from 'react-icons/io5';
 import { useState } from 'react';
 import { PostItem } from '@/interfaces/main/news.interface';
 import DetailPostModal from '@/components/modal/DetailPostModal';
+import { NoPostIcon } from '@/utils/icons';
 
 const SearchResponsePage = () => {
   const { keyword } = useParams();
@@ -103,7 +104,7 @@ const SearchResponsePage = () => {
             </FourComponentBox>
           </SecondHeader>
         </CategoryBox>
-        {data && (
+        {data && data.content.length > 0 && (
           <span style={{ fontWeight: '800', fontSize: '30px' }}>
             '{keyword}'에 대한 검색결과
           </span>
@@ -211,14 +212,13 @@ const SearchResponsePage = () => {
             ))}
           </FeedsBox>
         </div>
-        {!data && (
-          <NoResults>
-            <NoResultIcon src="/assets/svgs/searchWithNoAnswers.svg" />
-            <div style={{ fontSize: '30px' }}>
-              <span style={{ fontWeight: '800' }}>'{keyword}'</span>
-              <span>에 대한 검색결과를 찾지 못했어요.</span>
-            </div>
-          </NoResults>
+        {data && data.content.length == 0 && (
+          <NoPostBox>
+            <NoPostIcon />
+            <NoPostComment>
+              <strong>'{keyword}'</strong>에 대한 검색결과를 찾지 못했어요.
+            </NoPostComment>
+          </NoPostBox>
         )}
       </Container>
       {isDetailPostModalOpen && selectedPost && (
@@ -233,6 +233,20 @@ const SearchResponsePage = () => {
 
 export default SearchResponsePage;
 
+const NoPostBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75vh;
+  flex-direction: column;
+`;
+
+const NoPostComment = styled.div`
+  margin: 30px 0 0 0;
+  font-size: 30px;
+  font-weight: 400;
+`;
+
 const Container = styled.div`
   width: 1240px;
   margin: 160px auto;
@@ -245,20 +259,6 @@ const ImageContainer = styled.div`
   align-items: flex-start;
   position: relative;
   margin: 60px 5px 0;
-`;
-
-const NoResults = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-`;
-
-const NoResultIcon = styled.img`
-  width: 150px;
-  height: 300px;
 `;
 
 const SecondHeader = styled.div`
@@ -285,7 +285,7 @@ const ThreeKindBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 10px;
+  margin: 0 17px;
   cursor: pointer;
 `;
 

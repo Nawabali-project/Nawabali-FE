@@ -126,7 +126,7 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
   });
 
   if (status === 'pending') {
-    return <p>Loading...</p>;
+    return <p>로딩중...</p>;
   }
 
   if (status === 'error') {
