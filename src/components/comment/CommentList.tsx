@@ -218,13 +218,13 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
           alertType={alertType}
         />
       )}
-      {isFetchingNextPage && <h3>Loading...</h3>}
+      {isFetchingNextPage}
     </CommentsBox>
   );
 };
 
 const CommentTime = styled.div`
-  margin: 0 0 0 2px;
+  margin: 7px 0 0 2px;
   color: gray;
   font-size: 11px;
 `;
@@ -304,13 +304,15 @@ const ProfileImg = styled.img`
 
 const NameGrade = styled.div`
   display: flex;
+  height: 30px;
+  margin-top: 13px;
 `;
 
 const UserName = styled.div`
   display: flex;
   align-items: center;
   margin-right: 10px;
-  height: 50px;
+  height: 30px;
   border: none;
   font-size: 15px;
 `;
@@ -319,6 +321,7 @@ const UserGrade = styled.div`
   display: flex;
   align-items: center;
   width: 150px;
+  height: 30px;
   color: gray;
   font-size: 12px;
 `;
