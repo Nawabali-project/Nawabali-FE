@@ -1,8 +1,8 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import { Cookies } from 'react-cookie';
-import { AuthState, AuthUser } from '@/interfaces/user/user.interface';
+import { AuthState } from '@/interfaces/user/user.interface';
 import { useEffect } from 'react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   isLoggedIn: false,
@@ -55,51 +55,42 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
 
 export default useAuthStore;
 
-function SSEListener() {
+export function SSEListener() {
+  const cookie = new Cookies();
+  const { isLoggedIn, user } = useAuthStore();
+  const accessToken = cookie.get('accessToken');
+
   useEffect(() => {
-    const eventSource = new EventSource(
-      `${import.meta.env.VITE_APP_BASE_URL}/sub/notification/subscibe`,
+    if (!isLoggedIn || !accessToken) return;
+
+    const eventSource = new EventSourcePolyfill(
+      'https://hhboard.shop/notification/subscribe',
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
     );
 
-    eventSource.onmessage = (event) => {
+    eventSource.onmessage = (event: any) => {
       const newMessage = JSON.parse(event.data);
+      console.log('SSE new message: ', newMessage);
+
       useAuthStore.getState().addMessage(newMessage);
     };
 
-    eventSource.onerror = (error) => {
+    eventSource.onerror = (error: any) => {
       console.error('EventSource failed:', error);
+      if (eventSource.readyState === EventSource.CLOSED) {
+        console.error('EventSource connection was closed.');
+      }
       eventSource.close();
     };
 
     return () => {
       eventSource.close();
     };
-  }, []);
+  }, [isLoggedIn, user]);
 
   return null;
 }
-
-function initializeUser(navigate: NavigateFunction) {
-  const cookie = new Cookies();
-
-  const accessToken = cookie.get('accessToken');
-
-  const storedUser = localStorage.getItem('user');
-  if (accessToken && storedUser) {
-    const user: AuthUser = JSON.parse(storedUser);
-    useAuthStore.getState().login(user);
-    navigate('/');
-  } else {
-    useAuthStore.getState().logout();
-  }
-}
-
-function AppInitializer() {
-  const navigate = useNavigate();
-
-  initializeUser(navigate);
-
-  return <SSEListener />;
-}
-
-export { AppInitializer };
