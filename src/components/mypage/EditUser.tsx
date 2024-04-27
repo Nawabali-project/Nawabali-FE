@@ -354,8 +354,11 @@ const EditUser: React.FC = () => {
                 <span style={{ cursor: 'pointer' }} onClick={handleEditPhoto}>
                   수정
                 </span>
-                <Line />
-                <span style={{ cursor: 'pointer' }} onClick={handleDeletePhoto}>
+                <Line style={{ display: 'none' }} />
+                <span
+                  style={{ cursor: 'pointer', display: 'none' }}
+                  onClick={handleDeletePhoto}
+                >
                   삭제
                 </span>
               </Modal>
@@ -393,13 +396,12 @@ const EditUser: React.FC = () => {
                     style={{ width: '300px', justifyContent: 'space-between' }}
                   >
                     <InnerSpan>********</InnerSpan>
-                    <Button
-                      type="button"
-                      size="small"
+                    <button
                       onClick={handleChangePwClick}
+                      style={{ display: 'none' }}
                     >
                       비밀번호 변경
-                    </Button>
+                    </button>
                   </Row>
                 )}
                 {showEditPwInput && (
