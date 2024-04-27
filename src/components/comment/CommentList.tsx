@@ -280,7 +280,7 @@ const CommentsBox = styled.div`
 const Comment = styled.div`
   display: flex;
   width: 420px;
-  height: 100px;
+  height: auto;
 `;
 
 const ProfileBox = styled.div`
