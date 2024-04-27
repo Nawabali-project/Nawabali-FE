@@ -281,6 +281,7 @@ const Comment = styled.div`
   display: flex;
   width: 420px;
   height: auto;
+  padding: 0 0 15px 0;
 `;
 
 const ProfileBox = styled.div`
