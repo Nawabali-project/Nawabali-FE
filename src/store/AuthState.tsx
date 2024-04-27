@@ -69,6 +69,7 @@ export function SSEListener() {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        heartbeatTimeout: 90000,
       },
     );
 

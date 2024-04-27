@@ -31,7 +31,8 @@ export const ChatRoom: React.FC<{
       try {
         const user = await searchUserByNickname(roomName);
         if (user && user.length > 0) {
-          setUserInfo(user[0]);
+          setUserInfo(user);
+          console.log('user: ', user);
         } else {
           setUserInfo(null);
         }
@@ -80,7 +81,12 @@ export const ChatRoom: React.FC<{
       try {
         const fetchedMessages = await showChat(roomId);
         if (fetchedMessages && fetchedMessages.length > 0) {
-          setMessages(fetchedMessages);
+          const sortedMessages = fetchedMessages.sort(
+            (a: ReturnedMessageForm, b: ReturnedMessageForm) =>
+              new Date(a.createdMessageAt).getTime() -
+              new Date(b.createdMessageAt).getTime(),
+          );
+          setMessages(sortedMessages);
         } else {
           setMessages([]);
           console.error('메시지가 없습니다.');
@@ -136,6 +142,17 @@ export const ChatRoom: React.FC<{
     navigate(`/userProfile/${userNick}`);
   };
 
+  function formatMessageDate(dateString: string) {
+    const d = new Date(dateString);
+    const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+    const dayOfWeek = weekdays[d.getDay()];
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    const hour = d.getHours().toString().padStart(2, '0');
+    const minute = d.getMinutes().toString().padStart(2, '0');
+    return `${month}.${day}(${dayOfWeek}) ${hour}:${minute}`;
+  }
+
   return (
     <ChatContainer>
       {isLoading ? (
@@ -162,9 +179,7 @@ export const ChatRoom: React.FC<{
                   />
                   <MyMessage>
                     <span>{msg.message}</span>
-                    <span>
-                      ({new Date(msg.createdMessageAt).toLocaleString()})
-                    </span>
+                    <span>{formatMessageDate(msg.createdMessageAt)}</span>
                   </MyMessage>
                 </Row>
               ) : (
@@ -210,7 +225,7 @@ const Row = styled.div`
 const ChatContainer = styled.div`
   margin-top: 100px;
   margin-left: 20px;
-  height: 750px;
+  height: 850px;
   width: 60vw;
   background-color: white;
   border-radius: 20px;
@@ -230,7 +245,6 @@ const Chat = styled.div`
   height: 550px;
   overflow: auto;
   padding: 0 20px 20px;
-  transform: scaleY(-1);
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -253,7 +267,6 @@ const MyMessage = styled.div`
   padding: 5px;
   color: white;
   border-radius: 8px;
-  transform: scaleY(-1);
 `;
 
 const OtherMessage = styled.div`
@@ -261,7 +274,6 @@ const OtherMessage = styled.div`
   background-color: #f0f0f0;
   padding: 5px;
   border-radius: 8px;
-  transform: scaleY(-1);
 `;
 
 const InputDiv = styled.div`
