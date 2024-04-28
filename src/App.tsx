@@ -1,8 +1,9 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import Header from './components/header/Header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import useAuthStore, { SSEListener } from './store/AuthState';
+import useAuthStore from './store/AuthState';
 import { useEffect } from 'react';
+import SSEListener from './components/chat/SSEListener';
 
 const queryClient = new QueryClient();
 

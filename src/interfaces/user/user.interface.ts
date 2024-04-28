@@ -40,8 +40,4 @@ export interface AuthState {
   initializeLoginState: () => void;
   login: (user: AuthUser) => void;
   logout: () => void;
-  messages: any[];
-  addMessage: (message: any) => void;
-  hasNotifications: boolean;
-  setHasNotifications: (hasNotifications: boolean) => void;
 }
