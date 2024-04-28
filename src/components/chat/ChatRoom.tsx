@@ -107,6 +107,7 @@ export const ChatRoom: React.FC<{
   }, [messages]);
 
   const handleSendMessage = () => {
+    if (!message.trim()) return;
     const chatMessage: MessageForm = {
       type: MessageType.TALK,
       message,

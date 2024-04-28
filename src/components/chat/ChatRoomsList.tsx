@@ -190,7 +190,10 @@ export const ChatRoomsList: React.FC<{
                 <ProfileImg $profileImg={room.profileImageUrl} />
                 <span>{room.roomName}</span>
               </div>
-              <ChatMessage>{room.chatMessage}</ChatMessage>
+              {room.chatMessage != '' && (
+                <ChatMessage>{room.chatMessage}</ChatMessage>
+              )}
+
               {room.unreadCount}
             </ChatRooms>
           ))}
@@ -208,7 +211,7 @@ const Col = styled.div`
 `;
 
 const Row = styled.div`
-  width: 280px;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -219,7 +222,8 @@ const Row = styled.div`
 `;
 
 const ChatList = styled.div`
-  width: 300px;
+  min-width: 320px;
+  width: 25vw;
   height: 500px;
   margin: 100px 0 0 100px;
   background-color: white;
@@ -252,7 +256,7 @@ const SearchDiv = styled.div`
   border: 1px solid gray;
   border-radius: 15px;
   height: 30px;
-  width: 260px;
+  width: 90%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -260,7 +264,7 @@ const SearchDiv = styled.div`
   margin: 0 auto;
 
   input {
-    width: 250px;
+    width: 90%;
     border: none;
     font-size: 13px;
     &:focus {
@@ -270,8 +274,8 @@ const SearchDiv = styled.div`
 `;
 
 const ChatRooms = styled.div<ChatRoomProps>`
-  width: 300px;
-  height: 60px;
+  width: 99.4%;
+  padding-bottom: 5px;
   padding-top: 5px;
   background-color: ${(props) => (props.$isSelected ? '#e9e9e9' : 'white')};
   cursor: pointer;
@@ -287,14 +291,14 @@ const SearchedUserDiv = styled.div`
 `;
 
 const UserNicknamesDiv = styled.div`
-  width: 200px;
+  width: 90%;
   display: flex;
   align-items: center;
 `;
 
 const ChatMessage = styled.span`
   display: block;
-  width: 250px;
+  width: 85%;
   margin: 0;
   margin-left: 50px;
   overflow: hidden;

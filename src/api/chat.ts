@@ -42,7 +42,6 @@ export const sendMessage = (
   chatMessage: MessageForm,
 ) => {
   const accessToken = new Cookies().get('accessToken');
-  if (!chatMessage.message.trim()) return;
 
   if (!client?.connected) {
     console.error('WebSocket connection is not active.');
