@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MyLocationIcon } from '@/utils/icons';
+import { MyLocationBigIcon } from '@/utils/icons';
 import AllPosts from './AllPosts';
 import DetailPostModal from '../modal/DetailPostModal';
 
@@ -25,6 +25,7 @@ interface Post {
   profileImageUrl: string;
   nickname: string;
   mainImageUrl: string;
+  resizedImageUrl: string;
   multiImages: boolean;
   category: string;
   likesCount: number;
@@ -121,7 +122,7 @@ const CustomMap = ({
         let content = `
           <div style="box-shadow: 3px 3px 6px rgba(86, 86, 86, 0.5); cursor: pointer; border: 3px solid ${borderColor}; border-radius: 10px; width: 60px; height: 60px; overflow: hidden; display: flex; justify-content: center; align-items: center;"
               onclick="window.handlePostClick(${post.postId})">
-            <img src="${post.mainImageUrl}" style="width: 100%; height: auto; min-height: 100%; object-fit: cover; pointer-events: none;" alt="" />
+            <img src="${post.resizedImageUrl}" style="width: 60px; height: 60px; pointer-events: none;" alt="" />
           </div>
         `;
         let customOverlay = new window.kakao.maps.CustomOverlay({
@@ -173,7 +174,7 @@ const CustomMap = ({
         <MapContainer style={{ width, height }}>
           <MapBox id="map" style={{ width: '100%', height: '100%' }}></MapBox>
           <MyLocationBtn onClick={getCurrentPosBtn}>
-            <MyLocationIcon />
+            <MyLocationBigIcon />
           </MyLocationBtn>
         </MapContainer>
       </Layout>
@@ -206,6 +207,8 @@ const MyLocationBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 35px;
+  height: 35px;
   padding: 7px;
   border: 1px solid #c2c2c2;
   border-radius: 100px;

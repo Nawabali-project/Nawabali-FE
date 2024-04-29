@@ -1984,3 +1984,33 @@ export const MyLocationIcon = () => (
     />
   </svg>
 );
+
+export const MyLocationBigIcon = () => (
+  <svg
+    width="30"
+    height="30"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M4 8L2 8" stroke="#757575" strokeWidth="2" strokeLinecap="round" />
+    <path
+      d="M14 8L12 8"
+      stroke="#757575"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path d="M8 2V4" stroke="#757575" strokeWidth="2" strokeLinecap="round" />
+    <path d="M8 12V14" stroke="#757575" strokeWidth="2" strokeLinecap="round" />
+    <rect x="7" y="7" width="2" height="2" rx="1" fill="#757575" />
+    <rect
+      x="1"
+      y="1"
+      width="14"
+      height="14"
+      rx="7"
+      stroke="#757575"
+      strokeWidth="2"
+    />
+  </svg>
+);
