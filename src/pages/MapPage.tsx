@@ -69,11 +69,11 @@ const MapPage = () => {
     }
   }, [isSuccess, navigate]);
 
+  // 선택한 지역으로 이동
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);
     setShowDropdown(false);
 
-    // 선택된 지역의 위도와 경도를 찾아서 설정
     const selectedDistrict = seoulDistricts.find(
       (district) => district.name === areaName,
     );

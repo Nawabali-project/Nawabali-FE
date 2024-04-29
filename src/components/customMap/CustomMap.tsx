@@ -122,7 +122,7 @@ const CustomMap = ({
         let content = `
           <div style="box-shadow: 3px 3px 6px rgba(86, 86, 86, 0.5); cursor: pointer; border: 3px solid ${borderColor}; border-radius: 10px; width: 60px; height: 60px; overflow: hidden; display: flex; justify-content: center; align-items: center;"
               onclick="window.handlePostClick(${post.postId})">
-            <img src="${post.resizedImageUrl}" style="width: 60px; height: 60px; pointer-events: none;" alt="" />
+            <img src="${post.mainImageUrl}" style="width: 60px; height: 60px; pointer-events: none;" alt="" />
           </div>
         `;
         let customOverlay = new window.kakao.maps.CustomOverlay({

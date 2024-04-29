@@ -17,6 +17,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FeedList from '@/components/feedList/FeedList';
+import SkeletonList from '@/components/skeleton/SkeletonList';
 
 const ListPage = () => {
   const [clickedKind, setClickedKind] = useState<string | null>(null);
@@ -26,6 +27,14 @@ const ListPage = () => {
   const districtQuery = query.get('district');
   const district = districtQuery ? `서울특별시 ${districtQuery}` : '서울특별시';
   const category = query.get('category');
+  const [isLoading, setLoading] = useState(true);
+
+  // 스켈레톤 UI
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 300);
+  }, []);
 
   useEffect(() => {
     if (district) {
@@ -153,10 +162,14 @@ const ListPage = () => {
       </CategoryBox>
 
       <FeedsBox>
-        <FeedList
-          category={clickedKind}
-          district={selectedArea.split(' ')[1]}
-        />
+        {isLoading ? (
+          <SkeletonList />
+        ) : (
+          <FeedList
+            category={clickedKind}
+            district={selectedArea.split(' ')[1]}
+          />
+        )}
       </FeedsBox>
     </Layout>
   );
