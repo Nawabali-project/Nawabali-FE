@@ -37,7 +37,7 @@ const HeaderBox = styled.div`
 const UserImg = styled.div`
   width: 36px;
   height: 36px;
-  margin: 0 0 0 10px;
+  margin: 0 0 0 5px;
   border-radius: 1000px;
   background-color: #e5e5e5;
 `;

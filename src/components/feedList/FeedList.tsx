@@ -88,7 +88,7 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
               <UserImg src={post.profileImageUrl} />
               <UserName>{post.nickname}</UserName>
               <UserGrade>
-                {post.district} {post.userRankName}
+                • {post.district} {post.userRankName}
               </UserGrade>
             </UserInfoBox>
             <ImgBox onClick={() => handlePostClick(post)}>
