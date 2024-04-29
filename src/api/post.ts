@@ -19,7 +19,7 @@ export const getPosts = async ({ pageParam }: { pageParam: number }) => {
   return response;
 };
 
-// 게시글 전체 조회
+// 지도에서 게시글 전체 조회
 export const getAllPosts = async () => {
   let params = {
     page: '0',
