@@ -12,13 +12,16 @@ export const Row = styled.div`
   align-items: center;
 `;
 
+export const Wrapper = styled.div`
+  height: 450px;
+  margin: 50px 0;
+`;
+
 export const Container = styled.div`
   width: 850px;
-  margin: 60px auto 0;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  margin: 0 auto;
 `;
 
 export const ImageContainer = styled.div`
@@ -109,6 +112,36 @@ export const TitleSpan = styled.span`
 export const InnerSpan = styled.span`
   font-weight: 600;
   font-size: 13px;
+`;
+
+export const AddressDiv = styled.div`
+  font-size: 12px;
+  font-weight: 400;
+  color: #525252;
+  display: flex;
+  align-items: center;
+  width: 277px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const ContentSpan = styled.span`
+  font-size: 14px;
+  display: block;
+  margin-top: 5px;
+  width: 270px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const LikesBar = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  margin: 5px 0 0;
+  color: #919191;
 `;
 
 //posttype

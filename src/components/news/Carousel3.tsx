@@ -101,33 +101,29 @@ function Carousel3() {
   const iconCategory = getRandomSVGName();
 
   return (
-    <>
+    <s.Wrapper>
       <s.Container>
+        <s.TitleSpan>다른동네의 인기글을 구경해보세요!</s.TitleSpan>
         <div
-          style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '10px',
+          }}
         >
-          <s.TitleSpan>다른동네의 인기글을 구경해보세요!</s.TitleSpan>
           <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: '10px',
-            }}
+            ref={districtRef}
+            style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
+            onClick={() => handleOpenModal('district', districtRef)}
           >
-            <div
-              ref={districtRef}
-              style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
-              onClick={() => handleOpenModal('district', districtRef)}
-            >
-              <s.InnerSpan>{selectedDistrict}</s.InnerSpan>
-              <IoIosArrowDown />
-            </div>
-
-            <s.Arrows>
-              <IoArrowBackCircleOutline onClick={previous} />
-              <IoArrowForwardCircleOutline onClick={next} />
-            </s.Arrows>
+            <s.InnerSpan>{selectedDistrict}</s.InnerSpan>
+            <IoIosArrowDown />
           </div>
+
+          <s.Arrows>
+            <IoArrowBackCircleOutline onClick={previous} />
+            <IoArrowForwardCircleOutline onClick={next} />
+          </s.Arrows>
         </div>
       </s.Container>
       <s.StyledSlider ref={slickRef} {...settings}>
@@ -158,65 +154,35 @@ function Carousel3() {
                       : ' '}
               </s.PostType>
             </div>
-            <div style={{ padding: '0 5px' }}>
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: '400',
-                  color: '#a1a1a1',
-                  margin: '5px 0',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    marginRight: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <IoHeartOutline />
-                  <span>&nbsp;{item.likesCount}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <RiChat1Line />
-                  <span>&nbsp;{item.commentCount}</span>
-                </div>
-              </div>
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  margin: '5px 0',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <FaMapMarkerAlt style={{ marginRight: '3px' }} />
-                {item.placeName ? item.placeName : item.placeAddr}
-              </div>
-              <div
-                style={{
-                  fontSize: '10px',
-                  fontWeight: '400',
-                  color: '#858585',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span
-                  style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    width: '180px',
-                  }}
-                >
-                  {item.contents}
-                </span>
-              </div>
-            </div>
+
+            <s.LikesBar>
+              <IoHeartOutline style={{ fontSize: '14px' }} />
+              &nbsp;{item.likesCount}&nbsp;&nbsp;
+              <RiChat1Line />
+              &nbsp;{item.commentCount}
+            </s.LikesBar>
+            <s.AddressDiv
+              style={{
+                fontSize: '14px',
+                color: 'black',
+                fontWeight: '600',
+                marginTop: '5px',
+              }}
+            >
+              <FaMapMarkerAlt style={{ marginRight: '3px' }} />
+              {item.placeName ? item.placeName : item.placeAddr}
+            </s.AddressDiv>
+
+            <s.ContentSpan
+              style={{
+                fontSize: '12px',
+                width: '250px',
+                color: '#858585',
+                marginLeft: '15px',
+              }}
+            >
+              {item.contents}
+            </s.ContentSpan>
           </s.ImageContainer>
         ))}
         {[...Array(emptySlidesCount)].map((_, idx) => (
@@ -243,7 +209,7 @@ function Carousel3() {
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-    </>
+    </s.Wrapper>
   );
 }
 

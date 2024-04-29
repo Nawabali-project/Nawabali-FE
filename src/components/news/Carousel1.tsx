@@ -64,69 +64,72 @@ function Carousel1() {
   };
 
   return (
-    <div style={{ height: '350px', backgroundColor: '#FAFAFA' }}>
-      <s.Container style={{ paddingTop: '13px' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <s.Col style={{ width: '215px' }}>
-            <div>
-              <s.Col style={{ marginBottom: '10px' }}>
-                <s.TitleSpan>이번주 우리동네</s.TitleSpan>
-                <s.TitleSpan>인기글을 모아봤어요!</s.TitleSpan>
-              </s.Col>
-            </div>
-            <s.Row>
-              <span style={{ fontSize: '12px' }}>0{currentSlide + 1}</span>
-              <s.BarContainer>
-                <s.Progress $index={currentSlide + 1} />
-              </s.BarContainer>
-              <span style={{ marginLeft: '3px', fontSize: '12px' }}>07</span>
-              {isHovering ? (
-                <FaRegStopCircle
-                  style={{ marginLeft: '3px', fontSize: '15px' }}
-                  className="stop-icon"
-                />
-              ) : (
-                <FaRegPlayCircle
-                  style={{ marginLeft: '3px', fontSize: '15px' }}
-                  className="play-icon"
-                />
-              )}
-            </s.Row>
-            <s.Arrows style={{ marginTop: '12px', marginLeft: '-3px' }}>
-              <IoArrowBackCircleOutline onClick={previous} />
-              <IoArrowForwardCircleOutline onClick={next} />
-            </s.Arrows>
-          </s.Col>
-          <s.StyledSliderWithGreyBackground ref={slickRef} {...settings}>
-            {data?.content.map((item: PostItem, idx: number) => (
-              <s.ImageContainer key={idx}>
-                <s.PostWithGreyBackground
-                  $backgroundImage={item.mainImageUrl}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                />
-              </s.ImageContainer>
-            ))}
-            {[...Array(emptySlidesCount)].map((_, idx) => (
-              <s.ImageContainer key={`empty-${idx}`}>
-                <s.EmptyPostWithGreyBackground
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
-                </s.EmptyPostWithGreyBackground>
-              </s.ImageContainer>
-            ))}
-          </s.StyledSliderWithGreyBackground>
-        </div>
-      </s.Container>
-    </div>
+    <s.Wrapper
+      style={{
+        height: '350px',
+        marginTop: '50px',
+        backgroundColor: '#FAFAFA',
+        paddingTop: '25px',
+      }}
+    >
+      <s.Row
+        style={{
+          justifyContent: 'center',
+        }}
+      >
+        <s.Col style={{ width: '215px' }}>
+          <div>
+            <s.Col>
+              <s.TitleSpan>이번주 우리동네</s.TitleSpan>
+              <s.TitleSpan>인기글을 모아봤어요!</s.TitleSpan>
+            </s.Col>
+          </div>
+          <s.Row>
+            <span style={{ fontSize: '12px' }}>0{currentSlide + 1}</span>
+            <s.BarContainer>
+              <s.Progress $index={currentSlide + 1} />
+            </s.BarContainer>
+            <span style={{ marginLeft: '3px', fontSize: '12px' }}>07</span>
+            {isHovering ? (
+              <FaRegStopCircle
+                style={{ marginLeft: '3px', fontSize: '15px' }}
+                className="stop-icon"
+              />
+            ) : (
+              <FaRegPlayCircle
+                style={{ marginLeft: '3px', fontSize: '15px' }}
+                className="play-icon"
+              />
+            )}
+          </s.Row>
+          <s.Arrows style={{ marginTop: '12px', marginLeft: '-3px' }}>
+            <IoArrowBackCircleOutline onClick={previous} />
+            <IoArrowForwardCircleOutline onClick={next} />
+          </s.Arrows>
+        </s.Col>
+        <s.StyledSliderWithGreyBackground ref={slickRef} {...settings}>
+          {data?.content.map((item: PostItem, idx: number) => (
+            <s.ImageContainer key={idx}>
+              <s.PostWithGreyBackground
+                $backgroundImage={item.mainImageUrl}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              />
+            </s.ImageContainer>
+          ))}
+          {[...Array(emptySlidesCount)].map((_, idx) => (
+            <s.ImageContainer key={`empty-${idx}`}>
+              <s.EmptyPostWithGreyBackground
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
+              </s.EmptyPostWithGreyBackground>
+            </s.ImageContainer>
+          ))}
+        </s.StyledSliderWithGreyBackground>
+      </s.Row>
+    </s.Wrapper>
   );
 }
 

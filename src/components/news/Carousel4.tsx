@@ -132,107 +132,102 @@ function Carousel4() {
   }, [categoryCounts]);
 
   return (
-    <div
+    <s.Wrapper
       style={{
-        marginTop: '150px',
         height: '350px',
+        marginTop: '100px',
         backgroundColor: '#FAFAFA',
+        paddingTop: '10px',
       }}
     >
-      <s.Container>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: '10px',
-          }}
-        >
-          <s.Col style={{ width: '215px' }}>
-            <div>
-              <span style={{ fontSize: '12px' }}>우리동네 대표 카테고리</span>
-              <s.Col>
-                <s.TitleSpan>
-                  {district}는 {maxCategoryKorean}
-                </s.TitleSpan>
-                <s.TitleSpan>활성화 된 동네예요!</s.TitleSpan>
-              </s.Col>
-            </div>
-            <s.Col style={{ margin: '5px 0' }}>
-              <TextSpan>한 달간 작성된 게시물을 분석한 결과</TextSpan>
-              <span
-                style={{
-                  fontSize: '9px',
-                  color: '#707070',
-                  fontWeight: '500',
-                  margin: '3px 0',
-                }}
-              >
-                {categoryData.map((cat, index) => (
-                  <span
-                    key={cat.category}
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: '500',
-                    }}
-                  >
-                    {cat.category === 'FOOD'
-                      ? '맛집'
-                      : cat.category === 'CAFE'
-                        ? '카페'
-                        : '사진스팟'}{' '}
-                    {cat.postCount}개
-                    {index < categoryData.length - 1 ? ' |' : '의 '}
-                  </span>
-                ))}
-              </span>
-              <TextSpan>게시물이 올라왔어요!</TextSpan>
+      <s.Row
+        style={{
+          justifyContent: 'center',
+          paddingTop: '5px',
+        }}
+      >
+        <s.Col style={{ width: '215px' }}>
+          <div>
+            <span style={{ fontSize: '12px' }}>우리동네 대표 카테고리</span>
+            <s.Col>
+              <s.TitleSpan>
+                {district}는 {maxCategoryKorean}
+              </s.TitleSpan>
+              <s.TitleSpan>활성화 된 동네예요!</s.TitleSpan>
             </s.Col>
+          </div>
+          <s.Col style={{ margin: '5px 0' }}>
+            <TextSpan>한 달간 작성된 게시물을 분석한 결과</TextSpan>
             <span
               style={{
-                fontSize: '12px',
-                fontWeight: '600',
+                fontSize: '9px',
                 color: '#707070',
-                marginTop: '5px',
-                textDecoration: 'underLine',
+                fontWeight: '500',
+                margin: '3px 0',
               }}
-              onClick={goToPosts}
             >
-              게시물 보러가기
+              {categoryData.map((cat, index) => (
+                <span
+                  key={cat.category}
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '500',
+                  }}
+                >
+                  {cat.category === 'FOOD'
+                    ? '맛집'
+                    : cat.category === 'CAFE'
+                      ? '카페'
+                      : '사진스팟'}{' '}
+                  {cat.postCount}개
+                  {index < categoryData.length - 1 ? ' | ' : '의 '}
+                </span>
+              ))}
             </span>
-            <s.BarContainerWithDistrict>
-              <s.ProgressWithDistrict $index={currentSlide + 1} />
-            </s.BarContainerWithDistrict>
-            <s.Arrows style={{ marginLeft: '-3px' }}>
-              <IoArrowBackCircleOutline onClick={previous} />
-              <IoArrowForwardCircleOutline onClick={next} />
-            </s.Arrows>
+            <TextSpan>게시물이 올라왔어요!</TextSpan>
           </s.Col>
-          <s.StyledSliderWithGreyBackground ref={slickRef} {...settings}>
-            {carouselPosts?.content.map((item: PostItem, idx: number) => (
-              <s.ImageContainer key={idx} onClick={() => handlePostClick(item)}>
-                <s.PostWithGreyBackground
-                  $backgroundImage={item.mainImageUrl}
-                />
-              </s.ImageContainer>
-            ))}
-            {[...Array(emptySlidesCount)].map((_, idx) => (
-              <s.ImageContainer key={`empty-${idx}`}>
-                <s.EmptyPostWithGreyBackground>
-                  <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
-                </s.EmptyPostWithGreyBackground>
-              </s.ImageContainer>
-            ))}
-          </s.StyledSliderWithGreyBackground>
-        </div>
-      </s.Container>
+          <span
+            style={{
+              fontSize: '12px',
+              fontWeight: '600',
+              color: '#707070',
+              marginTop: '5px',
+              textDecoration: 'underLine',
+            }}
+            onClick={goToPosts}
+          >
+            게시물 보러가기
+          </span>
+          <s.BarContainerWithDistrict>
+            <s.ProgressWithDistrict $index={currentSlide + 1} />
+          </s.BarContainerWithDistrict>
+          <s.Arrows style={{ marginLeft: '-3px' }}>
+            <IoArrowBackCircleOutline onClick={previous} />
+            <IoArrowForwardCircleOutline onClick={next} />
+          </s.Arrows>
+        </s.Col>
+        <s.StyledSliderWithGreyBackground ref={slickRef} {...settings}>
+          {carouselPosts?.content.map((item: PostItem, idx: number) => (
+            <s.ImageContainer key={idx} onClick={() => handlePostClick(item)}>
+              <s.PostWithGreyBackground $backgroundImage={item.mainImageUrl} />
+            </s.ImageContainer>
+          ))}
+          {[...Array(emptySlidesCount)].map((_, idx) => (
+            <s.ImageContainer key={`empty-${idx}`}>
+              <s.EmptyPostWithGreyBackground>
+                <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
+              </s.EmptyPostWithGreyBackground>
+            </s.ImageContainer>
+          ))}
+        </s.StyledSliderWithGreyBackground>
+      </s.Row>
       {isDetailPostModalOpen && selectedPost && (
         <DetailPostModal
           postId={selectedPost.postId}
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-    </div>
+    </s.Wrapper>
   );
 }
 

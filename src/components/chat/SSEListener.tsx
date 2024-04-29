@@ -23,7 +23,7 @@ const SSEListener = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          heartbeatTimeout: 6000,
+          heartbeatTimeout: 50000,
           withCredentials: true,
         },
       );
@@ -43,7 +43,7 @@ const SSEListener = () => {
         // 에러 후 재연결
         setTimeout(() => {
           setupSSEConnection();
-        }, 3000);
+        }, 5000);
       };
 
       return () => {

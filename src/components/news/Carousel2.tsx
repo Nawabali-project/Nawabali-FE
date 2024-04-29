@@ -115,48 +115,44 @@ function Carousel2() {
   const iconCategory = getRandomSVGName();
 
   return (
-    <>
+    <s.Wrapper>
       <s.Container>
+        <s.TitleSpan>일주일간 사람들이 많이 찾은 곳이에요!</s.TitleSpan>
         <div
-          style={{ width: '850px', display: 'flex', flexDirection: 'column' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '10px',
+          }}
         >
-          <s.TitleSpan>일주일간 사람들이 많이 찾은 곳이에요!</s.TitleSpan>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: '10px',
-            }}
-          >
-            <div style={{ display: 'flex' }}>
-              <div
-                ref={districtRef}
-                style={{
-                  display: 'flex',
-                  height: '25px',
-                  cursor: 'pointer',
-                  marginRight: '15px',
-                }}
-                onClick={() => handleOpenModal('district', districtRef)}
-              >
-                <FaMapMarkerAlt style={{ marginRight: '3px' }} />
-                <s.InnerSpan>{selectedDistrict}</s.InnerSpan>
-                <IoIosArrowDown />
-              </div>
-              <div
-                ref={categoryRef}
-                style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
-                onClick={() => handleOpenModal('category', categoryRef)}
-              >
-                <s.InnerSpan>{selectedCategory}</s.InnerSpan>
-                <IoIosArrowDown />
-              </div>
+          <div style={{ display: 'flex' }}>
+            <div
+              ref={districtRef}
+              style={{
+                display: 'flex',
+                height: '25px',
+                cursor: 'pointer',
+                marginRight: '15px',
+              }}
+              onClick={() => handleOpenModal('district', districtRef)}
+            >
+              <FaMapMarkerAlt style={{ marginRight: '3px' }} />
+              <s.InnerSpan>{selectedDistrict}</s.InnerSpan>
+              <IoIosArrowDown />
             </div>
-            <s.Arrows>
-              <IoArrowBackCircleOutline onClick={previous} />
-              <IoArrowForwardCircleOutline onClick={next} />
-            </s.Arrows>
+            <div
+              ref={categoryRef}
+              style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
+              onClick={() => handleOpenModal('category', categoryRef)}
+            >
+              <s.InnerSpan>{selectedCategory}</s.InnerSpan>
+              <IoIosArrowDown />
+            </div>
           </div>
+          <s.Arrows>
+            <IoArrowBackCircleOutline onClick={previous} />
+            <IoArrowForwardCircleOutline onClick={next} />
+          </s.Arrows>
         </div>
       </s.Container>
       <s.StyledSlider ref={slickRef} {...settings}>
@@ -174,24 +170,13 @@ function Carousel2() {
                       : ' '}
               </s.PostType>
             )}
-            <p
-              style={{ fontSize: '13px', fontWeight: '700', marginTop: '10px' }}
-            >
+            <s.ContentSpan style={{ fontWeight: '600' }}>
               {item.contents}
-            </p>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: '400',
-                color: '#525252',
-                margin: '5px 0',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
+            </s.ContentSpan>
+            <s.AddressDiv style={{ margin: '5px 0' }}>
+              <FaMapMarkerAlt style={{ marginRight: '3px' }} />
               {item.placeName ? item.placeName : item.placeAddr}
-              <FaMapMarkerAlt />
-            </div>
+            </s.AddressDiv>
           </s.ImageContainer>
         ))}
         {[...Array(emptySlidesCount)].map((_, idx) => (
@@ -218,7 +203,7 @@ function Carousel2() {
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-    </>
+    </s.Wrapper>
   );
 }
 

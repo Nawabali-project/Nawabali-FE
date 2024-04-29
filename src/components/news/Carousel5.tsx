@@ -5,6 +5,7 @@ import * as s from './CasouselStyle';
 import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
+  IoHeartOutline,
 } from 'react-icons/io5';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import {
@@ -15,6 +16,7 @@ import { useCallback, useRef, useState } from 'react';
 import { CarouselProps, PostItem } from '@/interfaces/main/news.interface';
 import DetailPostModal from '../modal/DetailPostModal';
 import { useNavigate } from 'react-router-dom';
+import { RiChat1Line } from 'react-icons/ri';
 
 function Carousel5({ iconCategory, category }: CarouselProps) {
   const navigate = useNavigate();
@@ -84,60 +86,56 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
     return <div>Error or no data available</div>;
   }
   return (
-    <>
+    <s.Wrapper>
       <s.Container>
-        <div
-          style={{ width: '850px', display: 'flex', flexDirection: 'column' }}
-        >
-          <div>
-            <div style={{ marginBottom: '5px' }}>
-              <img
-                src={`/assets/svgs/${iconCategory}Icon.svg`}
-                alt={`${iconCategory} Icon`}
-                style={{ height: '30px', verticalAlign: 'middle' }}
-              />
-              <span
+        <div>
+          <div style={{ marginBottom: '5px' }}>
+            <img
+              src={`/assets/svgs/${iconCategory}Icon.svg`}
+              alt={`${iconCategory} Icon`}
+              style={{ height: '30px', verticalAlign: 'middle' }}
+            />
+            <span
+              style={{
+                fontSize: '15px',
+                fontWeight: '600',
+                marginLeft: '10px',
+              }}
+            >
+              {category}의 중심
+            </span>
+          </div>
+          <s.Col>
+            <s.TitleSpan>
+              {bestDistrict.district} {category} 구경하기
+            </s.TitleSpan>
+            <span style={{ fontSize: '13px', fontWeight: '500' }}>
+              {bestDistrict.district}는 한 달간 {category} 게시물이{' '}
+              {bestDistrict.postCount}개 작성되어 {category} 동네로
+              선정되었어요!
+            </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div
                 style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  marginLeft: '10px',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
-                {category}의 중심
-              </span>
-            </div>
-            <s.Col>
-              <s.TitleSpan>
-                {bestDistrict.district} {category} 구경하기
-              </s.TitleSpan>
-              <span style={{ fontSize: '13px', fontWeight: '500' }}>
-                {bestDistrict.district}는 한 달간 {category} 게시물이{' '}
-                {bestDistrict.postCount}개 작성되어 {category} 동네로
-                선정되었어요!
-              </span>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div
-                  style={{
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <span onClick={goToAllPosts}>게시글 전체보기</span>
-                  <img
-                    src="/assets/svgs/arrowIcon.svg"
-                    alt="Arrow Icon"
-                    style={{ height: '4px', marginLeft: '2px' }}
-                  />
-                </div>
-                <s.Arrows>
-                  <IoArrowBackCircleOutline onClick={previous} />
-                  <IoArrowForwardCircleOutline onClick={next} />
-                </s.Arrows>
+                <span onClick={goToAllPosts}>게시글 전체보기</span>
+                <img
+                  src="/assets/svgs/arrowIcon.svg"
+                  alt="Arrow Icon"
+                  style={{ height: '4px', marginLeft: '2px' }}
+                />
               </div>
-            </s.Col>
-          </div>
+              <s.Arrows>
+                <IoArrowBackCircleOutline onClick={previous} />
+                <IoArrowForwardCircleOutline onClick={next} />
+              </s.Arrows>
+            </div>
+          </s.Col>
         </div>
       </s.Container>
       <s.StyledSlider ref={slickRef} {...settings}>
@@ -147,25 +145,18 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
             <s.ImageContainer key={idx} onClick={() => handlePostClick(item)}>
               <s.Post $backgroundImage={item.mainImageUrl} />
               <s.Col>
-                <span
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: '600',
-                    margin: '10px 0',
-                  }}
-                >
-                  {item.placeName}
-                </span>
-                <span
-                  style={{
-                    fontSize: '10px',
-                    fontWeight: '400',
-                    marginBottom: '5px',
-                  }}
-                >
-                  {item.placeAddr}
-                  <FaMapMarkerAlt style={{ marginLeft: '3px' }} />
-                </span>
+                <s.AddressDiv>{item.placeName}</s.AddressDiv>
+                <s.LikesBar>
+                  <IoHeartOutline style={{ fontSize: '14px' }} />
+                  &nbsp;{item.likesCount}&nbsp;&nbsp;
+                  <RiChat1Line />
+                  &nbsp;{item.commentCount}
+                </s.LikesBar>
+                <s.ContentSpan>{item.contents}</s.ContentSpan>
+                <s.AddressDiv>
+                  <FaMapMarkerAlt style={{ marginRight: '3px' }} />
+                  {item.placeName ? item.placeName : item.placeAddr}
+                </s.AddressDiv>
               </s.Col>
             </s.ImageContainer>
           ))}
@@ -183,7 +174,7 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-    </>
+    </s.Wrapper>
   );
 }
 
