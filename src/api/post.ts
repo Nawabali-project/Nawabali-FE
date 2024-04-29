@@ -15,6 +15,7 @@ export const getPosts = async ({ pageParam }: { pageParam: number }) => {
   params.sort.forEach((s) => pageable.append('sort', s));
 
   const response = await instance.get(`/posts?${pageable.toString()}`);
+  console.log('게시글 조회', response);
   return response;
 };
 
@@ -32,6 +33,7 @@ export const getAllPosts = async () => {
   params.sort.forEach((s) => pageable.append('sort', s));
 
   const response = await instance.get(`/posts?${pageable.toString()}`);
+  console.log('게시글 전체 조회', response);
   return response;
 };
 
