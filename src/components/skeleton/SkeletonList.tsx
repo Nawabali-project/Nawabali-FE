@@ -43,8 +43,8 @@ const UserImg = styled.div`
 
 const UserInfo = styled.div`
   width: 100px;
-  height: 36px;
-  margin: 0 0 0 10px;
+  height: 20px;
+  margin: 10px 0 0 10px;
   background-color: #e5e5e5;
 `;
 
@@ -58,14 +58,14 @@ const ImgBox = styled.div`
 
 const ItemBox = styled.div`
   width: 170px;
-  height: 20px;
+  height: 15px;
   margin: 5px;
   background-color: #e5e5e5;
 `;
 
 const CommentBox = styled.div`
   width: 100px;
-  height: 20px;
+  height: 10px;
   margin: 5px;
   background-color: #e5e5e5;
 `;

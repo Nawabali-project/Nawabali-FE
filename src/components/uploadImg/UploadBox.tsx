@@ -25,7 +25,7 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
     event.preventDefault();
   };
 
-  // 이미지 업로드 webp 변환
+  // 이미지 업로드 원본 업로드
   const handleImageUpload = async (files: FileList) => {
     const imagesArray: UploadedImageInfo[] = [];
 
@@ -43,6 +43,7 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
       };
       reader.readAsDataURL(file);
     });
+    // 이미지 업로드 webp 변환
     // for (const file of Array.from(files)) {
     //   const options = {
     //     maxSizeMB: 1,
@@ -102,7 +103,13 @@ const UploadBox: React.FC<UploadBoxProps> = ({ onImagesChange }) => {
       onDragLeave={() => setActive(false)}
       onDrop={handleDrop}
     >
-      <input type="file" multiple className="file" onChange={handleUpload} />
+      <input
+        type="file"
+        accept=".png, .jpeg, .jpg"
+        multiple
+        className="file"
+        onChange={handleUpload}
+      />
       {uploadedImages.length > 0 && uploadedImages[currentIndex] && (
         <>
           <img

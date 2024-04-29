@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import DetailPostModal from '../modal/DetailPostModal';
 import { Post } from '@/interfaces/main/posts.interface';
 import { LocationIcon } from '@/utils/icons';
+import SkeletonList from '../skeleton/SkeletonList';
 
 const FeedList = ({ category, district }: { category: any; district: any }) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -66,8 +67,9 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     );
   }
 
+  // 로딩중 skeleton UI
   if (status === 'pending') {
-    return <p>Loading...</p>;
+    return <SkeletonList />;
   }
 
   if (status === 'error') {
