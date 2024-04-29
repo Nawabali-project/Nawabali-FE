@@ -39,6 +39,8 @@ const MapPage = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
+  const { isLoggedIn } = useAuthStore();
+
   // 스켈레톤 UI
   useEffect(() => {
     setTimeout(() => {
@@ -64,6 +66,7 @@ const MapPage = () => {
   const { isSuccess } = useQuery({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
+    enabled: isLoggedIn,
   });
 
   useEffect(() => {

@@ -8,11 +8,15 @@ import SSEListener from './components/chat/SSEListener';
 const queryClient = new QueryClient();
 
 function App() {
-  const { initializeLoginState, isLoggedIn } = useAuthStore();
+  const { initializeLoginState, isLoggedIn, loading } = useAuthStore();
 
   useEffect(() => {
     initializeLoginState();
   }, [initializeLoginState]);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
