@@ -5,8 +5,9 @@ import { AuthState } from '@/interfaces/user/user.interface';
 export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   isLoggedIn: false,
   user: null,
+  loading: true,
 
-  initializeLoginState: () => {
+  initializeLoginState: async () => {
     const cookies = new Cookies();
     try {
       const accessToken = cookies.get('accessToken');
@@ -16,10 +17,14 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
         set({
           isLoggedIn: true,
           user,
+          loading: false,
         });
+      } else {
+        set({ loading: false });
       }
     } catch (error) {
       console.error('Failed to initialize login state:', error);
+      set({ loading: false });
     }
   },
 

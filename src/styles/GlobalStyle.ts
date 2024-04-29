@@ -58,7 +58,9 @@ const GlobalStyles = createGlobalStyle`
 }
 
 
+
 body {
+
   font-family: "Pretendard", "Noto Sans KR", sans-serif;
 }
 

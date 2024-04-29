@@ -33,7 +33,7 @@ const Header: React.FC = () => {
 
   const debouncedContent = useDebounce(content, 10);
 
-  const notificationCount = useSSEStore((state) => state.notificationCount);
+  const notificationCount = useSSEStore((state) => state.unreadMessageCount);
 
   useEffect(() => {
     setSearchbarOpen(!!debouncedContent.trim());
@@ -134,11 +134,11 @@ const Header: React.FC = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      alert('앗, 채팅은 아직 구현중입니다 :)');
-                      // navigate('/chat');
+                      // alert('앗, 채팅은 아직 구현중입니다 :)');
+                      navigate('/chat');
                     }}
                   />
-                  {notificationCount !== 0 && (
+                  {notificationCount != 0 && (
                     <NotiCount
                       onClick={() => {
                         navigate('/chat');

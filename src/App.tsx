@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Header from './components/header/Header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useAuthStore from './store/AuthState';
@@ -8,12 +8,15 @@ import SSEListener from './components/chat/SSEListener';
 const queryClient = new QueryClient();
 
 function App() {
-  const { initializeLoginState, isLoggedIn } = useAuthStore();
-  const navigate = useNavigate();
+  const { initializeLoginState, isLoggedIn, loading } = useAuthStore();
 
   useEffect(() => {
     initializeLoginState();
-  }, [isLoggedIn, navigate, initializeLoginState]);
+  }, [initializeLoginState]);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>

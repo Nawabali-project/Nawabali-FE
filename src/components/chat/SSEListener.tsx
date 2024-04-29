@@ -1,58 +1,80 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import { Cookies } from 'react-cookie';
 import useSSEStore from '@/store/SSEState';
 
-const SSEListener = () => {
-  const cookie = new Cookies();
-  const accessToken = cookie.get('accessToken');
+const SSEListener: React.FC = () => {
+  const cookies = new Cookies();
+  const accessToken = cookies.get('accessToken');
+  const [, setIsConnected] = useState<boolean>(false);
 
-  // Zustand 스토어에서 함수를 가져옴.
-  const { addMessage, setNotificationCount } = useSSEStore((state) => ({
-    addMessage: state.addMessage,
-    setNotificationCount: state.setNotificationCount,
+  const { setUnreadMessageCount } = useSSEStore((state) => ({
+    setUnreadMessageCount: state.setUnreadMessageCount,
   }));
 
+  const eventSourceRef = useRef<EventSourcePolyfill | null>(null);
+  const retryInterval = useRef<number>(5000); // 초기 재시도 간격
+  const maxInterval = 60000; // 최대 재시도 간격
+
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken) {
+      return;
+    }
 
-    const eventSource = new EventSourcePolyfill(
-      'https://hhboard.shop/notification/subscribe',
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        heartbeatTimeout: 600000,
-        withCredentials: true,
-      },
-    );
-
-    eventSource.addEventListener('연결 되었습니다', (event: any) => {
-      if (!event?.data) {
-        return;
+    const setupSSEConnection = (): void => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
       }
-      const { data } = event;
-      console.log(JSON.parse(data));
-    });
 
-    eventSource.addEventListener('addMessage알림', (event: any) => {
-      if (!event?.data) return;
-      const data = JSON.parse(event.data);
-      addMessage(data);
-    });
+      eventSourceRef.current = new EventSourcePolyfill(
+        'https://hhboard.shop/notification/subscribe',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          heartbeatTimeout: 60000,
+          withCredentials: true,
+        },
+      );
 
-    eventSource.addEventListener('notificationCount', (event: any) => {
-      if (!event?.data) return;
-      const count = parseInt(event.data, 10);
-      console.log('count: ', count);
+      eventSourceRef.current.onopen = (): void => {
+        setIsConnected(true);
+        retryInterval.current = 5000; // 연결 성공 시 재시도 간격을 초기화
+      };
 
-      setNotificationCount(count);
-    });
+      eventSourceRef.current.addEventListener(
+        'unreadMessageCount',
+        (event: any) => {
+          const data = event.data;
+          setUnreadMessageCount(data);
+        },
+      );
 
-    return () => {
-      eventSource.close();
+      eventSourceRef.current.onerror = (event: any): void => {
+        console.error('SSE Error:', event);
+        setIsConnected(false);
+        eventSourceRef.current?.close();
+        retryConnection();
+      };
     };
-  }, [accessToken, addMessage, setNotificationCount]);
+
+    const retryConnection = (): void => {
+      setTimeout(() => {
+        if (retryInterval.current < maxInterval) {
+          retryInterval.current *= 2;
+        }
+        setupSSEConnection();
+      }, retryInterval.current);
+    };
+
+    setupSSEConnection();
+
+    return (): void => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+    };
+  }, [accessToken]);
 
   return null;
 };

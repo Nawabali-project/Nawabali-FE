@@ -101,38 +101,34 @@ function Carousel3() {
   const iconCategory = getRandomSVGName();
 
   return (
-    <>
+    <s.Wrapper>
       <s.Container>
+        <s.TitleSpan>다른동네의 인기글을 구경해보세요!</s.TitleSpan>
         <div
-          style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '10px',
+          }}
         >
-          <s.TitleSpan>다른동네의 인기글을 구경해보세요!</s.TitleSpan>
           <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: '10px',
-            }}
+            ref={districtRef}
+            style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
+            onClick={() => handleOpenModal('district', districtRef)}
           >
-            <div
-              ref={districtRef}
-              style={{ display: 'flex', height: '25px', cursor: 'pointer' }}
-              onClick={() => handleOpenModal('district', districtRef)}
-            >
-              <s.InnerSpan>{selectedDistrict}</s.InnerSpan>
-              <IoIosArrowDown />
-            </div>
-
-            <Arrows>
-              <IoArrowBackCircleOutline onClick={previous} />
-              <IoArrowForwardCircleOutline onClick={next} />
-            </Arrows>
+            <s.InnerSpan>{selectedDistrict}</s.InnerSpan>
+            <IoIosArrowDown />
           </div>
+
+          <s.Arrows>
+            <IoArrowBackCircleOutline onClick={previous} />
+            <IoArrowForwardCircleOutline onClick={next} />
+          </s.Arrows>
         </div>
       </s.Container>
-      <StyledSlider ref={slickRef} {...settings}>
+      <s.StyledSlider ref={slickRef} {...settings}>
         {data?.content.map((item: PostItem, idx: number) => (
-          <ImageContainer key={idx}>
+          <s.ImageContainer key={idx} onClick={() => handlePostClick(item)}>
             <s.Row style={{ marginBottom: '8px' }}>
               <ProfileImg $profileImageUrl={item.profileImageUrl} />
               <span style={{ fontSize: '14px', fontWeight: 800 }}>
@@ -146,7 +142,7 @@ function Carousel3() {
               </span>
             </s.Row>
             <div style={{ position: 'relative' }}>
-              <Post $backgroundImage={item.mainImageUrl} />
+              <s.Post $backgroundImage={item.mainImageUrl} />
 
               <s.PostType $category={item.category}>
                 {item.category === 'FOOD'
@@ -158,86 +154,45 @@ function Carousel3() {
                       : ' '}
               </s.PostType>
             </div>
-            <div style={{ padding: '0 5px' }}>
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: '400',
-                  color: '#a1a1a1',
-                  margin: '5px 0',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    marginRight: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <IoHeartOutline />
-                  <span>&nbsp;{item.likesCount}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <RiChat1Line />
-                  <span>&nbsp;{item.commentCount}</span>
-                </div>
-              </div>
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  margin: '5px 0',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <FaMapMarkerAlt style={{ marginRight: '3px' }} />
-                {item.placeName ? item.placeName : item.placeAddr}
-              </div>
-              <div
-                style={{
-                  fontSize: '10px',
-                  fontWeight: '400',
-                  color: '#858585',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span
-                  style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    width: '180px',
-                  }}
-                >
-                  {item.contents}
-                </span>
-                <span
-                  style={{
-                    fontSize: '9px',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    marginRight: '5px',
-                  }}
-                  onClick={() => handlePostClick(item)}
-                >
-                  게시물 보기
-                </span>
-              </div>
-            </div>
-          </ImageContainer>
+
+            <s.LikesBar>
+              <IoHeartOutline style={{ fontSize: '14px' }} />
+              &nbsp;{item.likesCount}&nbsp;&nbsp;
+              <RiChat1Line />
+              &nbsp;{item.commentCount}
+            </s.LikesBar>
+            <s.AddressDiv
+              style={{
+                fontSize: '14px',
+                color: 'black',
+                fontWeight: '600',
+                marginTop: '5px',
+              }}
+            >
+              <FaMapMarkerAlt style={{ marginRight: '3px' }} />
+              {item.placeName ? item.placeName : item.placeAddr}
+            </s.AddressDiv>
+
+            <s.ContentSpan
+              style={{
+                fontSize: '12px',
+                width: '250px',
+                color: '#858585',
+                marginLeft: '15px',
+              }}
+            >
+              {item.contents}
+            </s.ContentSpan>
+          </s.ImageContainer>
         ))}
         {[...Array(emptySlidesCount)].map((_, idx) => (
-          <ImageContainer key={`empty-${idx}`}>
-            <EmptyPost>
+          <s.ImageContainer key={`empty-${idx}`}>
+            <s.EmptyPost>
               <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
-            </EmptyPost>
-          </ImageContainer>
+            </s.EmptyPost>
+          </s.ImageContainer>
         ))}
-      </StyledSlider>
+      </s.StyledSlider>
       {openSelectModal && (
         <NewsModal
           open={openSelectModal}
@@ -254,71 +209,11 @@ function Carousel3() {
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-    </>
+    </s.Wrapper>
   );
 }
 
 export default Carousel3;
-
-const ImageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  p {
-    text-decoration: none;
-    text-align: left;
-    margin: 0;
-  }
-`;
-
-const StyledSlider = styled(Slider)`
-  margin: 0 auto;
-  height: 300px;
-  width: 722px;
-  margin-top: 20px;
-  .slick-prev::before,
-  .slick-next::before {
-    opacity: 0;
-    display: none;
-  }
-`;
-
-export const Post = styled.div<{
-  $backgroundImage: string;
-}>`
-  background-image: url(${(props) => props.$backgroundImage});
-  background-size: cover;
-  background-position: center;
-  width: 234px;
-  height: 234px;
-  display: block;
-  border-radius: 20px 0 20px 0;
-`;
-
-const EmptyPost = styled.div`
-  width: 234px;
-  height: 234px;
-  border-radius: 20px 0 20px 0;
-  border: 1px solid #e2e2e2;
-  background-color: #e1e1e1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 150px;
-  }
-`;
-
-const Arrows = styled.div`
-  svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: grey;
-    cursor: pointer;
-  }
-`;
 
 const ProfileImg = styled.div<{ $profileImageUrl: string }>`
   background-image: url(${(props) => props.$profileImageUrl});

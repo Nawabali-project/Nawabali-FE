@@ -17,6 +17,7 @@ import {
 import { Client } from '@stomp/stompjs';
 import Button from '../button/Button';
 import { useDebounce } from '@/hooks/useDebounce';
+import useSSEStore from '@/store/SSEState';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
@@ -33,9 +34,11 @@ export const ChatRoomsList: React.FC<{
   const debouncedUserNickname = useDebounce(searchNickname, 300);
   const debouncedSearchWord = useDebounce(searchWord, 300);
 
+  const unreadMessageCount = useSSEStore((state) => state.unreadMessageCount);
+
   useEffect(() => {
     fetchChatRooms();
-  }, []);
+  }, [unreadMessageCount]);
 
   const fetchChatRooms = async () => {
     try {
@@ -113,6 +116,15 @@ export const ChatRoomsList: React.FC<{
         roomId: roomId,
         type: MessageType.ENTER,
       };
+
+      const updatedChatRooms = chatRooms.map((room) => {
+        if (room.roomId === roomId) {
+          return { ...room, unreadCount: 0 };
+        }
+        return room;
+      });
+
+      setChatRooms(updatedChatRooms);
       setSelectedRoomId(roomId);
       onRoomSelect(roomId);
       onRoomNameSelect(roomName);
@@ -186,15 +198,26 @@ export const ChatRoomsList: React.FC<{
               $isSelected={selectedRoomId === room.roomId}
               onClick={() => handleRoomClick(room.roomId, room.roomName)}
             >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <ProfileImg $profileImg={room.profileImageUrl} />
-                <span>{room.roomName}</span>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <ProfileImg $profileImg={room.profileImageUrl} />
+                  <div
+                    style={{
+                      width: '290px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span>{room.roomName}</span>
+                    {room.unreadCount != 0 && (
+                      <Unreadcount>{room.unreadCount}</Unreadcount>
+                    )}
+                  </div>
+                </div>
+                {room.chatMessage != '' && (
+                  <ChatMessage>{room.chatMessage}</ChatMessage>
+                )}
               </div>
-              {room.chatMessage != '' && (
-                <ChatMessage>{room.chatMessage}</ChatMessage>
-              )}
-
-              {room.unreadCount}
             </ChatRooms>
           ))}
         </Col>
@@ -307,4 +330,14 @@ const ChatMessage = styled.span`
   font-size: 14px;
   color: #a1a1a1;
   padding: 0;
+`;
+
+const Unreadcount = styled.div`
+  color: white;
+  font-size: 13px;
+  background-color: #00a3ff;
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  border-radius: 50%;
 `;
