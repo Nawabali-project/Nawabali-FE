@@ -78,7 +78,7 @@ function Carousel5({ iconCategory, category }: CarouselProps) {
   };
 
   if (isLoadingBestDistrict || isLoadingPosts) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   if (isErrorBestDistrict || isErrorPosts || !bestDistrict || !postsData) {

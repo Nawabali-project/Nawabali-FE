@@ -8,7 +8,7 @@ const SSEListener = () => {
   const accessToken = cookie.get('accessToken');
 
   // Zustand 스토어에서 함수를 가져옴.
-  const { addMessage, setNotificationCount } = useSSEStore((state) => ({
+  const { setNotificationCount } = useSSEStore((state) => ({
     addMessage: state.addMessage,
     setNotificationCount: state.setNotificationCount,
   }));
@@ -16,43 +16,44 @@ const SSEListener = () => {
   useEffect(() => {
     if (!accessToken) return;
 
-    const eventSource = new EventSourcePolyfill(
-      'https://hhboard.shop/notification/subscribe',
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+    const setupSSEConnection = () => {
+      const eventSource = new EventSourcePolyfill(
+        'https://hhboard.shop/notification/subscribe',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          heartbeatTimeout: 6000,
+          withCredentials: true,
         },
-        heartbeatTimeout: 600000,
-        withCredentials: true,
-      },
-    );
+      );
 
-    eventSource.addEventListener('연결 되었습니다', (event: any) => {
-      if (!event?.data) {
-        return;
-      }
-      const { data } = event;
-      console.log(JSON.parse(data));
-    });
+      eventSource.addEventListener('unreadMessageCount', (event: any) => {
+        if (!event?.data) {
+          return;
+        }
+        const notificationCount = event.data;
+        setNotificationCount(notificationCount);
+        console.log(notificationCount);
+      });
 
-    eventSource.addEventListener('addMessage알림', (event: any) => {
-      if (!event?.data) return;
-      const data = JSON.parse(event.data);
-      addMessage(data);
-    });
+      eventSource.onerror = (event) => {
+        console.error('SSE Error:', event);
+        eventSource.close();
+        // 에러 후 재연결
+        setTimeout(() => {
+          setupSSEConnection();
+        }, 3000);
+      };
 
-    eventSource.addEventListener('notificationCount', (event: any) => {
-      if (!event?.data) return;
-      const count = parseInt(event.data, 10);
-      console.log('count: ', count);
-
-      setNotificationCount(count);
-    });
-
-    return () => {
-      eventSource.close();
+      return () => {
+        eventSource.close();
+      };
     };
-  }, [accessToken, addMessage, setNotificationCount]);
+
+    // 연결 설정 함수 호출
+    setupSSEConnection();
+  }, [accessToken, setNotificationCount]);
 
   return null;
 };
