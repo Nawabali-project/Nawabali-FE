@@ -63,7 +63,12 @@ export const ChatRoom: React.FC<{
         },
         headers,
       );
-      return () => sub.unsubscribe(); // 컴포넌트 언마운트 시 구독 해제
+      return () => {
+        const unsubscribeHeaders = {
+          chatRoomId: String(roomId),
+        };
+        sub.unsubscribe(unsubscribeHeaders);
+      };
     }
   }, [roomId, client, accessToken]);
 

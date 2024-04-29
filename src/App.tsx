@@ -13,9 +13,6 @@ function App() {
 
   useEffect(() => {
     initializeLoginState();
-    if (!isLoggedIn) {
-      navigate('/login');
-    }
   }, [isLoggedIn, navigate, initializeLoginState]);
 
   return (
