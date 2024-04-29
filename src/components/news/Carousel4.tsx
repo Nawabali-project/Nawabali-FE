@@ -14,6 +14,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CategoryData, PostItem } from '@/interfaces/main/news.interface';
 import { useNavigate } from 'react-router-dom';
+import DetailPostModal from '../modal/DetailPostModal';
 
 function useFetchPosts(district: string) {
   const queryParams = {
@@ -55,8 +56,11 @@ function Carousel4() {
   const { data: carouselPosts } = useFetchCarouslPosts(district, maxCategory);
   const slickRef = useRef<Slider | null>(null);
   const navigate = useNavigate();
+  const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
+    useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
 
-  const totalSlides = 7;
+  const totalSlides = 9;
   const actualSlides = carouselPosts?.content.length || 0;
   const emptySlidesCount = Math.max(0, totalSlides - actualSlides);
 
@@ -76,7 +80,7 @@ function Carousel4() {
     dots: false,
     infinite: true,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 4000,
     slidesToShow: 3,
     slidesToScroll: 3,
     arrows: false,
@@ -90,6 +94,11 @@ function Carousel4() {
     navigate(
       `/listpage?district=${encodeURIComponent(district)}&category=${encodeURIComponent(maxCategory)}`,
     );
+  };
+
+  const handlePostClick = (item: PostItem) => {
+    setSelectedPost(item);
+    setIsDetailPostModalOpen(true);
   };
 
   const findMaxPostCategory = (
@@ -123,18 +132,25 @@ function Carousel4() {
   }, [categoryCounts]);
 
   return (
-    <div style={{ height: '300px', backgroundColor: '#FAFAFA' }}>
+    <div
+      style={{
+        marginTop: '150px',
+        height: '350px',
+        backgroundColor: '#FAFAFA',
+      }}
+    >
       <s.Container>
         <div
           style={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            marginTop: '10px',
           }}
         >
-          <s.Col>
+          <s.Col style={{ width: '215px' }}>
             <div>
-              <span style={{ fontSize: '9px' }}>우리동네 대표 카테고리</span>
+              <span style={{ fontSize: '12px' }}>우리동네 대표 카테고리</span>
               <s.Col>
                 <s.TitleSpan>
                   {district}는 {maxCategoryKorean}
@@ -149,14 +165,14 @@ function Carousel4() {
                   fontSize: '9px',
                   color: '#707070',
                   fontWeight: '500',
-                  margin: '1px 0',
+                  margin: '3px 0',
                 }}
               >
                 {categoryData.map((cat, index) => (
                   <span
                     key={cat.category}
                     style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '500',
                     }}
                   >
@@ -174,126 +190,55 @@ function Carousel4() {
             </s.Col>
             <span
               style={{
-                fontSize: '9px',
+                fontSize: '12px',
                 fontWeight: '600',
                 color: '#707070',
+                marginTop: '5px',
                 textDecoration: 'underLine',
               }}
               onClick={goToPosts}
             >
               게시물 보러가기
             </span>
-            <BarContainer>
-              <Progress $index={currentSlide + 1} />
-            </BarContainer>
-            <Arrows>
+            <s.BarContainerWithDistrict>
+              <s.ProgressWithDistrict $index={currentSlide + 1} />
+            </s.BarContainerWithDistrict>
+            <s.Arrows style={{ marginLeft: '-3px' }}>
               <IoArrowBackCircleOutline onClick={previous} />
               <IoArrowForwardCircleOutline onClick={next} />
-            </Arrows>
+            </s.Arrows>
           </s.Col>
-          <StyledSlider ref={slickRef} {...settings}>
+          <s.StyledSliderWithGreyBackground ref={slickRef} {...settings}>
             {carouselPosts?.content.map((item: PostItem, idx: number) => (
-              <ImageContainer key={idx}>
-                <Post $backgroundImage={item.mainImageUrl} />
-              </ImageContainer>
+              <s.ImageContainer key={idx} onClick={() => handlePostClick(item)}>
+                <s.PostWithGreyBackground
+                  $backgroundImage={item.mainImageUrl}
+                />
+              </s.ImageContainer>
             ))}
             {[...Array(emptySlidesCount)].map((_, idx) => (
-              <ImageContainer key={`empty-${idx}`}>
-                <EmptyPost>
+              <s.ImageContainer key={`empty-${idx}`}>
+                <s.EmptyPostWithGreyBackground>
                   <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
-                </EmptyPost>
-              </ImageContainer>
+                </s.EmptyPostWithGreyBackground>
+              </s.ImageContainer>
             ))}
-          </StyledSlider>
+          </s.StyledSliderWithGreyBackground>
         </div>
       </s.Container>
+      {isDetailPostModalOpen && selectedPost && (
+        <DetailPostModal
+          postId={selectedPost.postId}
+          setIsDetailPostModalOpen={setIsDetailPostModalOpen}
+        />
+      )}
     </div>
   );
 }
 
 export default Carousel4;
 
-const ImageContainer = styled.div<{ isCenter?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin: ${(props) => (props.isCenter ? '0 0px' : '0')};
-
-  p {
-    text-decoration: none;
-    text-align: left;
-    margin: 0;
-  }
-`;
-
-const EmptyPost = styled.div`
-  width: 170px;
-  height: 238px;
-  border: 1px solid #e2e2e2;
-  background-color: #e1e1e1;
-  display: flex;
-  border-radius: 20px;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 150px;
-  }
-`;
-
-const StyledSlider = styled(Slider)`
-  margin: 0 0 0 30px;
-  padding-top: 30px;
-  width: 530px;
-  .slick-prev::before,
-  .slick-next::before {
-    opacity: 0;
-    display: none;
-  }
-`;
-
-export const Post = styled.div<{
-  $backgroundImage: string;
-}>`
-  background-image: url(${(props) => props.$backgroundImage});
-  background-size: cover;
-  background-position: center;
-  width: 170px;
-  height: 238px;
-  display: block;
-  border-radius: 20px;
-`;
-
-const Arrows = styled.div`
-  svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: grey;
-    cursor: pointer;
-  }
-`;
-
 const TextSpan = styled.span`
-  font-size: 9px;
+  font-size: 12px;
   color: #707070;
-`;
-
-const Progress = styled.div<{ $index: number }>`
-  width: ${(props) => 15 * props.$index}px;
-  height: 1px;
-  background-color: black;
-  border-radius: 3px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transition: width 0.5s ease-in-out;
-`;
-
-const BarContainer = styled.div`
-  width: 105px;
-  height: 1px;
-  background-color: #bebebe;
-  border-radius: 3px;
-  position: relative;
-  margin: 15px 0;
 `;

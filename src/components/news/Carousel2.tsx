@@ -1,7 +1,6 @@
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import styled from 'styled-components';
 import * as s from './CasouselStyle';
 import {
   IoArrowBackCircleOutline,
@@ -119,7 +118,7 @@ function Carousel2() {
     <>
       <s.Container>
         <div
-          style={{ width: '720px', display: 'flex', flexDirection: 'column' }}
+          style={{ width: '850px', display: 'flex', flexDirection: 'column' }}
         >
           <s.TitleSpan>일주일간 사람들이 많이 찾은 곳이에요!</s.TitleSpan>
           <div
@@ -153,17 +152,17 @@ function Carousel2() {
                 <IoIosArrowDown />
               </div>
             </div>
-            <Arrows>
+            <s.Arrows>
               <IoArrowBackCircleOutline onClick={previous} />
               <IoArrowForwardCircleOutline onClick={next} />
-            </Arrows>
+            </s.Arrows>
           </div>
         </div>
       </s.Container>
-      <StyledSlider ref={slickRef} {...settings}>
+      <s.StyledSlider ref={slickRef} {...settings}>
         {data?.content.map((item: PostItem, idx: number) => (
-          <ImageContainer key={idx}>
-            <Post $backgroundImage={item.mainImageUrl} />
+          <s.ImageContainer key={idx} onClick={() => handlePostClick(item)}>
+            <s.Post $backgroundImage={item.mainImageUrl} />
             {selectedCategory === '전체' && (
               <s.PostType $category={item.category}>
                 {item.category === 'FOOD'
@@ -193,28 +192,16 @@ function Carousel2() {
               {item.placeName ? item.placeName : item.placeAddr}
               <FaMapMarkerAlt />
             </div>
-            <p
-              style={{
-                fontSize: '8px',
-                fontWeight: '400',
-                color: '#858585',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-              }}
-              onClick={() => handlePostClick(item)}
-            >
-              게시물 보러가기
-            </p>
-          </ImageContainer>
+          </s.ImageContainer>
         ))}
         {[...Array(emptySlidesCount)].map((_, idx) => (
-          <ImageContainer key={`empty-${idx}`}>
-            <EmptyPost>
+          <s.ImageContainer key={`empty-${idx}`}>
+            <s.EmptyPost>
               <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
-            </EmptyPost>
-          </ImageContainer>
+            </s.EmptyPost>
+          </s.ImageContainer>
         ))}
-      </StyledSlider>
+      </s.StyledSlider>
       {openSelectModal && (
         <NewsModal
           open={openSelectModal}
@@ -236,63 +223,3 @@ function Carousel2() {
 }
 
 export default Carousel2;
-
-const ImageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  p {
-    text-decoration: none;
-    text-align: left;
-    margin: 0;
-  }
-`;
-
-const StyledSlider = styled(Slider)`
-  margin: 0 auto;
-  height: 300px;
-  width: 722px;
-  margin-top: 20px;
-  .slick-prev::before,
-  .slick-next::before {
-    opacity: 0;
-    display: none;
-  }
-`;
-
-export const Post = styled.div<{
-  $backgroundImage: string;
-}>`
-  background-image: url(${(props) => props.$backgroundImage});
-  background-size: cover;
-  background-position: center;
-  width: 234px;
-  height: 234px;
-  display: block;
-  border-radius: 20px 0 20px 0;
-`;
-
-const EmptyPost = styled.div`
-  width: 234px;
-  height: 234px;
-  border-radius: 20px 0 20px 0;
-  border: 1px solid #e2e2e2;
-  background-color: #e1e1e1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 150px;
-  }
-`;
-
-const Arrows = styled.div`
-  svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: grey;
-    cursor: pointer;
-  }
-`;

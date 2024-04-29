@@ -123,16 +123,16 @@ function Carousel3() {
               <IoIosArrowDown />
             </div>
 
-            <Arrows>
+            <s.Arrows>
               <IoArrowBackCircleOutline onClick={previous} />
               <IoArrowForwardCircleOutline onClick={next} />
-            </Arrows>
+            </s.Arrows>
           </div>
         </div>
       </s.Container>
-      <StyledSlider ref={slickRef} {...settings}>
+      <s.StyledSlider ref={slickRef} {...settings}>
         {data?.content.map((item: PostItem, idx: number) => (
-          <ImageContainer key={idx}>
+          <s.ImageContainer key={idx} onClick={() => handlePostClick(item)}>
             <s.Row style={{ marginBottom: '8px' }}>
               <ProfileImg $profileImageUrl={item.profileImageUrl} />
               <span style={{ fontSize: '14px', fontWeight: 800 }}>
@@ -146,7 +146,7 @@ function Carousel3() {
               </span>
             </s.Row>
             <div style={{ position: 'relative' }}>
-              <Post $backgroundImage={item.mainImageUrl} />
+              <s.Post $backgroundImage={item.mainImageUrl} />
 
               <s.PostType $category={item.category}>
                 {item.category === 'FOOD'
@@ -215,29 +215,18 @@ function Carousel3() {
                 >
                   {item.contents}
                 </span>
-                <span
-                  style={{
-                    fontSize: '9px',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    marginRight: '5px',
-                  }}
-                  onClick={() => handlePostClick(item)}
-                >
-                  게시물 보기
-                </span>
               </div>
             </div>
-          </ImageContainer>
+          </s.ImageContainer>
         ))}
         {[...Array(emptySlidesCount)].map((_, idx) => (
-          <ImageContainer key={`empty-${idx}`}>
-            <EmptyPost>
+          <s.ImageContainer key={`empty-${idx}`}>
+            <s.EmptyPost>
               <img src={`/assets/svgs/noPost${iconCategory}.svg`} />
-            </EmptyPost>
-          </ImageContainer>
+            </s.EmptyPost>
+          </s.ImageContainer>
         ))}
-      </StyledSlider>
+      </s.StyledSlider>
       {openSelectModal && (
         <NewsModal
           open={openSelectModal}
@@ -259,66 +248,6 @@ function Carousel3() {
 }
 
 export default Carousel3;
-
-const ImageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  p {
-    text-decoration: none;
-    text-align: left;
-    margin: 0;
-  }
-`;
-
-const StyledSlider = styled(Slider)`
-  margin: 0 auto;
-  height: 300px;
-  width: 722px;
-  margin-top: 20px;
-  .slick-prev::before,
-  .slick-next::before {
-    opacity: 0;
-    display: none;
-  }
-`;
-
-export const Post = styled.div<{
-  $backgroundImage: string;
-}>`
-  background-image: url(${(props) => props.$backgroundImage});
-  background-size: cover;
-  background-position: center;
-  width: 234px;
-  height: 234px;
-  display: block;
-  border-radius: 20px 0 20px 0;
-`;
-
-const EmptyPost = styled.div`
-  width: 234px;
-  height: 234px;
-  border-radius: 20px 0 20px 0;
-  border: 1px solid #e2e2e2;
-  background-color: #e1e1e1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 150px;
-  }
-`;
-
-const Arrows = styled.div`
-  svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: grey;
-    cursor: pointer;
-  }
-`;
 
 const ProfileImg = styled.div<{ $profileImageUrl: string }>`
   background-image: url(${(props) => props.$profileImageUrl});
