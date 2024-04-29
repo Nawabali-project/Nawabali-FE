@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   getChatRooms,
   createRoom,
-  enterChatRoom,
   searchUserByNickname,
+  sendMessage,
+  searchChatRoom,
 } from '@/api/chat';
 import { IoIosSearch } from 'react-icons/io';
 import styled from 'styled-components';
@@ -24,10 +25,13 @@ export const ChatRoomsList: React.FC<{
 }> = ({ onRoomSelect, onRoomNameSelect, client }) => {
   const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [searchChatResults, setSearchChatResults] = useState<User[]>([]);
   const [searchNickname, setSearchNickname] = useState('');
   const [searchWord, setSearchWord] = useState<string>('');
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+
   const debouncedUserNickname = useDebounce(searchNickname, 300);
+  const debouncedSearchWord = useDebounce(searchWord, 300);
 
   useEffect(() => {
     fetchChatRooms();
@@ -69,6 +73,24 @@ export const ChatRoomsList: React.FC<{
     fetchUsers();
   }, [debouncedUserNickname]);
 
+  useEffect(() => {
+    const fetchChatSearch = async () => {
+      if (debouncedSearchWord.trim() === '') {
+        setSearchChatResults([]);
+        return;
+      }
+      try {
+        const response = await searchChatRoom(debouncedSearchWord);
+        setSearchChatResults(response);
+      } catch (error) {
+        console.error('Error searching chat by nickname', error);
+        setSearchChatResults([]);
+      }
+    };
+
+    fetchChatSearch();
+  }, [debouncedSearchWord]);
+
   const handleCreateRoom = async (nickname: string) => {
     if (!searchNickname.trim()) {
       alert('상대방 닉네임을 입력하세요');
@@ -94,7 +116,7 @@ export const ChatRoomsList: React.FC<{
       setSelectedRoomId(roomId);
       onRoomSelect(roomId);
       onRoomNameSelect(roomName);
-      enterChatRoom(client, messageForm);
+      sendMessage(roomId, client, messageForm);
     }
   };
 
@@ -132,15 +154,31 @@ export const ChatRoomsList: React.FC<{
         )}
       </div>
       <div>
-        <SearchDiv style={{ position: 'relative' }}>
-          <IoIosSearch style={{ color: 'gray' }} />
-          <input
-            value={searchWord}
-            type="text"
-            placeholder="닉네임 또는 내용으로 검색하기"
-            onChange={(e) => setSearchWord(e.target.value)}
-          />
-        </SearchDiv>
+        <div>
+          <SearchDiv style={{ position: 'relative' }}>
+            <IoIosSearch style={{ color: 'gray' }} />
+            <input
+              value={searchWord}
+              type="text"
+              placeholder="닉네임 또는 내용으로 검색하기"
+              onChange={(e) => setSearchWord(e.target.value)}
+            />
+          </SearchDiv>
+          {searchChatResults.length > 0 && (
+            <SearchedUserDiv>
+              {searchChatResults.map((user: User, index: number) => (
+                <div key={index}>
+                  <Row>
+                    <UserNicknamesDiv>
+                      <ProfileImg $profileImg={user.imgUrl} />
+                      {user.nickname}
+                    </UserNicknamesDiv>
+                  </Row>
+                </div>
+              ))}
+            </SearchedUserDiv>
+          )}
+        </div>
         <Col>
           {chatRooms.map((room) => (
             <ChatRooms
@@ -149,10 +187,14 @@ export const ChatRoomsList: React.FC<{
               onClick={() => handleRoomClick(room.roomId, room.roomName)}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <ProfileImg $profileImg={room.imgUrls[0]} />
+                <ProfileImg $profileImg={room.profileImageUrl} />
                 <span>{room.roomName}</span>
               </div>
-              <ChatMessage>{room.chatMessage}</ChatMessage>
+              {room.chatMessage != '' && (
+                <ChatMessage>{room.chatMessage}</ChatMessage>
+              )}
+
+              {room.unreadCount}
             </ChatRooms>
           ))}
         </Col>
@@ -169,7 +211,7 @@ const Col = styled.div`
 `;
 
 const Row = styled.div`
-  width: 280px;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -180,7 +222,8 @@ const Row = styled.div`
 `;
 
 const ChatList = styled.div`
-  width: 300px;
+  min-width: 320px;
+  width: 25vw;
   height: 500px;
   margin: 100px 0 0 100px;
   background-color: white;
@@ -213,7 +256,7 @@ const SearchDiv = styled.div`
   border: 1px solid gray;
   border-radius: 15px;
   height: 30px;
-  width: 260px;
+  width: 90%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -221,7 +264,7 @@ const SearchDiv = styled.div`
   margin: 0 auto;
 
   input {
-    width: 250px;
+    width: 90%;
     border: none;
     font-size: 13px;
     &:focus {
@@ -231,11 +274,11 @@ const SearchDiv = styled.div`
 `;
 
 const ChatRooms = styled.div<ChatRoomProps>`
-  width: 300px;
-  height: 70px;
+  width: 99.4%;
+  padding-bottom: 5px;
+  padding-top: 5px;
   background-color: ${(props) => (props.$isSelected ? '#e9e9e9' : 'white')};
   cursor: pointer;
-  line-height: 50px;
   &:hover {
     background-color: #e9e9e9;
   }
@@ -248,14 +291,15 @@ const SearchedUserDiv = styled.div`
 `;
 
 const UserNicknamesDiv = styled.div`
-  width: 200px;
+  width: 90%;
   display: flex;
   align-items: center;
 `;
 
 const ChatMessage = styled.span`
   display: block;
-  width: 250px;
+  width: 85%;
+  margin: 0;
   margin-left: 50px;
   overflow: hidden;
   white-space: nowrap;

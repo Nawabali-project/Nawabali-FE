@@ -14,6 +14,7 @@ import useAuthStore from '@/store/AuthState';
 import DetailPostModal from '../modal/DetailPostModal';
 import { useNavigate } from 'react-router-dom';
 import { LogoIcon } from '@/utils/icons';
+import useSSEStore from '@/store/SSEState';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -31,6 +32,8 @@ const Header: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
   const debouncedContent = useDebounce(content, 10);
+
+  const notificationCount = useSSEStore((state) => state.notificationCount);
 
   useEffect(() => {
     setSearchbarOpen(!!debouncedContent.trim());
@@ -131,11 +134,19 @@ const Header: React.FC = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      // alert('앗, 채팅은 아직 구현중입니다 :)');
-                      navigate('/chat');
+                      alert('앗, 채팅은 아직 구현중입니다 :)');
+                      // navigate('/chat');
                     }}
                   />
-
+                  {notificationCount !== 0 && (
+                    <NotiCount
+                      onClick={() => {
+                        navigate('/chat');
+                      }}
+                    >
+                      {notificationCount}
+                    </NotiCount>
+                  )}
                   <ProfileContainer>
                     <Profile
                       src={
@@ -229,6 +240,21 @@ const Items = styled.div`
   justify-content: flex-end;
   margin: 0 5px 0 0px;
   align-items: center;
+  position: relative;
+`;
+
+const NotiCount = styled.div`
+  position: absolute;
+  left: 35px;
+  top: 5px;
+  width: 20px;
+  height: 15px;
+  border-radius: 30px;
+  background-color: red;
+  font-size: 13px;
+  text-align: center;
+  color: white;
+  cursor: pointer;
 `;
 
 const SearchDiv = styled.div`

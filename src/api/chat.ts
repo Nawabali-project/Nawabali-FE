@@ -25,10 +25,10 @@ export const createRoom = async (userNickname: string): Promise<number> => {
   }
 };
 
-export const searchChatRoom = async (userNickname: string): Promise<any[]> => {
+export const searchChatRoom = async (keyword: string): Promise<any[]> => {
   try {
     const response = await authInstance.get(
-      `/chat/room/found?roomName=${userNickname}`,
+      `/chat/room/found?roomName=${keyword}`,
     );
     return response.data;
   } catch (error) {
@@ -36,34 +36,23 @@ export const searchChatRoom = async (userNickname: string): Promise<any[]> => {
   }
 };
 
-export const enterChatRoom = (client: Client, messageForm: MessageForm) => {
+export const sendMessage = (
+  roomId: number,
+  client: Client | null,
+  chatMessage: MessageForm,
+) => {
   const accessToken = new Cookies().get('accessToken');
-  try {
-    client.publish({
-      destination: '/pub/chat/enter/message',
-      headers: { Authorization: `Bearer ${accessToken}` },
-      body: JSON.stringify(messageForm),
-    });
-  } catch (error) {
-    console.error('입장 실패', error);
-  }
-};
 
-export const sendMessage = (client: Client, messageForm: MessageForm) => {
-  const accessToken = new Cookies().get('accessToken');
-  try {
-    if (client && client.active) {
-      client.publish({
-        destination: '/pub/chat/message',
-        headers: { Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(messageForm),
-      });
-    } else {
-      console.error('WebSocket connection is not active.');
-    }
-  } catch (error) {
-    console.error('Failed to send message', error);
+  if (!client?.connected) {
+    console.error('WebSocket connection is not active.');
+    return;
   }
+
+  client.publish({
+    destination: `/pub/chat/message/${roomId}`,
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(chatMessage),
+  });
 };
 
 export const showChat = async (roomId: number) => {

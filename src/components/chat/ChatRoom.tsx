@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client, Message } from '@stomp/stompjs';
-import { searchUserByNickname, showChat } from '@/api/chat';
+import { searchUserByNickname, sendMessage, showChat } from '@/api/chat';
 import { Cookies } from 'react-cookie';
 import {
   MessageForm,
@@ -22,7 +22,6 @@ export const ChatRoom: React.FC<{
   const accessToken = new Cookies().get('accessToken');
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const stompClient = client;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,16 +45,9 @@ export const ChatRoom: React.FC<{
   }, [roomName]);
 
   useEffect(() => {
-    if (roomId && client) {
-      if (!client.connected) {
-        console.error('WebSocket connection is not active.');
-        return;
-      }
-      const headers = {
-        Authorization: `Bearer ${accessToken}`,
-      };
-
-      client.subscribe(
+    if (roomId && client && client.connected) {
+      const headers = { Authorization: `Bearer ${accessToken}` };
+      const sub = client.subscribe(
         `/sub/chat/room/${roomId}`,
         (message: Message) => {
           try {
@@ -71,6 +63,12 @@ export const ChatRoom: React.FC<{
         },
         headers,
       );
+      return () => {
+        const unsubscribeHeaders = {
+          chatRoomId: String(roomId),
+        };
+        sub.unsubscribe(unsubscribeHeaders);
+      };
     }
   }, [roomId, client, accessToken]);
 
@@ -115,12 +113,6 @@ export const ChatRoom: React.FC<{
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
-
-    if (!stompClient?.connected) {
-      console.error('WebSocket connection is not active.');
-      return;
-    }
-
     const chatMessage: MessageForm = {
       type: MessageType.TALK,
       message,
@@ -128,11 +120,7 @@ export const ChatRoom: React.FC<{
       userId: parseInt(localStorage.getItem('userId')!),
     };
 
-    stompClient.publish({
-      destination: `/pub/chat/message/${roomId}`,
-      headers: { Authorization: `Bearer ${accessToken}` },
-      body: JSON.stringify(chatMessage),
-    });
+    sendMessage(roomId, client, chatMessage);
 
     setMessage('');
   };
@@ -171,7 +159,10 @@ export const ChatRoom: React.FC<{
           <Chat>
             {messages.map((msg, index) =>
               msg.sender === myNickname ? (
-                <Row key={index} style={{ alignSelf: 'flex-end' }}>
+                <Row
+                  key={index}
+                  style={{ alignSelf: 'flex-end', minWidth: '290px' }}
+                >
                   <ProfileImg
                     src={localStorage.getItem('profileImageUrl')?.split('"')[1]}
                     alt="내 프로필"
@@ -190,7 +181,10 @@ export const ChatRoom: React.FC<{
                   </MyMessage>
                 </Row>
               ) : (
-                <Row key={index} style={{ alignSelf: 'flex-start' }}>
+                <Row
+                  key={index}
+                  style={{ alignSelf: 'flex-start', minWidth: '290px' }}
+                >
                   <ProfileImg src={userInfo?.imgUrl} alt={`상대방 프로필`} />
                   <OtherMessage>
                     {msg.message}
@@ -240,7 +234,8 @@ const Row = styled.div`
 const ChatContainer = styled.div`
   margin-top: 100px;
   margin-left: 20px;
-  height: 760px;
+  height: 70vh;
+  min-width: 300px;
   width: 60vw;
   background-color: white;
   border-radius: 20px;
@@ -257,9 +252,11 @@ const UserInfo = styled.div`
 const Chat = styled.div`
   display: flex;
   flex-direction: column;
-  height: 550px;
+  height: 65%;
+  min-width: 290px;
+  width: 57.5vw;
   margin-top: 10px;
-  overflow: auto;
+  overflow-y: auto;
   padding: 0 20px 20px;
 
   &::-webkit-scrollbar {
@@ -279,7 +276,9 @@ const MyMessage = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-end;
-  width: 300px;
+  min-width: 300px;
+  max-width: 500px;
+  width: 25vw;
   background-color: #00a3ff;
   padding: 5px;
   color: white;
@@ -292,7 +291,9 @@ const OtherMessage = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-end;
-  width: 300px;
+  min-width: 300px;
+  max-width: 500px;
+  width: 25vw;
   background-color: #f0f0f0;
   padding: 5px;
   border-radius: 8px;

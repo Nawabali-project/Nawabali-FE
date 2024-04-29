@@ -43,5 +43,15 @@ export interface NewChatRoom {
   roomId: number;
   roomName: string;
   roomNumber: string;
-  imgUrls: string[];
+  profileImageUrl: string;
+  unreadCount: number;
+}
+
+export interface SSEState {
+  message: string;
+  hasNotifications: boolean;
+  setHasNotifications: (hasNotifications: boolean) => void;
+  notificationCount: number;
+  setNotificationCount: (count: number) => void;
+  addMessage: (newMessage: string) => void;
 }

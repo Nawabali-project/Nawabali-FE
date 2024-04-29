@@ -56,10 +56,13 @@ const buttonSize = {
     width: 100%;
   `,
   chat: css`
+    max-width: 100px;
+    width: 100%;
     border-radius: 25px;
     height: 25px;
     color: #757575;
     border: 2px solid #757575;
+    margin-right: 10px;
   `,
 };
 

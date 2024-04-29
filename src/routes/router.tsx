@@ -1,7 +1,5 @@
-// import { ReactNode } from 'react';
 import GlobalStyles from '@/styles/GlobalStyle';
 import { createBrowserRouter } from 'react-router-dom';
-// import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import App from '@/App';
 import React, { Suspense } from 'react';
 
@@ -18,15 +16,6 @@ const SearchResponsePage = React.lazy(
   () => import('@/pages/SearchResponsePage'),
 );
 
-// interface ProtectedRouteProps {
-//   children: ReactNode;
-// }
-
-// const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-//   const isLoggedIn = useIsLoggedIn();
-//   return isLoggedIn ? children : <Navigate to="/login" />;
-// };
-
 export const router = createBrowserRouter([
   {
     element: (
@@ -41,10 +30,6 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <MapPage />,
-      },
-      {
-        path: '/listpage',
-        element: <ListPage />,
       },
       {
         path: '/listpage',
@@ -70,10 +55,10 @@ export const router = createBrowserRouter([
         path: '/chat',
         element: <ChatMain />,
       },
-      {
-        path: '/*',
-        element: <MapPage />,
-      },
+      // {
+      //   path: '/*',
+      //   element: <MapPage />,
+      // },
       {
         path: '/userProfile/:nickname',
         element: <OtherUserPage />,
@@ -82,15 +67,6 @@ export const router = createBrowserRouter([
         path: '/search/:keyword',
         element: <SearchResponsePage />,
       },
-
-      // {
-      //   path: '/mypage2',
-      //   element: (
-      //     <ProtectedRoute>
-      //       <Mypage />
-      //     </ProtectedRoute>
-      //   ),
-      // },
     ],
   },
 ]);
