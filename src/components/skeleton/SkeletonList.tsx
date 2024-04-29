@@ -24,6 +24,7 @@ const Feed = styled.div`
   flex-direction: column;
   width: 294.984px;
   height: 420.914px;
+  margin: 10px;
 `;
 
 const HeaderBox = styled.div`
@@ -36,15 +37,15 @@ const HeaderBox = styled.div`
 const UserImg = styled.div`
   width: 36px;
   height: 36px;
-  margin: 0 0 0 10px;
+  margin: 0 0 0 5px;
   border-radius: 1000px;
   background-color: #e5e5e5;
 `;
 
 const UserInfo = styled.div`
   width: 100px;
-  height: 36px;
-  margin: 0 0 0 10px;
+  height: 20px;
+  margin: 10px 0 0 10px;
   background-color: #e5e5e5;
 `;
 
@@ -58,14 +59,14 @@ const ImgBox = styled.div`
 
 const ItemBox = styled.div`
   width: 170px;
-  height: 20px;
+  height: 15px;
   margin: 5px;
   background-color: #e5e5e5;
 `;
 
 const CommentBox = styled.div`
   width: 100px;
-  height: 20px;
+  height: 10px;
   margin: 5px;
   background-color: #e5e5e5;
 `;

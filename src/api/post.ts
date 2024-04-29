@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { instance, authInstance } from '../axios';
 
-// 게시글 전체 조회 무한스크롤
+// 리스트에서 게시글 조회 무한스크롤
 export const getPosts = async ({ pageParam }: { pageParam: number }) => {
   let params = {
     page: String(pageParam),
@@ -15,7 +15,6 @@ export const getPosts = async ({ pageParam }: { pageParam: number }) => {
   params.sort.forEach((s) => pageable.append('sort', s));
 
   const response = await instance.get(`/posts?${pageable.toString()}`);
-  console.log('게시글 조회', response);
   return response;
 };
 
