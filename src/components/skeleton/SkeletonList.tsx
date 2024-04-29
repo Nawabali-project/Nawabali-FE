@@ -24,6 +24,7 @@ const Feed = styled.div`
   flex-direction: column;
   width: 294.984px;
   height: 420.914px;
+  margin: 10px;
 `;
 
 const HeaderBox = styled.div`
