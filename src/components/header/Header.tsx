@@ -134,8 +134,8 @@ const Header: React.FC = () => {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      // alert('앗, 채팅은 아직 구현중입니다 :)');
-                      navigate('/chat');
+                      alert('앗, 채팅은 아직 구현중입니다 :)');
+                      // navigate('/chat');
                     }}
                   />
                   {notificationCount !== 0 && (
