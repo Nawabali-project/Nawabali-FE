@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import { Cookies } from 'react-cookie';
 import useSSEStore from '@/store/SSEState';
@@ -6,12 +6,14 @@ import useSSEStore from '@/store/SSEState';
 const SSEListener = () => {
   const cookie = new Cookies();
   const accessToken = cookie.get('accessToken');
+  const [, setIsConnected] = useState(false);
 
-  // Zustand 스토어에서 함수를 가져옴.
-  const { setNotificationCount } = useSSEStore((state) => ({
-    addMessage: state.addMessage,
-    setNotificationCount: state.setNotificationCount,
+  const { setUnreadMessageCount } = useSSEStore((state) => ({
+    setUnreadMessageCount: state.setUnreadMessageCount,
   }));
+
+  const retryInterval = useRef(5000); // 초기 재시도 간격
+  const maxInterval = 60000; // 최대 재시도 간격
 
   useEffect(() => {
     if (!accessToken) return;
@@ -23,27 +25,38 @@ const SSEListener = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          heartbeatTimeout: 50000,
+          heartbeatTimeout: 60000,
           withCredentials: true,
         },
       );
+
+      eventSource.onopen = () => {
+        setIsConnected(true);
+      };
 
       eventSource.addEventListener('unreadMessageCount', (event: any) => {
         if (!event?.data) {
           return;
         }
-        const notificationCount = event.data;
-        setNotificationCount(notificationCount);
-        console.log(notificationCount);
+        const unreadMessageCount = event.data;
+        setUnreadMessageCount(unreadMessageCount);
+        console.log(unreadMessageCount);
       });
+
+      const retryConnection = () => {
+        setTimeout(() => {
+          if (retryInterval.current < maxInterval) {
+            retryInterval.current *= 2;
+          }
+          setupSSEConnection();
+        }, retryInterval.current);
+      };
 
       eventSource.onerror = (event) => {
         console.error('SSE Error:', event);
+        setIsConnected(false);
         eventSource.close();
-        // 에러 후 재연결
-        setTimeout(() => {
-          setupSSEConnection();
-        }, 5000);
+        retryConnection();
       };
 
       return () => {
@@ -53,9 +66,9 @@ const SSEListener = () => {
 
     // 연결 설정 함수 호출
     setupSSEConnection();
-  }, [accessToken, setNotificationCount]);
+  }, [accessToken, setUnreadMessageCount]);
 
-  return null;
+  return null; // 혹은 연결 상태를 나타내는 UI를 반환할 수 있습니다.
 };
 
 export default SSEListener;

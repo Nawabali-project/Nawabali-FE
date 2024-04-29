@@ -48,10 +48,8 @@ export interface NewChatRoom {
 }
 
 export interface SSEState {
-  message: string;
-  hasNotifications: boolean;
-  setHasNotifications: (hasNotifications: boolean) => void;
-  notificationCount: number;
-  setNotificationCount: (count: number) => void;
-  addMessage: (newMessage: string) => void;
+  hasUnreadMessageCount: boolean;
+  setHasUnreadMessageCount: (hasNotifications: boolean) => void;
+  unreadMessageCount: number;
+  setUnreadMessageCount: (count: number) => void;
 }

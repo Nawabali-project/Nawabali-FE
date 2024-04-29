@@ -17,6 +17,7 @@ import {
 import { Client } from '@stomp/stompjs';
 import Button from '../button/Button';
 import { useDebounce } from '@/hooks/useDebounce';
+import useSSEStore from '@/store/SSEState';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
@@ -33,9 +34,11 @@ export const ChatRoomsList: React.FC<{
   const debouncedUserNickname = useDebounce(searchNickname, 300);
   const debouncedSearchWord = useDebounce(searchWord, 300);
 
+  const unreadMessageCount = useSSEStore((state) => state.unreadMessageCount);
+
   useEffect(() => {
     fetchChatRooms();
-  }, []);
+  }, [unreadMessageCount]);
 
   const fetchChatRooms = async () => {
     try {
@@ -115,7 +118,6 @@ export const ChatRoomsList: React.FC<{
       };
 
       const updatedChatRooms = chatRooms.map((room) => {
-        // 선택된 방의 unreadCount를 0으로 설정
         if (room.roomId === roomId) {
           return { ...room, unreadCount: 0 };
         }

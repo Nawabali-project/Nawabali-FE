@@ -52,7 +52,10 @@ const MapPage = () => {
     const token = urlParams.get('accessToken');
 
     if (token) {
-      cookie.set('accessToken', token.replace('Bearer ', ''));
+      cookie.set('accessToken', token.replace('Bearer ', ''), {
+        path: '/',
+        secure: true,
+      });
       setIsLoggedIn(true);
     }
   }, [location]);

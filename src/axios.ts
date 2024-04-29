@@ -32,14 +32,15 @@ authInstance.interceptors.response.use(
       response.headers['authorization'] || response.headers['Authorization'];
     if (authHeader) {
       const token = authHeader.split(' ')[1];
-      cookie.set('accessToken', token, { path: '/' });
+      cookie.set('accessToken', token, {
+        path: '/',
+        sameSite: 'none',
+        secure: true,
+      });
     }
     return response;
   },
   (error) => {
-    if (error.response) {
-      console.error('Unauthorized!');
-    }
     return Promise.reject(error);
   },
 );

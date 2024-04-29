@@ -33,7 +33,7 @@ const Header: React.FC = () => {
 
   const debouncedContent = useDebounce(content, 10);
 
-  const notificationCount = useSSEStore((state) => state.notificationCount);
+  const notificationCount = useSSEStore((state) => state.unreadMessageCount);
 
   useEffect(() => {
     setSearchbarOpen(!!debouncedContent.trim());
@@ -138,7 +138,7 @@ const Header: React.FC = () => {
                       navigate('/chat');
                     }}
                   />
-                  {notificationCount !== 0 && (
+                  {notificationCount != 0 && (
                     <NotiCount
                       onClick={() => {
                         navigate('/chat');
