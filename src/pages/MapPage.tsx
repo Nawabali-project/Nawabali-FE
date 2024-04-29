@@ -21,8 +21,10 @@ import { Cookies } from 'react-cookie';
 import { getUserInfo } from '@/api/auth';
 import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '@/store/AuthState';
+import SkeletonMap from '@/components/skeleton/SkeletonMap';
 
 const MapPage = () => {
+  const [isLoading, setLoading] = useState(true);
   const [clickedKind, setClickedKind] = useState<string | null>(null);
   const [selectedLatitude, setSelectedLatitude] = useState<number | null>(null);
   const [selectedLongitude, setSelectedLongitude] = useState<number | null>(
@@ -36,6 +38,13 @@ const MapPage = () => {
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
+
+  // 스켈레톤 UI
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -60,11 +69,11 @@ const MapPage = () => {
     }
   }, [isSuccess, navigate]);
 
+  // 선택한 지역으로 이동
   const handleSelectArea = (areaName: string) => {
     setSelectedArea(areaName);
     setShowDropdown(false);
 
-    // 선택된 지역의 위도와 경도를 찾아서 설정
     const selectedDistrict = seoulDistricts.find(
       (district) => district.name === areaName,
     );
@@ -183,15 +192,20 @@ const MapPage = () => {
           </FourComponentBox>
         </SecondHeader>
       </CategoryBox>
-
-      <CustomMap
-        width="100%"
-        height="811px"
-        clickedCategory={clickedKind}
-        selectedDistrict={selectedArea}
-        selectedLatitude={selectedLatitude}
-        selectedLongitude={selectedLongitude}
-      />
+      {isLoading ? (
+        <SkeletonMap />
+      ) : (
+        <>
+          <CustomMap
+            width="100%"
+            height="811px"
+            clickedCategory={clickedKind}
+            selectedDistrict={selectedArea}
+            selectedLatitude={selectedLatitude}
+            selectedLongitude={selectedLongitude}
+          />
+        </>
+      )}
     </Layout>
   );
 };

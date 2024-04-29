@@ -15,10 +15,11 @@ export const getPosts = async ({ pageParam }: { pageParam: number }) => {
   params.sort.forEach((s) => pageable.append('sort', s));
 
   const response = await instance.get(`/posts?${pageable.toString()}`);
+  console.log('게시글 조회', response);
   return response;
 };
 
-// 게시글 전체 조회
+// 지도에서 게시글 전체 조회
 export const getAllPosts = async () => {
   let params = {
     page: '0',
