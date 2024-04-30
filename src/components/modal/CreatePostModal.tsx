@@ -107,11 +107,11 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     const formDistrict = data.district
       ? data.district.replace(/"/g, '').trim()
       : '';
-    // const possibleFileType = ['jpg', 'jpeg', 'png'];
-    // const incorrectTypeFiles = data.file.filter((file) => {
-    //   const fileExtension = file.name.split('.').pop()?.toLowerCase();
-    //   return !possibleFileType.includes(fileExtension!);
-    // });
+    const possibleFileType = ['jpg', 'jpeg', 'png'];
+    const incorrectTypeFiles = data.file.filter((file) => {
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      return !possibleFileType.includes(fileExtension!);
+    });
 
     if (!data.file || data.file.length === 0) {
       setAlertType('error');
@@ -137,16 +137,15 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
         '에만 작성할 수 있어요 :)',
       ]);
       return;
+    } else if (incorrectTypeFiles.length > 0) {
+      setAlertType('error');
+      showAlertModal([
+        '앗, 사진은',
+        <br />,
+        'jpg, jpeg, png 형식만 가능합니다 :)',
+      ]);
+      return;
     }
-    // else if (incorrectTypeFiles.length > 0) {
-    //   setAlertType('error');
-    //   showAlertModal([
-    //     '앗, 사진은',
-    //     <br />,
-    //     'jpg, jpeg, png 형식만 가능합니다 :)',
-    //   ]);
-    //   return;
-    // }
 
     const formData = new FormData();
 
@@ -162,7 +161,6 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
 
     formData.append('requestDto', JSON.stringify(requestDto));
 
-    /*
     // 기존 방식
     let files: File[] = [];
     data.file.forEach((file: any) => {
@@ -172,16 +170,15 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
     files.forEach((file: File) => {
       formData.append('files', file);
     });
-    */
 
-    // webp 적용 방식
-    data.file.forEach((file) => {
-      const newFile = new File([file], file.name, {
-        type: file.type,
-        lastModified: file.lastModified,
-      });
-      formData.append('files', newFile);
-    });
+    // // webp 적용 방식
+    // data.file.forEach((file) => {
+    //   const newFile = new File([file], file.name, {
+    //     type: file.type,
+    //     lastModified: file.lastModified,
+    //   });
+    //   formData.append('files', newFile);
+    // });
 
     createPostMutation.mutate(formData);
   };

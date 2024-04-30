@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const SkeletonMap = () => {
   return (
     <LoadingContainer>
-      <img src="/assets/images/mapLoading.gif" alt="로딩 중" />
+      <img src="/assets/images/mapLoadingWalk.gif" alt="로딩 중" />
     </LoadingContainer>
   );
 };

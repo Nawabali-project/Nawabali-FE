@@ -156,6 +156,7 @@ const Header: React.FC = () => {
                       }
                       // src={localStorage.getItem('profileImageUrl') ?? undefined}
                       onClick={handleOpenInfoModal}
+                      alt="본인 사진"
                     />
                     {isMyInfoModalOpen && (
                       <BalloonModal
