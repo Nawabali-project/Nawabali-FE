@@ -101,6 +101,8 @@ export const ChatRoomsList: React.FC<{
     }
     try {
       await createRoom(nickname);
+      const newRoom = await getChatRooms();
+      handleRoomClick(newRoom[0].roomId, newRoom[0].roomName);
     } catch (error) {
       console.error('채팅방 생성 실패', error);
       alert('채팅 생성에 실패했습니다.');
