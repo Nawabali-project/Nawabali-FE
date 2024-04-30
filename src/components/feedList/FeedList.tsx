@@ -29,7 +29,6 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     status,
     error,
     fetchNextPage,
-    isFetching,
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery({
@@ -69,7 +68,7 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
   }
 
   // 로딩중 skeleton UI
-  if (isFetching) {
+  if (status === 'pending') {
     return <SkeletonList />;
   }
 
@@ -126,7 +125,7 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-      {isFetchingNextPage}
+      {isFetchingNextPage && <SkeletonList />}
     </>
   );
 };
