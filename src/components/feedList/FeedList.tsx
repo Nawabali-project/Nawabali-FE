@@ -48,17 +48,6 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     },
   });
 
-  const [loadingSkeleton, setLoadingSkeleton] = useState(false);
-
-  useEffect(() => {
-    if (isFetchingNextPage) {
-      setLoadingSkeleton(true);
-      setTimeout(() => {
-        setLoadingSkeleton(false);
-      }, 2000); // 최소 500ms 동안 스켈레톤 UI 표시
-    }
-  }, [isFetchingNextPage]);
-
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -136,7 +125,7 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-      {loadingSkeleton && <SkeletonList />}
+      {isFetchingNextPage && <SkeletonList />}
     </>
   );
 };
