@@ -289,7 +289,7 @@ const FourCategory = styled.div`
 const FeedsBox = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   width: 1280px;
   gap: 5px;
 `;
