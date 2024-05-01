@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 
-const cookie = new Cookies();
+// const cookie = new Cookies();
 
 export const instance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
@@ -12,18 +12,18 @@ export const authInstance = axios.create({
   withCredentials: true,
 });
 
-// 요청 인터셉터
-authInstance.interceptors.request.use(
-  (config) => {
-    const authorization = cookie.get('Authorization');
-    if (authorization) {
-      const accessToken = authorization.slice(7);
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
+// // 요청 인터셉터
+// authInstance.interceptors.request.use(
+//   (config) => {
+//     const authorization = cookie.get('Authorization');
+//     if (authorization) {
+//       const accessToken = authorization.slice(7);
+//       config.headers['Authorization'] = `Bearer ${accessToken}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error),
+// );
 
 // // 요청 인터셉터
 // authInstance.interceptors.request.use(
