@@ -289,9 +289,21 @@ const FourCategory = styled.div`
 const FeedsBox = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   width: 1280px;
   gap: 5px;
+
+  @media (max-width: 1320px) {
+    width: 1000px;
+  }
+
+  @media (max-width: 1000px) {
+    width: 680px;
+  }
+
+  @media (max-width: 680px) {
+    width: 360px;
+  }
 `;
 
 const SelectedPageComment = styled.div`
