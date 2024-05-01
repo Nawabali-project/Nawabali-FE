@@ -12,7 +12,7 @@
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub><b>FE 팀장 : </b></sub></a><br /></td>
+      <td align="center"><a href="https://www.instagram.com/p/ChUPAh0PXsw/"><img src="width="100px;" alt=""/><br /><sub><b>FE 팀장 : </b></sub></a><br /></td>
       <td align="center"><a href=""><img src="https://scontent-ssn1-1.cdninstagram.com/v/t51.12442-15/69368022_980938318926608_4714438118412745851_n.jpg?stp=c0.398.1024.1024a_dst-jpg_e35_s150x150&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_ohc=YjyM_2KJLjcQ7kNvgGYoJvc&edm=AGXveE0BAAAA&ccb=7-5&oh=00_AfANWQdR07IR3pkt-AVZfkHDuHN0o4KrN9koCeWCXOnnyw&oe=66343A24&_nc_sid=cf751b" width="100px;" alt=""/><br /><sub><b>FE 팀원 : </b></sub></a><br /></td>
     </tr>
   </tbody>
