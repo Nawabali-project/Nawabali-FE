@@ -9,9 +9,14 @@
 
 <br><br>
 ## 🧑🏻‍💻👩🏻‍💻 팀원
-|<img src="https://avatars.githubusercontent.com/u/133945249?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/80045891?v=4" width="150" height="150"/>|
-|:-:|:-:|
-|hanaru<br/>[@1roo](https://github.com/1roo)|[@inhachoi](https://github.com/inhachoi)|
+<table>
+  <tbody>
+    <tr>
+      <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub><b>FE 팀장 : </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : </b></sub></a><br /></td>
+    </tr>
+  </tbody>
+</table>
 
 
 <br><br>
