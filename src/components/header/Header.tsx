@@ -4,7 +4,6 @@ import Signup from '@/components/auth/Signup';
 import { useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { FaRegEdit } from 'react-icons/fa';
-import { HiOutlineChatBubbleLeftRight } from 'react-icons/hi2';
 import SearchBar from '../modal/SearchBarModal';
 import { useDebounce } from '@/hooks/useDebounce';
 import CreatePostModal from '../modal/CreatePostModal';
@@ -13,7 +12,7 @@ import useAuthStore from '@/store/AuthState';
 
 import DetailPostModal from '../modal/DetailPostModal';
 import { useNavigate } from 'react-router-dom';
-import { LogoIcon } from '@/utils/icons';
+import { LogoIcon, MessageIcon } from '@/utils/icons';
 import useSSEStore from '@/store/SSEState';
 
 const Header: React.FC = () => {
@@ -126,18 +125,14 @@ const Header: React.FC = () => {
             ) : (
               <>
                 <Items style={{ width: '110px' }}>
-                  <HiOutlineChatBubbleLeftRight
-                    style={{
-                      fontSize: '25px',
-                      color: 'gray',
-                      margin: '8px',
-                      cursor: 'pointer',
-                    }}
+                  <ChatBox
                     onClick={() => {
-                      // alert('앗, 채팅은 아직 구현중입니다 :)');
                       navigate('/chat');
                     }}
-                  />
+                  >
+                    <MessageIcon />
+                  </ChatBox>
+
                   {notificationCount != 0 && (
                     <NotiCount
                       onClick={() => {
@@ -156,6 +151,7 @@ const Header: React.FC = () => {
                       }
                       // src={localStorage.getItem('profileImageUrl') ?? undefined}
                       onClick={handleOpenInfoModal}
+                      alt="본인 사진"
                     />
                     {isMyInfoModalOpen && (
                       <BalloonModal
@@ -215,6 +211,11 @@ const SecondHeader = styled.div`
   width: 1280px;
 `;
 
+const ChatBox = styled.div`
+  padding: 6px 0 0 0;
+  cursor: pointer;
+`;
+
 const HeaderLayout = styled.div`
   display: flex;
   justify-content: space-around;
@@ -238,7 +239,7 @@ const LogoBox = styled.div`
 const Items = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin: 0 5px 0 0px;
+  margin: 0 5px 0 0;
   align-items: center;
   position: relative;
 `;
