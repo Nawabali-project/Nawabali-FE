@@ -1,4 +1,10 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
+<div align= "center">
+    <img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=180&text=동네방네&animation=&fontColor=ffffff&fontSize=70" />
+    </div>
+    <div style="text-align: left;">
+    <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🛠️ Tech Stacks </h2> <br> 
+    <div style="margin: ; text-align: left;" "text-align: left;"> </div>
+    </div>
     
 ## 🏡 프로젝트 소개 🏡
 동네 기반 SNS <br>
