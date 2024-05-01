@@ -51,10 +51,13 @@ const MapPage = () => {
     const token = cookie.get('Athorization');
 
     if (token) {
+      cookie.set('accessToken', token.slice(7), {
+        path: '/',
+        secure: true,
+      });
       setIsLoggedIn(true);
-      getUserInfo();
     }
-  }, []);
+  }, [location]);
 
   // 유저정보
   const { isSuccess } = useQuery({
