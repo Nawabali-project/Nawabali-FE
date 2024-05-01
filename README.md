@@ -12,9 +12,12 @@
 <table>
   <tbody>
     <tr>
-      <td align="center">![스크린샷 2024-05-02 013702](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/f24a6df6-d58c-427f-bd59-e1aaaaac7079)<br /><sub><b> 아침 안먹는 남자 </b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="![36075_34178_100 (1)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/2641c5bd-ef8d-4853-9aa0-64963169afbd)
-" width="100px;" alt=""/><br /><sub><b> 아침 먹고 자는 여자 </b></sub></a><br /></td>
+      <td align="center">
+        ![36075_34178_100 (1)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/1961163c-98f8-4b01-91af-e77cf4e1ade6)
+
+        <br /><sub><b> 아침 안먹는 남자 </b></sub></a><br />
+      </td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b> 아침 먹고 자는 여자 </b></sub></a><br /></td>
     </tr>
   </tbody>
 </table>
