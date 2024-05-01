@@ -6,10 +6,11 @@
 
 https://www.dongnaebangnae.com/
 
+---
 
-#### 우리 동네를 꾸며봐요!
+# 🛠 Architecture
+![ServiceArchitecture - Page 1 (1)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/544a2684-a5ff-4759-8617-1f3c8de7ea36)
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=00A3FF&height=100&section=footer" />
 
 ---
 
@@ -24,3 +25,4 @@ https://www.dongnaebangnae.com/
 
 ---
 
+<img src="https://capsule-render.vercel.app/api?type=waving&color=00A3FF&height=100&section=footer" />
