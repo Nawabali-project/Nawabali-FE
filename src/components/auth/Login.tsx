@@ -47,8 +47,11 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
         login(userInfo);
       }
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error('로그인 오류:', error.message);
+      if (error instanceof AxiosError && error.response) {
+        console.error(
+          '로그인 오류:',
+          error.message || error.response.data.message,
+        );
         alert(
           '로그인 실패: ' + (error.response?.data.message || error.message),
         );
