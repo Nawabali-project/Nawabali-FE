@@ -71,7 +71,6 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
   if (status === 'pending') {
     return <SkeletonList />;
   }
-
   if (status === 'error') {
     return <p>Error: {error.message}</p>;
   }
@@ -85,14 +84,14 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
             key={post.postId}
           >
             <UserInfoBox>
-              <UserImg src={post.profileImageUrl} />
+              <UserImg src={post.profileImageUrl} alt="유저 사진" />
               <UserName>{post.nickname}</UserName>
               <UserGrade>
                 • {post.district} {post.userRankName}
               </UserGrade>
             </UserInfoBox>
             <ImgBox onClick={() => handlePostClick(post)}>
-              <img src={post.mainImageUrl} alt="게시물 이미지" />
+              <img src={post.mainImageUrl} alt="게시물 이미지" loading="lazy" />
               <PostType category={post.category}>
                 {post.category === 'FOOD'
                   ? '맛집'
@@ -135,6 +134,7 @@ const NoPostBox = styled.div`
   align-items: center;
   justify-content: center;
   height: 75vh;
+  margin: auto;
   flex-direction: column;
 `;
 
@@ -208,8 +208,8 @@ const ImgBox = styled.div`
   cursor: pointer;
 
   img {
-    width: 100%;
-    height: 100%;
+    width: 295px;
+    height: 295px;
     object-fit: cover;
     border-top-left-radius: 50px;
     border-bottom-right-radius: 50px;

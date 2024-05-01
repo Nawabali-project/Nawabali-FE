@@ -102,6 +102,7 @@ const DetailPostModal: React.FC<DetailPostProps> = ({
       editPost(postId, contents),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [postId] });
+      queryClient.invalidateQueries({ queryKey: ['scrollPosts'] });
       setAlertType('complete');
       showAlertModal('게시물 수정이 완료되었어요!');
     },
