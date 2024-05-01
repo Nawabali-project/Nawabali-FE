@@ -1,7 +1,7 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=00A3FF&height=100&section=header" />
 
 ## 🏡 프로젝트 소개 🏡
-동네 기반 차세대 SNS
+동네 기반 차세대 SNS <br>
 ![동네방네 브로셔이미지_2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/04580244-b863-4ccc-a356-f513ba0c5a50)
 
 * 🔗 사이트: https://www.dongnaebangnae.com/
