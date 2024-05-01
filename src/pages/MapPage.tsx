@@ -32,25 +32,21 @@ const MapPage = () => {
   );
   const navigate = useNavigate();
   const cookie = new Cookies();
-
   const { setIsLoggedIn } = useAuthStore();
-
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
-
   const { isLoggedIn } = useAuthStore();
 
   // 스켈레톤 UI
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 1000);
   }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-
     const token = urlParams.get('accessToken');
 
     if (token) {

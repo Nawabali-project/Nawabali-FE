@@ -125,7 +125,7 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
           setIsDetailPostModalOpen={setIsDetailPostModalOpen}
         />
       )}
-      {isFetchingNextPage}
+      {isFetchingNextPage && <SkeletonList />}
     </>
   );
 };
