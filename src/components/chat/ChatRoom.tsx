@@ -84,15 +84,16 @@ export const ChatRoom: React.FC<{
         });
         const hasNextPage = fetchedMessages.length > 0;
 
+        const sortedMessages = fetchedMessages.sort(
+          (a: ReturnedMessageForm, b: ReturnedMessageForm) =>
+            new Date(a.createdMessageAt).getTime() -
+            new Date(b.createdMessageAt).getTime(),
+        );
+
         if (hasNextPage && chatEndRef.current) {
           const chatDiv = chatEndRef.current.parentElement;
 
           if (chatDiv && chatDiv.scrollTop === 0) {
-            const sortedMessages = fetchedMessages.sort(
-              (a: ReturnedMessageForm, b: ReturnedMessageForm) =>
-                new Date(a.createdMessageAt).getTime() -
-                new Date(b.createdMessageAt).getTime(),
-            );
             setMessages((prevMessages) => [...prevMessages, ...sortedMessages]);
             setPageNumber((prevPageNumber) => prevPageNumber + 1);
           }

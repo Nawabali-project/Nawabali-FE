@@ -71,7 +71,7 @@ export const showChat = async ({
 
   try {
     const response = await authInstance.get(
-      `/chat/room/${roomId}/message?start=${startIndex}&size=${pageSize}`,
+      `/chat/room/${roomId}/message?page=${startIndex}&size=${pageSize}`,
     );
     return response.data.content;
   } catch (error) {

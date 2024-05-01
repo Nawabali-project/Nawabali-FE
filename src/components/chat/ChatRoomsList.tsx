@@ -107,6 +107,7 @@ export const ChatRoomsList: React.FC<{
   };
 
   const handleRoomClick = (roomId: number, roomName: string) => {
+    setSearchWord('');
     if (client) {
       const messageForm = {
         sender: localStorage.getItem('nickname')!,
@@ -147,35 +148,75 @@ export const ChatRoomsList: React.FC<{
 
         {searchResults && searchResults.length > 0 && (
           <SearchedUserDiv>
-            {searchResults.map((user: User, index: number) => (
-              <div key={index}>
-                <Row>
-                  <UserNicknamesDiv>
-                    <ProfileImg $profileImg={user.imgUrl} />
-                    {user.nickname}
-                  </UserNicknamesDiv>
-                  <Button
-                    size="chat"
-                    onClick={() => handleCreateRoom(user.nickname)}
-                  >
-                    채팅 생성
-                  </Button>
-                </Row>
-              </div>
-            ))}
+            {searchResults.map((user: User, index: number) => {
+              const isRoomExist = chatRooms.some(
+                (room: any) => room.roomName === user.nickname,
+              );
+              const isCurrentUser =
+                user.nickname === localStorage.getItem('nickname');
+
+              if (!isRoomExist && !isCurrentUser) {
+                // 추가 수정: 현재 사용자일 때도 필터링
+                return (
+                  <div key={index}>
+                    <Row>
+                      <UserNicknamesDiv>
+                        <ProfileImg $profileImg={user.imgUrl} />
+                        {user.nickname}
+                      </UserNicknamesDiv>
+                      <Button
+                        size="chat"
+                        onClick={() => handleCreateRoom(user.nickname)}
+                      >
+                        채팅 생성
+                      </Button>
+                    </Row>
+                  </div>
+                );
+              }
+              return null;
+            })}
           </SearchedUserDiv>
         )}
         {searchChatResults && searchChatResults.length > 0 && (
           <SearchedUserDiv>
-            {searchChatResults.map((result: any, index: number) => (
-              <div key={index}>
-                <Row>
-                  <UserNicknamesDiv>
-                    <ProfileImg $profileImg={result.imgUrl} />
-                    {result.roomName}
-                    {result.chatMessage}
-                  </UserNicknamesDiv>
-                </Row>
+            {Object.values(
+              searchChatResults.reduce((acc: any, result: any) => {
+                if (!acc[result.roomName]) {
+                  acc[result.roomName] = {
+                    roomName: result.roomName,
+                    roomId: result.roomId,
+                    profileImageUrl: result.profileImageUrl,
+                    chatMessages: [],
+                  };
+                }
+                acc[result.roomName].chatMessages.push(result.chatMessage);
+                return acc;
+              }, {}),
+            ).map((group: any, index: number) => (
+              <div
+                key={index}
+                onClick={() => handleRoomClick(group.roomId, group.roomName)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  cursor: 'pointer',
+                }}
+              >
+                <ProfileImg $profileImg={group.profileImageUrl} />
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '100px' }}>{group.roomName}</div>
+                  <div>
+                    {group.chatMessages
+                      .slice(0, 3)
+                      .map((chatMessage: string, i: number) => (
+                        <ChatMessage key={i}>{chatMessage}</ChatMessage>
+                      ))}
+                    {group.chatMessages.length > 3 && (
+                      <ChatMessage>...전체보기</ChatMessage>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </SearchedUserDiv>
@@ -268,7 +309,7 @@ const SearchDiv = styled.div`
   border: 1px solid gray;
   border-radius: 15px;
   height: 30px;
-  width: 90%;
+  width: 85%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -297,15 +338,17 @@ const ChatRooms = styled.div<ChatRoomProps>`
 `;
 
 const SearchedUserDiv = styled.div`
-  margin-top: 10px;
+  margin: 10px 0;
   background-color: #fff;
-  padding: 10px 0;
+  padding: 5px 0 10px;
+  border-bottom: 1px solid #e9e9e9;
 `;
 
 const UserNicknamesDiv = styled.div`
   width: 90%;
   display: flex;
   align-items: center;
+  margin: 5px 0;
 `;
 
 const ChatMessage = styled.span`
@@ -319,6 +362,7 @@ const ChatMessage = styled.span`
   font-size: 14px;
   color: #a1a1a1;
   padding: 0;
+  text-align: left;
 `;
 
 const Unreadcount = styled.div`
