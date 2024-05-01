@@ -48,7 +48,10 @@ const MapPage = () => {
   useEffect(() => {
     // const urlParams = new URLSearchParams(location.search);
     // console.log(urlParams);
-    const token = cookie.get('Athorization');
+    const token = cookie.get('Authorization');
+    const accesstoken = cookie.get('accessToken');
+    console.log('야 토큰내놔', token);
+    console.log('야 토큰내놔', accesstoken);
 
     if (token) {
       cookie.set('accessToken', token.slice(7), {
@@ -57,7 +60,7 @@ const MapPage = () => {
       });
       setIsLoggedIn(true);
     }
-  }, [location]);
+  }, []);
 
   // 유저정보
   const { isSuccess } = useQuery({

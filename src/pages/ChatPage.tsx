@@ -10,6 +10,7 @@ function ChatMain() {
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
   const [selectedRoomName, setSelectedRoomName] = useState<string>('');
   const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [isRoomActive, setIsRoomActive] = useState(false);
 
   useEffect(() => {
     const connectWebSocket = () => {
@@ -52,12 +53,14 @@ function ChatMain() {
         onRoomSelect={setSelectedRoomId}
         onRoomNameSelect={setSelectedRoomName}
         client={stompClient}
+        setIsRoomActive={setIsRoomActive}
       />
       {selectedRoomId ? (
         <ChatRoom
           roomId={selectedRoomId}
           roomName={selectedRoomName}
           client={stompClient}
+          isRoomActive={isRoomActive}
         />
       ) : (
         <NoChat />
