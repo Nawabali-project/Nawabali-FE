@@ -49,6 +49,7 @@ const MapPage = () => {
     // const urlParams = new URLSearchParams(location.search);
     // console.log(urlParams);
     const token = cookie.get('Athorization');
+    console.log('야 토큰내놔', token);
 
     if (token) {
       cookie.set('accessToken', token.slice(7), {
