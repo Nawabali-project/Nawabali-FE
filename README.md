@@ -12,8 +12,8 @@
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub><b>FE 팀장 : </b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub><b> 아침 안먹는 남자 </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b> 아침 먹고 자는 여자 </b></sub></a><br /></td>
     </tr>
   </tbody>
 </table>
