@@ -1,6 +1,6 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=00A3FF&height=100&section=header" />
 
-# 🌱 프로젝트 소개
+## 🌱 프로젝트 소개
 ![동네방네 브로셔이미지_2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/04580244-b863-4ccc-a356-f513ba0c5a50)
 
 * 사이트: https://www.dongnaebangnae.com/
@@ -9,9 +9,10 @@
 
 ---
 
-# 🛠 Architecture
+## 🛠 Architecture
 ![ServiceArchitecture - Page 1 (1)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/544a2684-a5ff-4759-8617-1f3c8de7ea36)
 
+---
 
 # 👨‍👧‍👧 기술 스택
 <div align='left'>
@@ -29,10 +30,11 @@
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
   <br>
-
 </div>
 
-# 성능 개선 (Lighthouse)
+---
+
+## 성능 개선 (Lighthouse)
 
 * #### 2024-04-24
 ![스크린샷 2024-05-01 235123](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/5f937f8d-3b2d-44ad-9be0-ec1b61fce0e9)
