@@ -7,10 +7,18 @@
 https://www.dongnaebangnae.com/
 
 
-#### 복지받고 세상 편하게 살자!
+#### 우리 동네를 꾸며봐요!
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=00A3FF&height=100&section=footer" />
 
 ---
 
 ### 성능 개선 (Lighthouse)
+
+2024-04-24
+![스크린샷 2024-05-01 235123](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/5f937f8d-3b2d-44ad-9be0-ec1b61fce0e9)
+
+2024-05-01
+![스크린샷 2024-05-01 235255](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6086b80d-3303-4223-858f-c9256937e268)
+
+
