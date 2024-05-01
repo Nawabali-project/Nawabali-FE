@@ -15,9 +15,9 @@ export const authInstance = axios.create({
 // 요청 인터셉터
 authInstance.interceptors.request.use(
   (config) => {
-    const accessToken = cookie.get('Authorization');
+    const accessToken = cookie.get('Authorization').split('+')[1];
     if (accessToken) {
-      config.headers['Authorization'] = `${accessToken}`;
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
     return config;
   },

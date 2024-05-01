@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
 import { useNavigate } from 'react-router-dom';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 import { getUserInfo } from '@/api/auth';
 import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '@/store/AuthState';
@@ -31,8 +31,8 @@ const MapPage = () => {
     null,
   );
   const navigate = useNavigate();
-  const cookie = new Cookies();
-  const { setIsLoggedIn } = useAuthStore();
+  // const cookie = new Cookies();
+  // const { setIsLoggedIn } = useAuthStore();
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
@@ -45,18 +45,19 @@ const MapPage = () => {
     }, 1000);
   }, []);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('accessToken');
+  // useEffect(() => {
+  //   // const urlParams = new URLSearchParams(location.search);
+  //   // console.log(urlParams);
+  //   const token = cookie.get('Athorization');
 
-    if (token) {
-      cookie.set('accessToken', token.replace('Bearer ', ''), {
-        path: '/',
-        secure: true,
-      });
-      setIsLoggedIn(true);
-    }
-  }, [location]);
+  //   if (token) {
+  //     cookie.set('accessToken', token.replace('Bearer ', ''), {
+  //       path: '/',
+  //       secure: true,
+  //     });
+  //     setIsLoggedIn(true);
+  //   }
+  // }, [location]);
 
   // 유저정보
   const { isSuccess } = useQuery({
