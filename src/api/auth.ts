@@ -39,6 +39,7 @@ export const login = async (user: LoginUser) => {
     throw new Error('Network error');
   }
 };
+
 export const getUserInfo = async () => {
   try {
     const response = await authInstance.get('/users/my-info');
@@ -70,6 +71,7 @@ export const getUserInfo = async () => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
+
 export const sendVerificationCode = async (email: string) => {
   try {
     await instance.post(`/email-verification?email=${email}`);
