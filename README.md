@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=180&text=동네방네&animation=&fontColor=ffffff&fontSize=70" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
     
 ## 🏡 프로젝트 소개 🏡
 동네 기반 SNS <br>
