@@ -17,8 +17,10 @@
 
 ### 👨‍👧‍👧 사용 기술 스택
 <div align='left'>
-  <img src="https://img.shields.io/badge/react-282C34?style=for-the-badge&logo=react&logoColor=61DAFB">
-  <img src="https://img.shields.io/badge/JavaScript-FFE400?style=for-the-badge&logo=JavaScript&logoColor=black"><br>
+  <img src="https://img.shields.io/badge/TypeScript-282C34?style=for-the-badge&logo=react&logoColor=61DAFB">
+  <img src="https://img.shields.io/badge/React-282C34?style=for-the-badge&logo=react&logoColor=61DAFB">
+  <img src="https://img.shields.io/badge/JavaScript-FFE400?style=for-the-badge&logo=JavaScript&logoColor=black">
+  <br>
   <img src="https://img.shields.io/badge/redux--toolkit-764ABC?style=for-the-badge&logo=react&logoColor=black">
   <img src="https://img.shields.io/badge/socket.io--client-007CE2?style=for-the-badge&logo=axios&logoColor=white">
   <img src="https://img.shields.io/badge/Axios-%23593d88.svg?style=for-the-badge&logoColor=000000">
