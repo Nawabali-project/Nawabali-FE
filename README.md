@@ -51,13 +51,15 @@
   <br>
 </div>
 
+<br><br>
 ## 🔎 주요기능
 * 일반 회원가입 / 로그인 
 * 소셜 로그인 (kakao)
-* 지도 꾸미기
+* 지도 API 연동 (kakao)
 * 게시물 CRUD
 * 댓글 CRUD
-
+* 채팅
+* 검색
 
 <br><br>
 ## ⤴️ 성능 개선 (Lighthouse)
