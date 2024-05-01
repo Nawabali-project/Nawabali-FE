@@ -3,7 +3,7 @@
 ![동네방네 브로셔이미지_2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/04580244-b863-4ccc-a356-f513ba0c5a50)
 
 * 🔗 사이트: https://www.dongnaebangnae.com/
-* 📆 개발 기간: 2024년 03월 26일 ~ 05월 06일 (총 6주)
+* 📆 개발 기간: 2024.03.26 ~ 2024.05.06 (총 6주)
 * 🌱 기획 의도: 줄어든 동네 주민들과의 유대감 회복 + 동네에 대한 애정 증가
 
 
