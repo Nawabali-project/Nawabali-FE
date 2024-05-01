@@ -10,6 +10,8 @@ import {
 } from '@/interfaces/chat/chat.interface';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInView } from 'react-intersection-observer';
 export const ChatRoom: React.FC<{
   roomId: number;
   roomName: string;
@@ -18,12 +20,35 @@ export const ChatRoom: React.FC<{
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
   const [userInfo, setUserInfo] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  const { ref, inView } = useInView();
   const accessToken = new Cookies().get('accessToken');
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const { data, status, error, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['chatMessages', roomId],
+    queryFn: ({ pageParam = 0 }) =>
+      showChat({
+        roomId,
+        pageParam,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      if (lastPage && lastPage.data && lastPage.data.last !== undefined) {
+        if (!lastPage.data.last) {
+          return lastPage.data.number + 1;
+        }
+      }
+      return undefined;
+    },
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -74,48 +99,6 @@ export const ChatRoom: React.FC<{
   }, [roomId, client, accessToken]);
 
   useEffect(() => {
-    setIsLoading(true);
-
-    const fetchMessages = async () => {
-      try {
-        const fetchedMessages = await showChat({
-          pageParam: pageNumber,
-          roomId,
-        });
-        const hasNextPage = fetchedMessages.length > 0;
-
-        if (hasNextPage && chatEndRef.current) {
-          const chatDiv = chatEndRef.current.parentElement;
-
-          if (chatDiv && chatDiv.scrollTop === 0) {
-            const sortedMessages = fetchedMessages.sort(
-              (a: ReturnedMessageForm, b: ReturnedMessageForm) =>
-                new Date(a.createdMessageAt).getTime() -
-                new Date(b.createdMessageAt).getTime(),
-            );
-            setMessages((prevMessages) => [...prevMessages, ...sortedMessages]);
-            setPageNumber((prevPageNumber) => prevPageNumber + 1);
-          }
-        } else {
-          if (pageNumber === 1) {
-            setMessages(fetchedMessages);
-          } else {
-            setMessages([]);
-          }
-        }
-      } catch (error) {
-        console.error('메시지를 불러오는데 실패했습니다', error);
-        setMessages([]);
-      }
-      setIsLoading(false);
-    };
-
-    if (roomId) {
-      fetchMessages();
-    }
-  }, [roomId, pageNumber]);
-
-  useEffect(() => {
     const scrollToBottom = () => {
       const chatDiv = chatEndRef.current?.parentElement as HTMLElement | null;
       if (chatDiv) {
@@ -146,6 +129,10 @@ export const ChatRoom: React.FC<{
 
   function formatMessageDate(dateString: string) {
     const d = new Date(dateString);
+    if (isNaN(d.getTime())) {
+      console.error('Invalid date:', dateString);
+      return 'Invalid date';
+    }
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
     const dayOfWeek = weekdays[d.getDay()];
     const month = (d.getMonth() + 1).toString().padStart(2, '0');
@@ -157,24 +144,25 @@ export const ChatRoom: React.FC<{
 
   return (
     <ChatContainer>
-      {isLoading ? (
-        <div>로딩 중...</div>
-      ) : (
-        <>
-          {roomName && userInfo && (
-            <UserInfo>
-              <UserProfileImg
-                src={userInfo?.imgUrl}
-                alt={`${roomName}의 프로필`}
-                onClick={() => goToUserProfile(roomName)}
-              />
-              <h3>{roomName}</h3>
-            </UserInfo>
-          )}
-          <Chat>
-            {messages.map((msg, index) =>
-              msg.sender === myNickname ? (
+      {status === 'pending' && <p>Loading...</p>}
+      {status === 'error' && <p>Error: {error.message}</p>}
+      <>
+        {roomName && userInfo && (
+          <UserInfo>
+            <UserProfileImg
+              src={userInfo?.imgUrl}
+              alt={`${roomName}의 프로필`}
+              onClick={() => goToUserProfile(roomName)}
+            />
+            <h3>{roomName}</h3>
+          </UserInfo>
+        )}
+        <Chat>
+          {data?.pages.map((page) =>
+            page.map((msg: any, index: number) => {
+              return msg.sender === myNickname ? (
                 <Row
+                  ref={index === data.pages.length - 1 ? ref : null}
                   key={index}
                   style={{ alignSelf: 'flex-end', minWidth: '290px' }}
                 >
@@ -202,7 +190,7 @@ export const ChatRoom: React.FC<{
                 >
                   <ProfileImg src={userInfo?.imgUrl} alt={`상대방 프로필`} />
                   <OtherMessage>
-                    {msg.message}
+                    <span>{msg.message}</span>
                     <div
                       style={{
                         fontSize: '12px',
@@ -214,12 +202,12 @@ export const ChatRoom: React.FC<{
                     </div>
                   </OtherMessage>
                 </Row>
-              ),
-            )}
-            <div ref={chatEndRef} />
-          </Chat>
-        </>
-      )}
+              );
+            }),
+          )}
+          <div ref={chatEndRef} />
+        </Chat>
+      </>
 
       <InputDiv>
         <input

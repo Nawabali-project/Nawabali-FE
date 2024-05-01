@@ -27,11 +27,9 @@ export const ChatRoomsList: React.FC<{
   const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [searchChatResults, setSearchChatResults] = useState<User[]>([]);
-  const [searchNickname, setSearchNickname] = useState('');
   const [searchWord, setSearchWord] = useState<string>('');
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
-  const debouncedUserNickname = useDebounce(searchNickname, 300);
   const debouncedSearchWord = useDebounce(searchWord, 300);
 
   const unreadMessageCount = useSSEStore((state) => state.unreadMessageCount);
@@ -51,7 +49,6 @@ export const ChatRoomsList: React.FC<{
         }),
       );
       setChatRooms(roomsWithUserImages);
-      console.log(roomsWithUserImages);
     } catch (error) {
       console.error('Failed to load chat rooms or user data', error);
       setChatRooms([]);
@@ -59,13 +56,13 @@ export const ChatRoomsList: React.FC<{
   };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (debouncedUserNickname.trim() === '') {
+    const fetchSearchUsers = async () => {
+      if (debouncedSearchWord.trim() === '') {
         setSearchResults([]);
         return;
       }
       try {
-        const response = await searchUserByNickname(debouncedUserNickname);
+        const response = await searchUserByNickname(debouncedSearchWord);
         setSearchResults(response);
       } catch (error) {
         console.error('Error searching user by nickname', error);
@@ -73,8 +70,8 @@ export const ChatRoomsList: React.FC<{
       }
     };
 
-    fetchUsers();
-  }, [debouncedUserNickname]);
+    fetchSearchUsers();
+  }, [debouncedSearchWord]);
 
   useEffect(() => {
     const fetchChatSearch = async () => {
@@ -85,6 +82,9 @@ export const ChatRoomsList: React.FC<{
       try {
         const response = await searchChatRoom(debouncedSearchWord);
         setSearchChatResults(response);
+        console.log('response: ', response);
+
+        console.log('searchChatResult: ', searchChatResults);
       } catch (error) {
         console.error('Error searching chat by nickname', error);
         setSearchChatResults([]);
@@ -95,10 +95,7 @@ export const ChatRoomsList: React.FC<{
   }, [debouncedSearchWord]);
 
   const handleCreateRoom = async (nickname: string) => {
-    if (!searchNickname.trim()) {
-      alert('상대방 닉네임을 입력하세요');
-      return;
-    }
+    if (!debouncedSearchWord.trim()) return;
     try {
       await createRoom(nickname);
       const newRoom = await getChatRooms();
@@ -139,14 +136,16 @@ export const ChatRoomsList: React.FC<{
       <h1>채팅방이욤</h1>
       <div>
         <SearchDiv>
+          <IoIosSearch style={{ color: 'gray' }} />
           <input
+            value={searchWord}
             type="text"
-            value={searchNickname}
-            onChange={(e) => setSearchNickname(e.target.value)}
-            placeholder="유저닉네임 검색"
+            placeholder="닉네임 또는 내용으로 검색하기"
+            onChange={(e) => setSearchWord(e.target.value)}
           />
         </SearchDiv>
-        {searchResults.length > 0 && (
+
+        {searchResults && searchResults.length > 0 && (
           <SearchedUserDiv>
             {searchResults.map((user: User, index: number) => (
               <div key={index}>
@@ -166,64 +165,52 @@ export const ChatRoomsList: React.FC<{
             ))}
           </SearchedUserDiv>
         )}
-      </div>
-      <div>
-        <div>
-          <SearchDiv style={{ position: 'relative' }}>
-            <IoIosSearch style={{ color: 'gray' }} />
-            <input
-              value={searchWord}
-              type="text"
-              placeholder="닉네임 또는 내용으로 검색하기"
-              onChange={(e) => setSearchWord(e.target.value)}
-            />
-          </SearchDiv>
-          {searchChatResults.length > 0 && (
-            <SearchedUserDiv>
-              {searchChatResults.map((user: User, index: number) => (
-                <div key={index}>
-                  <Row>
-                    <UserNicknamesDiv>
-                      <ProfileImg $profileImg={user.imgUrl} />
-                      {user.nickname}
-                    </UserNicknamesDiv>
-                  </Row>
-                </div>
-              ))}
-            </SearchedUserDiv>
-          )}
-        </div>
-        <Col>
-          {chatRooms.map((room) => (
-            <ChatRooms
-              key={room.roomId}
-              $isSelected={selectedRoomId === room.roomId}
-              onClick={() => handleRoomClick(room.roomId, room.roomName)}
-            >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <ProfileImg $profileImg={room.profileImageUrl} />
-                  <div
-                    style={{
-                      width: '290px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <span>{room.roomName}</span>
-                    {room.unreadCount != 0 && (
-                      <Unreadcount>{room.unreadCount}</Unreadcount>
-                    )}
-                  </div>
-                </div>
-                {room.chatMessage != '' && (
-                  <ChatMessage>{room.chatMessage}</ChatMessage>
-                )}
+        {searchChatResults && searchChatResults.length > 0 && (
+          <SearchedUserDiv>
+            {searchChatResults.map((result: any, index: number) => (
+              <div key={index}>
+                <Row>
+                  <UserNicknamesDiv>
+                    <ProfileImg $profileImg={result.imgUrl} />
+                    {result.roomName}
+                    {result.chatMessage}
+                  </UserNicknamesDiv>
+                </Row>
               </div>
-            </ChatRooms>
-          ))}
-        </Col>
+            ))}
+          </SearchedUserDiv>
+        )}
       </div>
+      <Col>
+        {chatRooms.map((room) => (
+          <ChatRooms
+            key={room.roomId}
+            $isSelected={selectedRoomId === room.roomId}
+            onClick={() => handleRoomClick(room.roomId, room.roomName)}
+          >
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <ProfileImg $profileImg={room.profileImageUrl} />
+                <div
+                  style={{
+                    width: '290px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <span>{room.roomName}</span>
+                  {room.unreadCount != 0 && (
+                    <Unreadcount>{room.unreadCount}</Unreadcount>
+                  )}
+                </div>
+              </div>
+              {room.chatMessage != '' && (
+                <ChatMessage>{room.chatMessage}</ChatMessage>
+              )}
+            </div>
+          </ChatRooms>
+        ))}
+      </Col>
     </ChatList>
   );
 };
