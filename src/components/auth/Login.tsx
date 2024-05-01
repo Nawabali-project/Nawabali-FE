@@ -12,6 +12,7 @@ import {
 import Button from '@/components/button/Button';
 import useAuthStore from '@/store/AuthState';
 import { AxiosError } from 'axios';
+import { Cookies } from 'react-cookie';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,6 +26,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   });
 
   const { login } = useAuthStore();
+  const cookie = new Cookies();
 
   const handleSubmit = async () => {
     const user = { email, password };
@@ -33,10 +35,11 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
       if (!resUserInfo || typeof resUserInfo === 'number') {
         throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
       }
-      const userToken = resUserInfo.headers;
+      // const userToken = resUserInfo.headers;
       resetInput();
       setIsModalOpen(false);
-      const token = userToken['authorization'].slice(7);
+      // const token = userToken['authorization'].slice(7);
+      const token = cookie.get('Authorization');
       if (token) {
         const userInfo = await getUserInfo();
         login(userInfo);
