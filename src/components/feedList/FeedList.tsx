@@ -134,6 +134,7 @@ const NoPostBox = styled.div`
   align-items: center;
   justify-content: center;
   height: 75vh;
+  margin: auto;
   flex-direction: column;
 `;
 
