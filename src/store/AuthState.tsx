@@ -8,12 +8,13 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   loading: true,
 
   initializeLoginState: async () => {
-    const cookies = new Cookies();
+    // const cookies = new Cookies();
     try {
       // const accessToken = cookies.get('accessToken');
-      const accessToken = cookies.get('Authorization');
+      // const accessToken = cookies.get('Authorization');
       const userJson = localStorage.getItem('user');
-      if (accessToken && userJson) {
+      // if (accessToken && userJson) {
+      if (userJson) {
         const user = JSON.parse(userJson);
         set({
           isLoggedIn: true,
