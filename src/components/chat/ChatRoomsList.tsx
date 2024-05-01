@@ -22,8 +22,10 @@ import useSSEStore from '@/store/SSEState';
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
   onRoomNameSelect: (roomName: string) => void;
+  setIsRoomActive: React.Dispatch<React.SetStateAction<boolean>>;
+
   client: Client | null;
-}> = ({ onRoomSelect, onRoomNameSelect, client }) => {
+}> = ({ onRoomSelect, onRoomNameSelect, setIsRoomActive, client }) => {
   const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [searchChatResults, setSearchChatResults] = useState<User[]>([]);
@@ -33,27 +35,29 @@ export const ChatRoomsList: React.FC<{
   const debouncedSearchWord = useDebounce(searchWord, 300);
 
   const unreadMessageCount = useSSEStore((state) => state.unreadMessageCount);
+  const hasChanges = useSSEStore((state) => state.hasChanges);
+  const setHasChanges = useSSEStore((state) => state.setHasChanges);
 
   useEffect(() => {
+    const fetchChatRooms = async () => {
+      try {
+        const rooms = await getChatRooms();
+        const roomsWithUserImages = await Promise.all(
+          rooms.map(async (room: any) => {
+            const users = await searchUserByNickname(room.roomName);
+            const imgUrls = users.map((user: User) => user.imgUrl);
+            return { ...room, imgUrls };
+          }),
+        );
+        setChatRooms(roomsWithUserImages);
+      } catch (error) {
+        console.error('Failed to load chat rooms or user data', error);
+        setChatRooms([]);
+      }
+    };
     fetchChatRooms();
-  }, [unreadMessageCount]);
-
-  const fetchChatRooms = async () => {
-    try {
-      const rooms = await getChatRooms();
-      const roomsWithUserImages = await Promise.all(
-        rooms.map(async (room: any) => {
-          const users = await searchUserByNickname(room.roomName);
-          const imgUrls = users.map((user: User) => user.imgUrl);
-          return { ...room, imgUrls };
-        }),
-      );
-      setChatRooms(roomsWithUserImages);
-    } catch (error) {
-      console.error('Failed to load chat rooms or user data', error);
-      setChatRooms([]);
-    }
-  };
+    setHasChanges(false);
+  }, [unreadMessageCount, hasChanges]);
 
   useEffect(() => {
     const fetchSearchUsers = async () => {
@@ -108,6 +112,7 @@ export const ChatRoomsList: React.FC<{
 
   const handleRoomClick = (roomId: number, roomName: string) => {
     setSearchWord('');
+    setIsRoomActive(true);
     if (client) {
       const messageForm = {
         sender: localStorage.getItem('nickname')!,
@@ -156,7 +161,6 @@ export const ChatRoomsList: React.FC<{
                 user.nickname === localStorage.getItem('nickname');
 
               if (!isRoomExist && !isCurrentUser) {
-                // 추가 수정: 현재 사용자일 때도 필터링
                 return (
                   <div key={index}>
                     <Row>

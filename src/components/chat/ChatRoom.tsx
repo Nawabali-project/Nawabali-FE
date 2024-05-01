@@ -10,10 +10,12 @@ import {
 } from '@/interfaces/chat/chat.interface';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import useSSEStore from '@/store/SSEState';
 export const ChatRoom: React.FC<{
   roomId: number;
   roomName: string;
   client: Client | null;
+  isRoomActive: boolean;
 }> = ({ roomId, roomName, client }) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
@@ -24,6 +26,7 @@ export const ChatRoom: React.FC<{
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const setHasChanges = useSSEStore((state) => state.setHasChanges);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -58,6 +61,7 @@ export const ChatRoom: React.FC<{
               createdMessageAt: new Date(parsedMessage.createdMessageAt),
             };
             setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+            setHasChanges(true);
           } catch (error) {
             console.error('Failed to parse message:', message.body, error);
           }
