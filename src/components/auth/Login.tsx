@@ -29,6 +29,8 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   const cookie = new Cookies();
 
   const handleSubmit = async () => {
+    console.log('로그인버튼 눌렸다...');
+
     const user = { email, password };
     try {
       const resUserInfo = await apiLogin(user);
