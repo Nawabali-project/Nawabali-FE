@@ -1,5 +1,8 @@
 import { authInstance } from '@/axios';
-import { MessageForm } from '@/interfaces/chat/chat.interface';
+import {
+  MessageForm,
+  ReturnedMessageForm,
+} from '@/interfaces/chat/chat.interface';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from 'react-router-dom';
 import { Client } from '@stomp/stompjs';
@@ -8,7 +11,7 @@ import { Cookies } from 'react-cookie';
 export const getChatRooms = async () => {
   try {
     const response = await authInstance.get('/chat/rooms');
-    return response.data.content;
+    return response.data;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
   }
@@ -55,10 +58,22 @@ export const sendMessage = (
   });
 };
 
-export const showChat = async (roomId: number) => {
+export const showChat = async ({
+  pageParam,
+  roomId,
+}: {
+  pageParam: number;
+  roomId: number;
+}): Promise<ReturnedMessageForm[]> => {
+  const pageSize = 15;
+  const pageNumber = pageParam;
+  const startIndex = (pageNumber - 1) * pageSize;
+
   try {
-    const response = await authInstance.get(`/chat/room/${roomId}/message`);
-    return response.data;
+    const response = await authInstance.get(
+      `/chat/room/${roomId}/message?page=${startIndex}&size=${pageSize}`,
+    );
+    return response.data.content;
   } catch (error) {
     throw error as AxiosError<ErrorResponse>;
   }

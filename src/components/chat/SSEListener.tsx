@@ -27,7 +27,7 @@ const SSEListener: React.FC = () => {
       }
 
       eventSourceRef.current = new EventSourcePolyfill(
-        'https://hhboard.shop/notification/subscribe',
+        `${import.meta.env.VITE_APP_BASE_URL}/notification/subscribe`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

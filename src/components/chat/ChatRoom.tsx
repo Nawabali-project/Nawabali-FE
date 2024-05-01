@@ -19,6 +19,7 @@ export const ChatRoom: React.FC<{
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [pageNumber, setPageNumber] = useState<number>(1);
   const accessToken = new Cookies().get('accessToken');
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -74,19 +75,34 @@ export const ChatRoom: React.FC<{
 
   useEffect(() => {
     setIsLoading(true);
+
     const fetchMessages = async () => {
       try {
-        const fetchedMessages = await showChat(roomId);
-        if (fetchedMessages && fetchedMessages.length > 0) {
-          const sortedMessages = fetchedMessages.sort(
-            (a: ReturnedMessageForm, b: ReturnedMessageForm) =>
-              new Date(a.createdMessageAt).getTime() -
-              new Date(b.createdMessageAt).getTime(),
-          );
-          setMessages(sortedMessages);
+        const fetchedMessages = await showChat({
+          pageParam: pageNumber,
+          roomId,
+        });
+        const hasNextPage = fetchedMessages.length > 0;
+
+        const sortedMessages = fetchedMessages.sort(
+          (a: ReturnedMessageForm, b: ReturnedMessageForm) =>
+            new Date(a.createdMessageAt).getTime() -
+            new Date(b.createdMessageAt).getTime(),
+        );
+
+        if (hasNextPage && chatEndRef.current) {
+          const chatDiv = chatEndRef.current.parentElement;
+
+          if (chatDiv && chatDiv.scrollTop === 0) {
+            setMessages((prevMessages) => [...prevMessages, ...sortedMessages]);
+            setPageNumber((prevPageNumber) => prevPageNumber + 1);
+          }
         } else {
-          setMessages([]);
-          console.error('메시지가 없습니다.');
+          if (pageNumber === 1) {
+            setMessages(fetchedMessages);
+          } else {
+            setMessages([]);
+          }
         }
       } catch (error) {
         console.error('메시지를 불러오는데 실패했습니다', error);
@@ -98,7 +114,7 @@ export const ChatRoom: React.FC<{
     if (roomId) {
       fetchMessages();
     }
-  }, [roomId]);
+  }, [roomId, pageNumber]);
 
   useEffect(() => {
     const scrollToBottom = () => {

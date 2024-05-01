@@ -42,7 +42,6 @@ export interface NewChatRoom {
   chatRoomEnum: string;
   roomId: number;
   roomName: string;
-  roomNumber: string;
   profileImageUrl: string;
   unreadCount: number;
 }
