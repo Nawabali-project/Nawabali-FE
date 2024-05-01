@@ -7,12 +7,12 @@
 * 개발 기간: 2024년 03월 26일 ~ 05월 06일 (총 6주)
 * 기획 의도: 
 
-<br><br><br>
+<br><br>
 ## 🛠 Architecture
 ![ServiceArchitecture - Page 1 (1)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/544a2684-a5ff-4759-8617-1f3c8de7ea36)
 
 
-<br><br><br>
+<br><br>
 ## 👨‍👧‍👧 기술 스택
 <div align='left'>
   <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> 
@@ -32,7 +32,7 @@
 </div>
 
 
-<br><br><br>
+<br><br>
 ## 성능 개선 (Lighthouse)
 
 * #### 2024-04-24
