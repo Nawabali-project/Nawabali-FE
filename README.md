@@ -1,23 +1,26 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=00A3FF&height=100&section=header" />
 
-##  프로젝트 소개
+## 🏡 프로젝트 소개 🏡
+동네 기반 차세대 SNS
 ![동네방네 브로셔이미지_2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/04580244-b863-4ccc-a356-f513ba0c5a50)
 
-* 📌 사이트: https://www.dongnaebangnae.com/
+* 🔗 사이트: https://www.dongnaebangnae.com/
 * 📆 개발 기간: 2024년 03월 26일 ~ 05월 06일 (총 6주)
 * 🌱 기획 의도: 줄어든 동네 주민들과의 유대감 회복 + 동네에 대한 애정 증가
+
+
+<br><br>
+## 🧑🏻‍💻👩🏻‍💻 팀원
+
+
 
 <br><br>
 ## 🛠 Architecture
 ![ServiceArchitecture - Page 1 (1)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/544a2684-a5ff-4759-8617-1f3c8de7ea36)
 
-| 주특기 | REACT & SPRING |
-| --- | --- |
-| FE Github | https://github.com/Nawabali-project/Nawabali-FE.git |
-| BE Github | https://github.com/Nawabali-project/Nawabali-BE.git |
 
 <br><br>
-## 👨‍👧‍👧 기술 스택
+## 🍀 기술 스택
 <div align='left'>
   <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> 
   <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> 
