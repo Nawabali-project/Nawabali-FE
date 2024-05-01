@@ -12,7 +12,7 @@ import {
 import Button from '@/components/button/Button';
 import useAuthStore from '@/store/AuthState';
 import { AxiosError } from 'axios';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,7 +26,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   });
 
   const { login } = useAuthStore();
-  const cookie = new Cookies();
+  // const cookie = new Cookies();
 
   const handleSubmit = async () => {
     console.log('로그인버튼 눌렸다...');
@@ -41,11 +41,11 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
       resetInput();
       setIsModalOpen(false);
       // const token = userToken['authorization'].slice(7);
-      const token = cookie.get('Authorization');
-      if (token) {
-        const userInfo = await getUserInfo();
-        login(userInfo);
-      }
+      // const token = cookie.get('Authorization');
+      // if (token) {
+      const userInfo = await getUserInfo();
+      login(userInfo);
+      // }
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         console.error(
