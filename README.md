@@ -1,13 +1,5 @@
-<div align= "center">
-    <img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=180&text=동네방네&animation=&fontColor=ffffff&fontSize=70" />
-    </div>
-    <div style="text-align: left;">
-    <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🛠️ Tech Stacks </h2> <br> 
-    <div style="margin: ; text-align: left;" "text-align: left;"> </div>
-    </div>
-    
-## 🏡 프로젝트 소개 🏡
-동네 기반 SNS <br>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=180&text=동네방네&animation=&fontColor=ffffff&fontSize=70" />
+
 ![동네방네 브로셔이미지_2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/04580244-b863-4ccc-a356-f513ba0c5a50)
 
 * 🔗 사이트: https://www.dongnaebangnae.com/
