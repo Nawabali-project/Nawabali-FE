@@ -1,2 +1,2 @@
-<img src="https://capsule-render.vercel.app/api?type=wave&color=00A3FF&height=150&section=header&text=동네방네&fontSize=16" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=00A3FF&height=100&section=header" />
 # 👉 동네방네 사용해보기
