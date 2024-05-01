@@ -30,17 +30,13 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     const user = { email, password };
     try {
       const resUserInfo = await apiLogin(user);
-      if (!resUserInfo || typeof resUserInfo === 'number') {
+      if (!resUserInfo) {
         throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
       }
-      const userToken = resUserInfo.headers;
       resetInput();
       setIsModalOpen(false);
-      const token = userToken['authorization'].slice(7);
-      if (token) {
-        const userInfo = await getUserInfo();
-        login(userInfo);
-      }
+      const userInfo = await getUserInfo();
+      login(userInfo);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error('로그인 오류:', error.message);
@@ -53,6 +49,34 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
       }
     }
   };
+
+  // const handleSubmit = async () => {
+  //   const user = { email, password };
+  //   try {
+  //     const resUserInfo = await apiLogin(user);
+  //     if (!resUserInfo || typeof resUserInfo === 'number') {
+  //       throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
+  //     }
+  //     const userToken = resUserInfo.headers;
+  //     resetInput();
+  //     setIsModalOpen(false);
+  //     const token = userToken['authorization'].slice(7);
+  //     if (token) {
+  //       const userInfo = await getUserInfo();
+  //       login(userInfo);
+  //     }
+  //   } catch (error) {
+  //     if (error instanceof AxiosError) {
+  //       console.error('로그인 오류:', error.message);
+  //       alert(
+  //         '로그인 실패: ' + (error.response?.data.message || error.message),
+  //       );
+  //     } else {
+  //       console.error('Unexpected error:', error);
+  //       alert('로그인 실패: 알 수 없는 오류');
+  //     }
+  //   }
+  // };
 
   const handleKakaoLogin = async () => {
     const REDIRECT_URI = `${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
