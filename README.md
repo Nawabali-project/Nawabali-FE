@@ -13,7 +13,7 @@
   <tbody>
     <tr>
       <td align="center">
-        <a href="https://github.com/inhachoi"><b>최경일</b></a><br>
+        <a href="https://github.com/inhachoi">최경일</a><br />
         <img src="https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/387265705_688108082998779_5231387308078165349_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=VqkETrfmL_EQ7kNvgEz6-fE&edm=AGXveE0BAAAA&ccb=7-5&oh=00_AfAokniF-Ao9PXx3EFNym1c8mseIwhiJYnrkuLYkRZ5aaA&oe=66382C92&_nc_sid=cf751b" width="200px;" alt=""/><br />
          돈가스 좋아해요? <br />
         </td>
