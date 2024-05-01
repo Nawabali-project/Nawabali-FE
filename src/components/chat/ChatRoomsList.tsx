@@ -18,6 +18,7 @@ import { Client } from '@stomp/stompjs';
 import Button from '../button/Button';
 import { useDebounce } from '@/hooks/useDebounce';
 import useSSEStore from '@/store/SSEState';
+import { Title } from '@/styles/CommonSytle';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
@@ -139,7 +140,7 @@ export const ChatRoomsList: React.FC<{
 
   return (
     <ChatList>
-      <h1>채팅방이욤</h1>
+      <Title style={{ textAlign: 'center', margin: '10px 0' }}>채팅 목록</Title>
       <div>
         <SearchDiv>
           <IoIosSearch style={{ color: 'gray' }} />
@@ -318,7 +319,7 @@ const SearchDiv = styled.div`
   justify-content: flex-start;
   align-items: center;
   padding: 0 10px 0 5px;
-  margin: 0 auto;
+  margin: 10px auto;
 
   input {
     width: 90%;
