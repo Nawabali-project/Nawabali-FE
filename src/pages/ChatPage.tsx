@@ -18,7 +18,7 @@ function ChatPage() {
         `${import.meta.env.VITE_APP_BASE_URL}/ws-stomp`,
       );
       const client = Stomp.over(socket);
-      const accessToken = new Cookies().get('accessToken');
+      const accessToken = new Cookies().get('accessToken').slice(7);
 
       client.connect(
         { Authorization: `Bearer ${accessToken}` },

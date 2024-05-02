@@ -5,7 +5,7 @@ import useSSEStore from '@/store/SSEState';
 
 const SSEListener: React.FC = () => {
   const cookies = new Cookies();
-  const accessToken = cookies.get('accessToken');
+  const accessToken = cookies.get('accessToken').slice(7);
   const [, setIsConnected] = useState<boolean>(false);
 
   const { setUnreadMessageCount } = useSSEStore((state) => ({
