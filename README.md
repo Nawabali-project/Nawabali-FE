@@ -53,9 +53,11 @@
 
 <br><br>
 ## 🔎 주요기능
-🌟 간단한 로그인 및 회원가입
+<detail>
+<summary>🌟 간단한 로그인 및 회원가입</summary>
 * 로컬 로그인 / 회원가입 (이메일 인증기능)
 * 소셜 로그인 (kakao)
+</detail>
   
 🌟 꾸며진 전체 지도 한눈에 확인
 * 지도 API 연동 (kakao)
@@ -108,13 +110,12 @@
 ![스크린샷 2024-05-01 235123](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/5f937f8d-3b2d-44ad-9be0-ec1b61fce0e9)
 
 * #### 개선 사항
-  * 동적 import로 첫 로딩시간 개 (React.lazy)
+  * 동적 import로 첫 로딩시간 개선 (React.lazy)
   * 이미지 최적화로 속도 개선 (사이즈 조정 및 압축 / CLS / Lazy Loading / Pre Loading )
 
 * #### 2024-05-01
 ![스크린샷 2024-05-01 235255](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6086b80d-3303-4223-858f-c9256937e268)
 
 
----
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,180:6799fe&height=100&section=footer" />
