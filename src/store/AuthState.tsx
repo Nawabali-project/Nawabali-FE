@@ -1,5 +1,5 @@
 import { createWithEqualityFn } from 'zustand/traditional';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 import { AuthState } from '@/interfaces/user/user.interface';
 
 export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
@@ -26,23 +26,28 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
       }
     } catch (error) {
       console.error('Failed to initialize login state:', error);
-      set({ loading: false });
+      set({ isLoggedIn: false, loading: false, user: null });
     }
   },
 
-  login: () => {
-    set({ isLoggedIn: true });
+  login: (user) => {
+    set({ isLoggedIn: true, user });
+    localStorage.setItem('user', JSON.stringify(user));
   },
 
   logout: () => {
     localStorage.clear();
-    new Cookies().remove('accessToken');
+    // new Cookies().remove('accessToken');
     set({ isLoggedIn: false, user: null });
     alert('로그아웃 성공!');
   },
 
-  setIsLoggedIn: (isLoggedIn: boolean) => {
-    set({ isLoggedIn });
+  setIsLoggedIn: (isLoggedIn: boolean, user = null) => {
+    set({ isLoggedIn, user });
+  },
+
+  setUser: (user) => {
+    set({ user });
   },
 }));
 

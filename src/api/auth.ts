@@ -5,7 +5,7 @@ import type {
   LoginUser,
   VarifyCheck,
 } from '@/interfaces/main/auth/auth.interface';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { useNavigate } from 'react-router-dom';
 export interface ErrorResponse {
@@ -81,6 +81,7 @@ export const sendVerificationCode = async (email: string) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
+
 export const varifyNumberCheck = async (user: VarifyCheck) => {
   const { email, code } = user;
   try {
@@ -93,6 +94,7 @@ export const varifyNumberCheck = async (user: VarifyCheck) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
+
 export const nicknameDupCheck = async (nickname: string) => {
   try {
     const res = await instance.get(
@@ -103,19 +105,46 @@ export const nicknameDupCheck = async (nickname: string) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
+
 export const useLogout = () => {
   const navigate = useNavigate();
-  const cookie = new Cookies();
+  // const cookie = new Cookies();
   return async () => {
-    const token = cookie.get('accessToken');
-    const param = `Bearer ${token}`;
+    // const token = cookie.get('accessToken');
+    // const param = `Bearer ${token}`;
     try {
-      await instance.post(`/users/logout?accessToken=${param}`);
+      // await instance.post(`/users/logout?accessToken=${param}`);
+      await authInstance.post(`/users/logout`);
     } catch (error) {
       console.error('Logout failed:', error);
     }
-    cookie.remove('accessToken', { path: '/' });
+    // cookie.remove('', { path: '/' });
     useAuthStore.getState().logout();
     navigate('/');
   };
+};
+
+export const checkAuthStatus = async () => {
+  try {
+    const response = await authInstance.get('/users/authenticate');
+    const { isAuthenticated, user } = response.data;
+
+    if (isAuthenticated) {
+      return {
+        isLoggedIn: true,
+        user: user,
+      };
+    } else {
+      return {
+        isLoggedIn: false,
+        user: null,
+      };
+    }
+  } catch (error) {
+    console.error('Error checking authentication status:', error);
+    return {
+      isLoggedIn: false,
+      user: null,
+    };
+  }
 };

@@ -41,4 +41,5 @@ export interface AuthState {
   login: (user: AuthUser) => void;
   logout: () => void;
   loading: boolean;
+  setUser: (user: AuthUser | null) => void;
 }
