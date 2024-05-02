@@ -12,7 +12,7 @@ import {
 import Button from '@/components/button/Button';
 import useAuthStore from '@/store/AuthState';
 import { AxiosError } from 'axios';
-// import { Cookies } from 'react-cookie';
+import { Cookies } from 'react-cookie';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,7 +26,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
   });
 
   const { setIsLoggedIn, login } = useAuthStore();
-  // const cookie = new Cookies();
+  const cookie = new Cookies();
 
   const handleSubmit = async () => {
     console.log('로그인버튼 눌렸다...');
@@ -35,10 +35,15 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     try {
       const resUserInfo = await apiLogin(user);
 
-      // const userToken = resUserInfo.headers;
-      // const token = userToken['authorization'].slice(7);
-      // const token = cookie.get('Authorization');
-      // if (token) {
+      const accessToken = resUserInfo.headers['authorization'];
+
+      if (accessToken) {
+        cookie.set('accessToken', accessToken, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        });
+      }
       if (resUserInfo.data.message === '회원 로그인에 성공') {
         setIsLoggedIn(true);
         const userInfo = await getUserInfo();

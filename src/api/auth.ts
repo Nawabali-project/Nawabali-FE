@@ -8,6 +8,7 @@ import type {
 // import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 export interface ErrorResponse {
   statusCode: number;
   message: string;
@@ -108,43 +109,44 @@ export const nicknameDupCheck = async (nickname: string) => {
 
 export const useLogout = () => {
   const navigate = useNavigate();
-  // const cookie = new Cookies();
   return async () => {
-    // const token = cookie.get('accessToken');
-    // const param = `Bearer ${token}`;
     try {
-      // await instance.post(`/users/logout?accessToken=${param}`);
       await authInstance.post(`/users/logout`);
     } catch (error) {
       console.error('Logout failed:', error);
     }
-    // cookie.remove('', { path: '/' });
     useAuthStore.getState().logout();
     navigate('/');
   };
 };
 
 export const checkAuthStatus = async () => {
+  const cookie = new Cookies();
   try {
     const response = await authInstance.get('/users/authenticate');
-    const { isAuthenticated, user } = response.data;
 
-    if (isAuthenticated) {
+    if (response.data) {
+      const accessToken = response.headers['authorization'];
+
+      if (accessToken) {
+        cookie.set('accessToken', accessToken, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        });
+      }
       return {
         isLoggedIn: true,
-        user: user,
       };
     } else {
       return {
         isLoggedIn: false,
-        user: null,
       };
     }
   } catch (error) {
     console.error('Error checking authentication status:', error);
     return {
       isLoggedIn: false,
-      user: null,
     };
   }
 };
