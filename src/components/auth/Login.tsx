@@ -25,7 +25,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     password: '',
   });
 
-  const { login } = useAuthStore();
+  const { setIsLoggedIn, login } = useAuthStore();
   // const cookie = new Cookies();
 
   const handleSubmit = async () => {
@@ -34,17 +34,20 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     const user = { email, password };
     try {
       const resUserInfo = await apiLogin(user);
-      if (!resUserInfo || typeof resUserInfo === 'number') {
-        throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
-      }
+
       // const userToken = resUserInfo.headers;
-      resetInput();
-      setIsModalOpen(false);
       // const token = userToken['authorization'].slice(7);
       // const token = cookie.get('Authorization');
       // if (token) {
-      const userInfo = await getUserInfo();
-      login(userInfo);
+      if (resUserInfo.data.message === '회원 로그인에 성공') {
+        setIsLoggedIn(true);
+        const userInfo = await getUserInfo();
+        login(userInfo);
+        resetInput();
+        setIsModalOpen(false);
+      } else {
+        throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
+      }
       // }
     } catch (error) {
       if (error instanceof AxiosError && error.response) {

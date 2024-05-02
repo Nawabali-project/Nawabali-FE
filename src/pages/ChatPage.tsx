@@ -6,7 +6,7 @@ import { Stomp, Client } from '@stomp/stompjs';
 import { Cookies } from 'react-cookie';
 import NoChat from '@/components/chat/NoChat';
 
-function ChatMain() {
+function ChatPage() {
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
   const [selectedRoomName, setSelectedRoomName] = useState<string>('');
   const [stompClient, setStompClient] = useState<Client | null>(null);
@@ -69,4 +69,4 @@ function ChatMain() {
   );
 }
 
-export default ChatMain;
+export default ChatPage;

@@ -17,8 +17,8 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
 import { useNavigate } from 'react-router-dom';
-import { Cookies } from 'react-cookie';
-import { getUserInfo } from '@/api/auth';
+// import { Cookies } from 'react-cookie';
+import { checkAuthStatus, getUserInfo } from '@/api/auth';
 import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '@/store/AuthState';
 import SkeletonMap from '@/components/skeleton/SkeletonMap';
@@ -31,12 +31,11 @@ const MapPage = () => {
     null,
   );
   const navigate = useNavigate();
-  const cookie = new Cookies();
-  const { setIsLoggedIn } = useAuthStore();
+  // const cookie = new Cookies();
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
-  const { isLoggedIn } = useAuthStore();
+  const { setIsLoggedIn, isLoggedIn, setUser } = useAuthStore();
 
   // 스켈레톤 UI
   useEffect(() => {
@@ -45,22 +44,37 @@ const MapPage = () => {
     }, 1000);
   }, []);
 
-  useEffect(() => {
-    // const urlParams = new URLSearchParams(location.search);
-    // console.log(urlParams);
-    const token = cookie.get('Authorization');
-    const accesstoken = cookie.get('accessToken');
-    console.log('야 토큰내놔', token);
-    console.log('야 토큰내놔', accesstoken);
+  // useEffect(() => {
+  // const urlParams = new URLSearchParams(location.search);
+  // console.log(urlParams);
+  // const token = cookie.get('Authorization');
+  // const accesstoken = cookie.get('accessToken');
+  // console.log('야 토큰내놔', token);
+  // console.log('야 토큰내놔', accesstoken);
 
-    if (token) {
-      cookie.set('accessToken', token.slice(7), {
-        path: '/',
-        secure: true,
-      });
-      setIsLoggedIn(true);
-    }
-  }, []);
+  //   if (token) {
+  //     cookie.set('accessToken', token.slice(7), {
+  //       path: '/',
+  //       secure: true,
+  //     });
+  //     setIsLoggedIn(true);
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const authStatus = await checkAuthStatus();
+      if (authStatus.isLoggedIn) {
+        setIsLoggedIn(true);
+        setUser(authStatus.user);
+      } else {
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    };
+
+    initializeAuth();
+  }, [setIsLoggedIn, setUser]);
 
   // 유저정보
   const { isSuccess } = useQuery({

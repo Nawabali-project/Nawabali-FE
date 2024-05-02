@@ -8,6 +8,9 @@ import { ErrorResponse } from 'react-router-dom';
 import { Client } from '@stomp/stompjs';
 import { Cookies } from 'react-cookie';
 
+const cookie = new Cookies();
+const accessToken = cookie.get('accessToken');
+
 export const getChatRooms = async () => {
   try {
     const response = await authInstance.get('/chat/rooms');
@@ -43,18 +46,25 @@ export const sendMessage = (
   roomId: number,
   client: Client | null,
   chatMessage: MessageForm,
-) => {
-  const accessToken = new Cookies().get('accessToken');
-
-  if (!client?.connected) {
-    console.error('WebSocket connection is not active.');
-    return;
-  }
-
-  client.publish({
-    destination: `/pub/chat/message/${roomId}`,
-    headers: { Authorization: `Bearer ${accessToken}` },
-    body: JSON.stringify(chatMessage),
+): Promise<void> => {
+  return new Promise<void>((resolve, reject) => {
+    if (client && client.connected) {
+      console.log('Publishing message:', chatMessage);
+      try {
+        client.publish({
+          destination: `/pub/chat/message/${roomId}`,
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify(chatMessage),
+        });
+        resolve();
+      } catch (error) {
+        console.error('Error publishing message:', error);
+        reject(error);
+      }
+    } else {
+      console.error('WebSocket connection is not active.');
+      reject('WebSocket connection is not active.');
+    }
   });
 };
 
