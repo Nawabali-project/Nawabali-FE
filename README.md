@@ -107,7 +107,7 @@
 * #### 2024-04-24
 ![스크린샷 2024-05-01 235123](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/5f937f8d-3b2d-44ad-9be0-ec1b61fce0e9)
 
-* 개선 사항
+* #### 개선 사항
   * 동적 import로 첫 로딩시간 개 (React.lazy)
   * 이미지 최적화로 속도 개선 (사이즈 조정 및 압축 / CLS / Lazy Loading / Pre Loading )
 
