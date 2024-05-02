@@ -20,10 +20,11 @@ function ChatPage() {
       );
       const client = Stomp.over(socket);
       const rawToken = cookie.get('accessToken');
-      const decodedToken = decodeURIComponent(rawToken);
-      const accessToken = decodedToken.startsWith('Bearer ')
-        ? decodedToken.substring('Bearer '.length)
-        : decodedToken;
+      // const accessToken = decodedToken.startsWith('Bearer ')
+      const accessToken = decodeURIComponent(rawToken).replace(
+        /^Bearer%2B/,
+        '',
+      );
 
       client.connect(
         { Authorization: `Bearer ${accessToken}` },
