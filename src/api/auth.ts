@@ -124,8 +124,10 @@ export const checkAuthStatus = async () => {
   const cookie = new Cookies();
   try {
     const response = await authInstance.get('/users/authenticate');
+    const { authenticated } = response.data;
+    console.log('그래나다', authenticated);
 
-    if (response.data) {
+    if (authenticated) {
       const accessToken = response.headers['authorization'];
 
       if (accessToken) {

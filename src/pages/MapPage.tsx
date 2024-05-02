@@ -47,15 +47,11 @@ const MapPage = () => {
   useEffect(() => {
     const initializeAuth = async () => {
       await checkAuthStatus();
-      if (isLoggedIn) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
+      setIsLoggedIn(true);
     };
 
     initializeAuth();
-  }, [isLoggedIn, setIsLoggedIn]);
+  }, [setIsLoggedIn]);
 
   // 유저정보
   const { isSuccess } = useQuery({
