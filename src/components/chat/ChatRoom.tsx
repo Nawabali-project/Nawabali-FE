@@ -10,6 +10,8 @@ import {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import useSSEStore from '@/store/SSEState';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInView } from 'react-intersection-observer';
 export const ChatRoom: React.FC<{
   roomId: number;
   roomName: string;
@@ -19,14 +21,35 @@ export const ChatRoom: React.FC<{
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
   const [userInfo, setUserInfo] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pageNumber, setPageNumber] = useState<number>(1);
   const [isComposing, setIsComposing] = useState(false);
   const accessToken = new Cookies().get('accessToken');
   const myNickname = localStorage.getItem('nickname');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
+  const { ref, inView } = useInView();
+
+  const { data, status, error, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['scrollMessages', roomId],
+    queryFn: ({ pageParam = 0 }) =>
+      showChat({
+        pageParam,
+        roomId,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.last) {
+        return lastPage.pageable.pageNumber + 1;
+      }
+      return undefined;
+    },
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -63,26 +86,6 @@ export const ChatRoom: React.FC<{
       return () => subscription.unsubscribe();
     }
   }, [roomId, client?.connected, accessToken, setHasChanges]);
-
-  useEffect(() => {
-    const fetchMessages = async () => {
-      const fetchedMessages = await showChat({ pageParam: pageNumber, roomId });
-      if (fetchedMessages.length > 0) {
-        const sortedMessages = fetchedMessages.sort(
-          (a, b) =>
-            new Date(a.createdMessageAt).getTime() -
-            new Date(b.createdMessageAt).getTime(),
-        );
-        setMessages((prev) => [...prev, ...sortedMessages]);
-        setPageNumber((prev) => prev + 1);
-      }
-      setIsLoading(false);
-    };
-
-    if (roomId) {
-      fetchMessages();
-    }
-  }, [roomId, pageNumber]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -143,71 +146,85 @@ export const ChatRoom: React.FC<{
     return `${month}.${day}(${dayOfWeek}) ${hour}:${minute}`;
   }
 
+  if (status === 'pending') {
+    return <div>로딩중...</div>;
+  }
+  if (status === 'error') {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <ChatContainer>
-      {isLoading ? (
-        <div>로딩 중...</div>
-      ) : (
-        <>
-          {roomName && userInfo && (
-            <UserInfo>
-              <UserProfileImg
-                src={userInfo?.imgUrl}
-                alt={`${roomName}의 프로필`}
-                onClick={() => goToUserProfile(roomName)}
-              />
-              <h3>{roomName}</h3>
-            </UserInfo>
-          )}
-          <Chat>
-            {messages.map((msg, index) =>
-              msg.sender === myNickname ? (
-                <Row
-                  key={index}
-                  style={{ alignSelf: 'flex-end', minWidth: '290px' }}
-                >
-                  <ProfileImg
-                    src={localStorage.getItem('profileImageUrl')?.split('"')[1]}
-                    alt="내 프로필"
-                  />
-                  <MyMessage>
-                    <span>{msg.message}</span>
-                    <div
-                      style={{
-                        fontSize: '12px',
-                        color: '#dfdfdf',
-                        width: '50px',
-                      }}
-                    >
-                      {formatMessageDate(msg.createdMessageAt)}
-                    </div>
-                  </MyMessage>
-                </Row>
-              ) : (
-                <Row
-                  key={index}
-                  style={{ alignSelf: 'flex-start', minWidth: '290px' }}
-                >
-                  <ProfileImg src={userInfo?.imgUrl} alt={`상대방 프로필`} />
-                  <OtherMessage>
-                    {msg.message}
-                    <div
-                      style={{
-                        fontSize: '12px',
-                        color: '#3f3f3f',
-                        width: '50px',
-                      }}
-                    >
-                      {formatMessageDate(msg.createdMessageAt)}
-                    </div>
-                  </OtherMessage>
-                </Row>
-              ),
-            )}
-            <div ref={chatEndRef} />
-          </Chat>
-        </>
-      )}
+      <>
+        {roomName && userInfo && (
+          <UserInfo>
+            <UserProfileImg
+              src={userInfo?.imgUrl}
+              alt={`${roomName}의 프로필`}
+              onClick={() => goToUserProfile(roomName)}
+            />
+            <h3>{roomName}</h3>
+          </UserInfo>
+        )}
+
+        <Chat>
+          {data &&
+            data.pages.map((page: any, pageIndex) => {
+              console.log('page:', page);
+              return page.content.map((msg: any, index: number) => {
+                console.log('message:', msg);
+                return msg.sender === myNickname ? (
+                  <Row
+                    ref={pageIndex === data.pages.length - 1 ? ref : null}
+                    key={index}
+                    style={{ alignSelf: 'flex-end', minWidth: '290px' }}
+                  >
+                    <ProfileImg
+                      src={
+                        localStorage.getItem('profileImageUrl')?.split('"')[1]
+                      }
+                      alt="내 프로필"
+                    />
+                    <MyMessage>
+                      <span>{msg.message}</span>
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          color: '#dfdfdf',
+                          width: '50px',
+                        }}
+                      >
+                        {formatMessageDate(msg.createdMessageAt)}
+                      </div>
+                    </MyMessage>
+                  </Row>
+                ) : (
+                  <Row
+                    ref={pageIndex === data.pages.length - 1 ? ref : null}
+                    key={index}
+                    style={{ alignSelf: 'flex-start', minWidth: '290px' }}
+                  >
+                    <ProfileImg src={userInfo?.imgUrl} alt={`상대방 프로필`} />
+                    <OtherMessage>
+                      {msg.message}
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          color: '#3f3f3f',
+                          width: '50px',
+                        }}
+                      >
+                        {formatMessageDate(msg.createdMessageAt)}
+                      </div>
+                    </OtherMessage>
+                  </Row>
+                );
+              });
+            })}
+        </Chat>
+
+        <div ref={chatEndRef} />
+      </>
 
       <InputDiv>
         <input

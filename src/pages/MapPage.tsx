@@ -35,7 +35,7 @@ const MapPage = () => {
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
-  const { setIsLoggedIn, isLoggedIn, setUser } = useAuthStore();
+  const { setIsLoggedIn, isLoggedIn } = useAuthStore();
 
   // 스켈레톤 UI
   useEffect(() => {
@@ -44,37 +44,18 @@ const MapPage = () => {
     }, 1000);
   }, []);
 
-  // useEffect(() => {
-  // const urlParams = new URLSearchParams(location.search);
-  // console.log(urlParams);
-  // const token = cookie.get('Authorization');
-  // const accesstoken = cookie.get('accessToken');
-  // console.log('야 토큰내놔', token);
-  // console.log('야 토큰내놔', accesstoken);
-
-  //   if (token) {
-  //     cookie.set('accessToken', token.slice(7), {
-  //       path: '/',
-  //       secure: true,
-  //     });
-  //     setIsLoggedIn(true);
-  //   }
-  // }, []);
-
   useEffect(() => {
     const initializeAuth = async () => {
-      const authStatus = await checkAuthStatus();
-      if (authStatus.isLoggedIn) {
+      await checkAuthStatus();
+      if (isLoggedIn) {
         setIsLoggedIn(true);
-        setUser(authStatus.user);
       } else {
         setIsLoggedIn(false);
-        setUser(null);
       }
     };
 
     initializeAuth();
-  }, [setIsLoggedIn, setUser]);
+  }, [isLoggedIn, setIsLoggedIn]);
 
   // 유저정보
   const { isSuccess } = useQuery({

@@ -8,12 +8,8 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   loading: true,
 
   initializeLoginState: async () => {
-    // const cookies = new Cookies();
     try {
-      // const accessToken = cookies.get('accessToken');
-      // const accessToken = cookies.get('Authorization');
       const userJson = localStorage.getItem('user');
-      // if (accessToken && userJson) {
       if (userJson) {
         const user = JSON.parse(userJson);
         set({
@@ -37,17 +33,12 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
 
   logout: () => {
     localStorage.clear();
-    // new Cookies().remove('accessToken');
     set({ isLoggedIn: false, user: null });
     alert('로그아웃 성공!');
   },
 
   setIsLoggedIn: (isLoggedIn: boolean, user = null) => {
     set({ isLoggedIn, user });
-  },
-
-  setUser: (user) => {
-    set({ user });
   },
 }));
 
