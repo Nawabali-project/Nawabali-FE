@@ -65,7 +65,8 @@
 - 로컬 로그인 / 회원가입 (이메일 인증기능)
 - 소셜 로그인 (kakao)
 
-</details><br>
+<br>
+</details>
 
 
 <details>
@@ -76,7 +77,8 @@
 - 게시물 작성시 해당위치에 게시물이 놓아짐
 - 지역 / 카테고리 별로 이동 및 분류 가능
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 리스트로 나열된 게시글 한눈에 확인</summary>
@@ -84,7 +86,8 @@
 
 - 지역 / 카테고리 별로 분류 가능
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 게시물 CRUD</summary>
@@ -92,7 +95,7 @@
 
 - 게시물 작성은 본인 동네에만 작성 가능
 
-</details><br>
+</details>
 
 <details>
 <summary>🌟 댓글 CRUD</summary>
@@ -100,7 +103,8 @@
 
 - 댓글을 통해 사람들과 소통
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 주민추천 / 좋아요 / 북마크 기능</summary>
@@ -110,7 +114,8 @@
 - 좋아요는 외부주민도 클릭 가능
 - 북마크를 통해 맘에 드는 게시물 저장해두기
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 상대적인 동네별 활동점수 확인을 통해 경쟁유도</summary>
@@ -121,7 +126,8 @@
 - 점수가 상대적으로 높은 지역일수록 색을 진하게 표시
 - 해당 구에 가장 많은 게시물 카테고리가 사진으로 뜸
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 인기글들을 편하게 보라고 모아준 동네뉴스 페이지</summary>
@@ -133,7 +139,8 @@
 - 다른 지역의 인기 게시글 확인
 - 카테고리별로 인기많은 동네와 해당 게시글 확인
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 마이페이지에서 레벨 확인 및 간편한 정보관리</summary>
@@ -143,7 +150,8 @@
 - 다양한 개인정보 수정 가능 (닉네임, 거주지역, 프로필 사진 ...)
 - 내가 쓴 게시물과 북마크해둔 게시물 확인 가능
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 유저와 실시간 통신</summary>
@@ -151,7 +159,8 @@
 
 - 1:1 실시간으로 익명의 유저와 소통
 
-</details><br>
+<br>
+</details>
 
 <details>
 <summary>🌟 빠르고 간편한 검색</summary>
@@ -159,6 +168,7 @@
 
 - 게시물 내용으로 빠른 검색 가능
 
+<br>
 </details>
 
   
