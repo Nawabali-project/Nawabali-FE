@@ -54,12 +54,12 @@
 <br><br>
 ## 🔎 주요기능
 
-<detail>
+<details>
 <summary>🌟 간단한 로그인 및 회원가입</summary>
 <br>
 * 로컬 로그인 / 회원가입 (이메일 인증기능)
 * 소셜 로그인 (kakao)
-</detail>
+</details>
   
 🌟 꾸며진 전체 지도 한눈에 확인
 * 지도 API 연동 (kakao)
