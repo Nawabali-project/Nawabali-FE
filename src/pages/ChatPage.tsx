@@ -11,6 +11,7 @@ function ChatPage() {
   const [selectedRoomName, setSelectedRoomName] = useState<string>('');
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [isRoomActive, setIsRoomActive] = useState(false);
+  const cookie = new Cookies();
 
   useEffect(() => {
     const connectWebSocket = () => {
@@ -18,7 +19,11 @@ function ChatPage() {
         `${import.meta.env.VITE_APP_BASE_URL}/ws-stomp`,
       );
       const client = Stomp.over(socket);
-      const accessToken = new Cookies().get('accessToken').slice(7);
+      const rawToken = cookie.get('accessToken');
+      const decodedToken = decodeURIComponent(rawToken);
+      const accessToken = decodedToken.startsWith('Bearer ')
+        ? decodedToken.substring('Bearer '.length)
+        : decodedToken;
 
       client.connect(
         { Authorization: `Bearer ${accessToken}` },
