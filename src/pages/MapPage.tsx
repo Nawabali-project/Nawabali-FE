@@ -46,8 +46,8 @@ const MapPage = () => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      await checkAuthStatus();
-      setIsLoggedIn(true);
+      const authStatus = await checkAuthStatus();
+      setIsLoggedIn(authStatus.isLoggedIn);
     };
 
     initializeAuth();
