@@ -38,7 +38,7 @@ export const ChatRoom: React.FC<{
     queryKey: ['scrollMessages', roomId],
     queryFn: ({ pageParam = 0 }) => showChat({ pageParam, roomId }),
     getNextPageParam: (lastPage) =>
-      lastPage.data.length > 0
+      lastPage && lastPage.data.length > 0
         ? lastPage.data[lastPage.data.length - 1].id
         : undefined,
     initialPageParam: 0,
