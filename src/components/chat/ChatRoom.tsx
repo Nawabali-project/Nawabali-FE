@@ -153,7 +153,7 @@ export const ChatRoom: React.FC<{
       )}
       <Chat ref={ref}>
         {messages.map((msg, index) => (
-          <MessageRow key={index}>
+          <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
             <ProfileImg
               src={
                 msg.sender === myNickname
@@ -219,14 +219,16 @@ const Chat = styled.div`
   overflow-y: auto;
 `;
 
-const MessageRow = styled.div`
+const MessageRow = styled.div<MessageProps>`
+  width: 50%;
   display: flex;
   margin-bottom: 10px;
+  justify-content: ${({ isMyMessage }) =>
+    isMyMessage ? 'flex-end' : 'flex-start'};
 `;
 
 const MessageText = styled.div<MessageProps>`
   display: flex;
-  width: 50%;
   padding: 8px 12px;
   border-radius: 18px;
   background-color: ${({ isMyMessage }) =>
@@ -236,7 +238,6 @@ const MessageText = styled.div<MessageProps>`
   word-wrap: break-word;
   justify-content: space-between;
   align-items: flex-end;
-  align-self: ${({ isMyMessage }) => (isMyMessage ? 'flex-end' : 'flex-start')};
 `;
 
 const MessageDate = styled.span`
