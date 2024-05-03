@@ -33,7 +33,8 @@
 
 <br><br>
 ## 🛠 Architecture
-![ServiceArchitecture - Page 1 (1)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/544a2684-a5ff-4759-8617-1f3c8de7ea36)
+![befe](https://github.com/Nawabali-project/Nawabali-FE/assets/133945249/94c580fb-e10b-4bfd-b7d9-041ba8dc0779)
+
 
 
 <br><br>
