@@ -1,6 +1,7 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 // import { Cookies } from 'react-cookie';
 import { AuthState } from '@/interfaces/user/user.interface';
+import { Cookies } from 'react-cookie';
 
 export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   isLoggedIn: false,
@@ -32,6 +33,7 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   },
 
   logout: () => {
+    new Cookies().remove('accessToken');
     localStorage.clear();
     set({ isLoggedIn: false, user: null });
     alert('로그아웃 성공!');
