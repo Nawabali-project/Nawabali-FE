@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Client, Message } from '@stomp/stompjs';
 import { searchUserByNickname, sendMessage, showChat } from '@/api/chat';
 import { Cookies } from 'react-cookie';
@@ -28,6 +28,7 @@ export const ChatRoom: React.FC<{
   const myNickname = localStorage.getItem('nickname');
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -37,8 +38,8 @@ export const ChatRoom: React.FC<{
     queryKey: ['scrollMessages', roomId],
     queryFn: ({ pageParam = 0 }) => showChat({ pageParam, roomId }),
     getNextPageParam: (lastPage) =>
-      lastPage.previousPageNumber >= 0
-        ? lastPage.previousPageNumber
+      lastPage.data.length > 0
+        ? lastPage.data[lastPage.data.length - 1].id
         : undefined,
     initialPageParam: 0,
   });
@@ -139,6 +140,12 @@ export const ChatRoom: React.FC<{
     return `${formattedMonth}.${formattedDay} ${formattedHour}:${formattedMinute}`;
   };
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   return (
     <ChatContainer>
       {roomName && userInfo && (
@@ -157,7 +164,7 @@ export const ChatRoom: React.FC<{
             <ProfileImg
               src={
                 msg.sender === myNickname
-                  ? localStorage.getItem('profileImageUrl')!.replace('"', '')
+                  ? localStorage.getItem('profileImageUrl')!.split('"')[1]
                   : userInfo?.imgUrl
               }
             />
@@ -169,6 +176,7 @@ export const ChatRoom: React.FC<{
             </MessageText>
           </MessageRow>
         ))}
+        <div ref={messagesEndRef} />
       </Chat>
       <InputDiv>
         <Input
