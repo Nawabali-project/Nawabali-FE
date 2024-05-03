@@ -106,16 +106,14 @@ const CustomMap = ({
 
   // 지도에 커스텀 오버레이
   useEffect(() => {
-    if (map && data?.data?.content.length) {
+    if (map && data?.data?.length) {
       overlays.forEach((overlay) => overlay.setMap(null));
       setOverlays([]);
 
       const filteredPosts =
         clickedCategory === null
-          ? data.data.content
-          : data.data.content.filter(
-              (post: Post) => post.category === clickedCategory,
-            );
+          ? data.data
+          : data.data.filter((post: Post) => post.category === clickedCategory);
 
       const newOverlays = filteredPosts.map((post: Post) => {
         let borderColor = getBorderColor(post.category);
@@ -135,11 +133,11 @@ const CustomMap = ({
 
       setOverlays(newOverlays);
     }
-  }, [data?.data?.content, map, clickedCategory, selectedDistrict]);
+  }, [data?.data, map, clickedCategory, selectedDistrict]);
 
   // 전역 함수로 클릭시 상세보기 모달 띄움
   window.handlePostClick = (postId: number) => {
-    const post = data.data.content.find((p: Post) => p.postId === postId);
+    const post = data.data.find((p: Post) => p.postId === postId);
     if (post) {
       setSelectedPost(post);
       setIsDetailPostModalOpen(true);

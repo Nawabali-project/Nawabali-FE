@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllPosts } from '@/api/post';
+import { getAllPostsElastic } from '@/api/post';
 
 const AllPosts = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['allPosts'],
-    queryFn: getAllPosts,
+    queryFn: getAllPostsElastic,
   });
 
   if (isLoading) {
