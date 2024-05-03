@@ -230,7 +230,7 @@ const MessageRow = styled.div<MessageProps>`
 
 const MessageContent = styled.span`
   display: block;
-  width: calc(100%-30px);
+  width: calc(100% - 30px);
   word-wrap: break-word;
 `;
 
@@ -250,7 +250,7 @@ const MessageText = styled.div<MessageProps>`
 
 const MessageDate = styled.span`
   display: block;
-  width: 30px;
+  width: 32px;
   font-size: 12px;
   color: #666;
   padding-left: 6px;
