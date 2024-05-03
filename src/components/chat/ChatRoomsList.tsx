@@ -210,7 +210,9 @@ export const ChatRoomsList: React.FC<{
               >
                 <ProfileImg $profileImg={group.profileImageUrl} />
                 <div style={{ display: 'flex' }}>
-                  <div style={{ width: '100px' }}>{group.roomName}</div>
+                  <div style={{ width: '100px', paddingTop: '3px' }}>
+                    {group.roomName}
+                  </div>
                   <div>
                     {group.chatMessages
                       .slice(0, 3)
