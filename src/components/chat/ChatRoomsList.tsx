@@ -210,7 +210,9 @@ export const ChatRoomsList: React.FC<{
               >
                 <ProfileImg $profileImg={group.profileImageUrl} />
                 <div style={{ display: 'flex' }}>
-                  <div style={{ width: '100px' }}>{group.roomName}</div>
+                  <div style={{ width: '100px', paddingTop: '3px' }}>
+                    {group.roomName}
+                  </div>
                   <div>
                     {group.chatMessages
                       .slice(0, 3)
@@ -251,7 +253,9 @@ export const ChatRoomsList: React.FC<{
                 </div>
               </div>
               {room.chatMessage != '' && (
-                <ChatMessage>{room.chatMessage}</ChatMessage>
+                <ChatMessage style={{ marginLeft: '50px' }}>
+                  {room.chatMessage}
+                </ChatMessage>
               )}
             </div>
           </ChatRooms>
@@ -358,9 +362,8 @@ const UserNicknamesDiv = styled.div`
 
 const ChatMessage = styled.span`
   display: block;
-  width: 85%;
+  width: 150px;
   margin: 0;
-  margin-left: 50px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
