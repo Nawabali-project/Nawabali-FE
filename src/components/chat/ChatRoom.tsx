@@ -38,8 +38,8 @@ export const ChatRoom: React.FC<{
     queryKey: ['scrollMessages', roomId],
     queryFn: ({ pageParam = 0 }) => showChat({ pageParam, roomId }),
     getNextPageParam: (lastPage) =>
-      lastPage && lastPage.data.length > 0
-        ? lastPage.data[lastPage.data.length - 1].id
+      lastPage.previousPageNumber >= 0
+        ? lastPage.previousPageNumber
         : undefined,
     initialPageParam: 0,
   });
