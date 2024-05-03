@@ -251,7 +251,9 @@ export const ChatRoomsList: React.FC<{
                 </div>
               </div>
               {room.chatMessage != '' && (
-                <ChatMessage>{room.chatMessage}</ChatMessage>
+                <ChatMessage style={{ marginLeft: '50px' }}>
+                  {room.chatMessage}
+                </ChatMessage>
               )}
             </div>
           </ChatRooms>
@@ -358,9 +360,8 @@ const UserNicknamesDiv = styled.div`
 
 const ChatMessage = styled.span`
   display: block;
-  width: 85%;
+  width: 150px;
   margin: 0;
-  margin-left: 50px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
