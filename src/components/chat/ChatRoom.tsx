@@ -229,6 +229,7 @@ const MessageRow = styled.div<MessageProps>`
 
 const MessageText = styled.div<MessageProps>`
   display: flex;
+  max-width: 70%;
   padding: 8px 12px;
   border-radius: 18px;
   background-color: ${({ isMyMessage }) =>
