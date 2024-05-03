@@ -9,14 +9,10 @@ const SkeletonMap = () => {
 };
 
 const LoadingContainer = styled.div`
-  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 99.5%;
-  height: 821px;
-  background-color: white;
-  z-index: 100;
+  height: 80vh;
 `;
 
 export default SkeletonMap;

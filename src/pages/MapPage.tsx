@@ -41,7 +41,7 @@ const MapPage = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1500);
   }, []);
 
   useEffect(() => {
@@ -189,15 +189,20 @@ const MapPage = () => {
           </FourComponentBox>
         </SecondHeader>
       </CategoryBox>
-      {isLoading && <SkeletonMap />}
-      <CustomMap
-        width="100%"
-        height="811px"
-        clickedCategory={clickedKind}
-        selectedDistrict={selectedArea}
-        selectedLatitude={selectedLatitude}
-        selectedLongitude={selectedLongitude}
-      />
+      {isLoading ? (
+        <SkeletonMap />
+      ) : (
+        <>
+          <CustomMap
+            width="100%"
+            height="811px"
+            clickedCategory={clickedKind}
+            selectedDistrict={selectedArea}
+            selectedLatitude={selectedLatitude}
+            selectedLongitude={selectedLongitude}
+          />
+        </>
+      )}
     </Layout>
   );
 };
