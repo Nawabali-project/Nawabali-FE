@@ -9,35 +9,4 @@ export default defineConfig({
     port: 3000,
     open: true,
   },
-  build: {
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        pure_funcs: [
-          'console.info',
-          'console.debug',
-          'console.warn',
-          'console.error',
-        ],
-      },
-      format: {
-        comments: false,
-      },
-    },
-  },
-  define: {
-    'process.env.VITE_KAKAO_RESTAPI_KEY': JSON.stringify(
-      '52329a0a112266267bafd3864529e810',
-    ),
-    'process.env.VITE_API_BASE_URL': JSON.stringify(
-      'https://prod.dongnaebangnae.com',
-    ),
-    'process.env.VITE_KAKAO_SDK_KEY': JSON.stringify(
-      '82a3494b887471377dd6b85ea63981a0',
-    ),
-    'process.env.VITE_KAKAO_REDIRECT_URI': JSON.stringify(
-      'https://prod.dongnaebangnae.com/api/user/kakao/callback',
-    ),
-  },
 });
