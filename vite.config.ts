@@ -14,8 +14,17 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true,
+      },
+      format: {
+        comments: false,
       },
     },
+  },
+  define: {
+    'process.env.VITE_KAKAO_RESTAPI_KEY': '52329a0a112266267bafd3864529e810',
+    'process.env.VITE_API_BASE_URL': 'https://prod.dongnaebangnae.com',
+    'process.env.VITE_KAKAO_SDK_KEY': '82a3494b887471377dd6b85ea63981a0',
+    'process.env.VITE_KAKAO_REDIRECT_URI':
+      'https://prod.dongnaebangnae.com/api/user/kakao/callback',
   },
 });
