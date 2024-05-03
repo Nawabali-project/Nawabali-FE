@@ -229,6 +229,7 @@ const MessageRow = styled.div<MessageProps>`
 `;
 
 const MessageContent = styled.span`
+  display: block;
   width: calc(100%-30px);
   word-wrap: break-word;
 `;
