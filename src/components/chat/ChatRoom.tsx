@@ -76,9 +76,12 @@ export const ChatRoom: React.FC<{
         },
         headers,
       );
-      return () => subscription.unsubscribe();
+      return () => {
+        subscription.unsubscribe();
+        setHasChanges(false);
+      };
     }
-  }, [roomId, client, accessToken]);
+  }, [roomId, client, accessToken, setHasChanges]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
