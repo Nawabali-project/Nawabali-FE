@@ -54,3 +54,7 @@ export interface SSEState {
   hasChanges: boolean;
   setHasChanges: (hasChanges: boolean) => void;
 }
+
+export interface MessageProps {
+  isMyMessage: boolean;
+}
