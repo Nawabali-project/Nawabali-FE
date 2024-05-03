@@ -220,12 +220,12 @@ const Chat = styled.div`
 `;
 
 const MessageRow = styled.div<MessageProps>`
-  width: 50%;
+  width: 100%;
   display: flex;
   margin-bottom: 10px;
   justify-content: ${({ isMyMessage }) =>
     isMyMessage ? 'flex-end' : 'flex-start'};
-  align-items: flex-end;
+  align-items: flex-start;
 `;
 
 const MessageContent = styled.span`
@@ -235,7 +235,7 @@ const MessageContent = styled.span`
 `;
 
 const MessageText = styled.div<MessageProps>`
-  width: 100%;
+  width: 42%;
   display: flex;
   padding: 8px 12px;
   border-radius: 18px;
@@ -250,7 +250,7 @@ const MessageText = styled.div<MessageProps>`
 
 const MessageDate = styled.span`
   display: block;
-  width: 32px;
+  width: 34px;
   font-size: 12px;
   color: #666;
   padding-left: 6px;
@@ -277,4 +277,5 @@ const ProfileImg = styled.img`
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  margin: 5px 5px 0 0;
 `;
