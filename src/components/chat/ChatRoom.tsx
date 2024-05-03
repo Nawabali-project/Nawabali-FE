@@ -163,10 +163,8 @@ export const ChatRoom: React.FC<{
             />
             <MessageText isMyMessage={msg.sender === myNickname}>
               {msg.message}
-              <MessageDate>
-                {formatMessageDate(msg.createdMessageAt)}
-              </MessageDate>
             </MessageText>
+            <MessageDate>{formatMessageDate(msg.createdMessageAt)}</MessageDate>
           </MessageRow>
         ))}
       </Chat>
@@ -214,7 +212,7 @@ const UserProfileImg = styled.img`
 `;
 
 const Chat = styled.div`
-  flex-grow: 1;
+  width: 100%;
   padding: 10px;
   overflow-y: auto;
 `;
@@ -229,7 +227,7 @@ const MessageRow = styled.div<MessageProps>`
 
 const MessageText = styled.div<MessageProps>`
   display: flex;
-  max-width: 70%;
+  width: calc(100%-30px);
   padding: 8px 12px;
   border-radius: 18px;
   background-color: ${({ isMyMessage }) =>
