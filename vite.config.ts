@@ -14,6 +14,12 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true,
+        pure_funcs: [
+          'console.info',
+          'console.debug',
+          'console.warn',
+          'console.error',
+        ],
       },
       format: {
         comments: false,
