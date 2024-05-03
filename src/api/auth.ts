@@ -145,7 +145,10 @@ export const checkAuthStatus = async () => {
       };
     }
   } catch (error) {
-    console.error('Error checking authentication status:', error);
+    const axiosError = error as AxiosError;
+    if (axiosError.response && axiosError.response.status != 403) {
+      console.error('Error checking authentication status:', error);
+    }
     return {
       isLoggedIn: false,
     };

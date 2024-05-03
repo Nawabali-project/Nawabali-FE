@@ -131,7 +131,12 @@ export const ChatRoom: React.FC<{
     const day = d.getDate();
     const hour = d.getHours();
     const minute = d.getMinutes();
-    return `${month}/${day} ${hour}:${minute < 10 ? '0' + minute : minute}`;
+
+    const formattedMonth = month < 10 ? '0' + month : month;
+    const formattedDay = day < 10 ? '0' + day : day;
+    const formattedHour = hour < 10 ? '0' + hour : hour;
+    const formattedMinute = minute < 10 ? '0' + minute : minute;
+    return `${formattedMonth}.${formattedDay} ${formattedHour}:${formattedMinute}`;
   };
 
   return (
@@ -152,7 +157,7 @@ export const ChatRoom: React.FC<{
             <ProfileImg
               src={
                 msg.sender === myNickname
-                  ? localStorage.getItem('profileImageUrl')!
+                  ? localStorage.getItem('profileImageUrl')!.replace('"', '')
                   : userInfo?.imgUrl
               }
             />
@@ -231,12 +236,16 @@ const MessageText = styled.div<MessageProps>`
   word-wrap: break-word;
   justify-content: space-between;
   align-items: flex-end;
+  align-self: ${({ isMyMessage }) => (isMyMessage ? 'flex-end' : 'flex-start')};
 `;
 
 const MessageDate = styled.span`
+  display: block;
+  width: 30px;
   font-size: 12px;
   color: #666;
   padding-left: 6px;
+  align-self: flex-end;
 `;
 
 const InputDiv = styled.div`
