@@ -32,6 +32,7 @@ export const ChatRoom: React.FC<{
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [initialLoad, setInitialLoad] = useState(true);
   const { ref, inView } = useInView({
     threshold: 0.1,
   });
@@ -63,7 +64,6 @@ export const ChatRoom: React.FC<{
             ),
           };
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-
           setHasChanges(true);
         },
         headers,
@@ -76,8 +76,9 @@ export const ChatRoom: React.FC<{
   }, [roomId, client, accessToken]);
 
   useEffect(() => {
-    if (messagesEndRef.current && messages.length > 0) {
+    if (initialLoad && messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+      setInitialLoad(false);
     }
   }, [messages]);
 
@@ -114,14 +115,18 @@ export const ChatRoom: React.FC<{
 
   // 스크롤 맨 위에서 추가 데이터 로드
   useEffect(() => {
-    console.log('InView:', inView); // Log inView status
+    console.log(
+      'InView:',
+      inView,
+      'isFetchingNextPage:',
+      isFetchingNextPage,
+      'hasNextPage:',
+      hasNextPage,
+    );
     if (inView && !isFetchingNextPage && hasNextPage) {
-      console.log('Fetching next page...'); // Log before fetching
-      fetchNextPage().then(() => {
-        console.log('Next page fetched'); // Log after fetching
-      });
+      fetchNextPage().then(() => console.log('Fetched additional page.'));
     }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
+  }, [inView, hasNextPage, isFetchingNextPage]);
 
   useEffect(() => {
     if (roomName) {
@@ -190,6 +195,7 @@ export const ChatRoom: React.FC<{
 
   return (
     <ChatContainer>
+      <div ref={ref} style={{ height: '1px', position: 'absolute', top: 0 }} />
       {roomName && userInfo && (
         <UserInfo>
           <UserProfileImg
@@ -200,8 +206,7 @@ export const ChatRoom: React.FC<{
           <h3>{roomName}</h3>
         </UserInfo>
       )}
-      <Chat>
-        <div ref={ref} style={{ height: '1px' }} />
+      <Chat ref={messagesEndRef}>
         {messages.map((msg, index) => (
           <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
             <ProfileImg
@@ -220,7 +225,6 @@ export const ChatRoom: React.FC<{
           </MessageRow>
         ))}
       </Chat>
-      <div ref={messagesEndRef} />
       <InputDiv>
         <Input
           value={message}
