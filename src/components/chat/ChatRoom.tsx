@@ -46,32 +46,32 @@ export const ChatRoom: React.FC<{
   });
 
   useEffect(() => {
-    console.log('InView:', inView);
-  }, [inView]);
+    if (messages.length > 0 && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   useEffect(() => {
-    console.log('hasNextPage:', hasNextPage, 'loading:', loading);
-  }, [hasNextPage, loading]);
-
-  useEffect(() => {
-    setMessages([]);
-    queryClient.invalidateQueries({ queryKey: [roomId] });
+    if (roomId) {
+      setMessages([]);
+      queryClient.invalidateQueries({ queryKey: [roomId] });
+      setLoading(false);
+    }
   }, [roomId, queryClient]);
 
   useEffect(() => {
     if (inView && hasNextPage && !loading) {
       setLoading(true);
-      fetchNextPage().then(() => {
-        console.log('Data fetched');
+      fetchNextPage().finally(() => {
         setLoading(false);
       });
     }
   }, [inView, hasNextPage, fetchNextPage, loading]);
 
   useEffect(() => {
-    let oldScrollHeight = 0;
+    let oldScrollTop = 0;
     if (messagesEndRef.current) {
-      oldScrollHeight = messagesEndRef.current.scrollHeight;
+      oldScrollTop = messagesEndRef.current.scrollTop;
     }
 
     if (data) {
@@ -79,8 +79,8 @@ export const ChatRoom: React.FC<{
       setMessages((prev) => [...newMessages, ...prev]);
 
       if (messagesEndRef.current) {
-        const newScrollHeight = messagesEndRef.current.scrollHeight;
-        messagesEndRef.current.scrollTop = newScrollHeight - oldScrollHeight;
+        const scrollDiff = messagesEndRef.current.scrollHeight - oldScrollTop;
+        messagesEndRef.current.scrollTop = scrollDiff;
       }
     }
   }, [data]);
@@ -168,12 +168,6 @@ export const ChatRoom: React.FC<{
     const formattedMinute = minute < 10 ? '0' + minute : minute;
     return `${formattedMonth}.${formattedDay} ${formattedHour}:${formattedMinute}`;
   };
-
-  useEffect(() => {
-    if (messages.length > 0 && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages]);
 
   return (
     <ChatContainer>
