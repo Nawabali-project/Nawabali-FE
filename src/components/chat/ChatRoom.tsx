@@ -47,18 +47,21 @@ export const ChatRoom: React.FC<{
     });
 
   useEffect(() => {
+    if (data?.pages.length === 0 && !isFetchingNextPage && hasNextPage) {
+      fetchNextPage();
+      if (data) {
+        const newMessages = data.pages.flatMap((page) => page.content);
+        setMessages((prev) => [...prev, ...newMessages]);
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [data, fetchNextPage, isFetchingNextPage, hasNextPage]);
+
+  useEffect(() => {
     if (!isFetchingNextPage && inView && hasNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
-
-  useEffect(() => {
-    if (data) {
-      const newMessages = data.pages.flatMap((page) => page.content);
-      setMessages((prev) => [...prev, ...newMessages]);
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
-    }
-  }, [data]);
 
   useEffect(() => {
     if (roomId && client?.connected) {
