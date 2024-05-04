@@ -60,6 +60,10 @@ export const ChatRoom: React.FC<{
   }, [data]);
 
   useEffect(() => {
+    setMessages([]);
+  }, [roomId]);
+
+  useEffect(() => {
     if (roomId && client?.connected) {
       const headers = { Authorization: `Bearer ${accessToken}` };
       const subscription = client.subscribe(
@@ -173,7 +177,7 @@ export const ChatRoom: React.FC<{
             />
             <MessageText isMyMessage={msg.sender === myNickname}>
               <MessageContent>{msg.message}</MessageContent>
-              <MessageDate>
+              <MessageDate isMyMessage={msg.sender === myNickname}>
                 {formatMessageDate(msg.createdMessageAt)}
               </MessageDate>
             </MessageText>
@@ -199,14 +203,15 @@ export const ChatRoom: React.FC<{
 export default ChatRoom;
 
 const ChatContainer = styled.div`
-  margin-top: 20px;
-  height: 90vh;
+  height: 85vh;
+  margin: 100px 0 0 20px;
+  padding: 0 10px;
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #f0f0f0;
   border-radius: 8px;
-  overflow: hidden;
+  background-color: white;
+  border-radius: 20px;
 `;
 
 const UserInfo = styled.div`
@@ -228,6 +233,18 @@ const Chat = styled.div`
   width: 100%;
   padding: 10px;
   overflow-y: auto;
+  max-height: calc(100% - 60px);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 15px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+  }
 `;
 
 const MessageRow = styled.div<MessageProps>`
@@ -259,11 +276,11 @@ const MessageText = styled.div<MessageProps>`
   align-items: flex-end;
 `;
 
-const MessageDate = styled.span`
+const MessageDate = styled.span<MessageProps>`
   display: block;
   width: 34px;
   font-size: 12px;
-  color: #666;
+  color: ${({ isMyMessage }) => (isMyMessage ? 'white' : '#666')};
   padding-left: 6px;
   align-self: flex-end;
 `;
@@ -289,4 +306,5 @@ const ProfileImg = styled.img`
   height: 30px;
   border-radius: 50%;
   margin: 5px 5px 0 0;
+  border: 1px solid #d9d9d9;
 `;
