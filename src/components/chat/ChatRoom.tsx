@@ -32,50 +32,42 @@ export const ChatRoom: React.FC<{
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { ref, inView } = useInView({ threshold: 0.1 });
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  // 데이터 로드를 위한 useInView hook 설정
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-  });
-
-  // 채팅 데이터를 무한 로드
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<ChatApiResponse, Error>({
       queryKey: ['chatRoomMessages', roomId],
       queryFn: async ({ pageParam = 0 }) => {
-        return showChat({ pageParam: pageParam as number, roomId });
+        return showChat({ pageParam: Number(pageParam), roomId });
       },
-      getNextPageParam: (lastPage) => {
-        if (!lastPage.last) {
-          return lastPage.pageable.pageNumber + 1;
-        }
-        return undefined;
-      },
+      getNextPageParam: (lastPage) =>
+        !lastPage.last ? lastPage.pageable.pageNumber + 1 : undefined,
       initialPageParam: 0,
-      enabled: false,
+      enabled: true,
     });
 
-  // 컴포넌트 마운트 시 첫 페이지 데이터 로드
   useEffect(() => {
-    refetch();
-  }, [refetch]);
-
-  // inView가 true이고 다음 페이지가 있을 때 데이터를 추가로 요청
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (!isFetchingNextPage && inView && hasNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
-  // 새 데이터를 messages 상태에 추가
-  useEffect(() => {
-    if (data) {
-      const newMessages = data.pages.flatMap((page) => page.content).reverse();
-      setMessages((prev) => [...newMessages, ...prev]);
-    }
-  }, [data]);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+  };
 
-  // 채팅방 구독 설정 및 메시지 수신 처리
+  useEffect(() => {
+    if (initialLoad && data?.pages) {
+      const newMessages = data.pages.flatMap((page) => page.content);
+      if (newMessages.length > 0) {
+        setMessages((prev) => [...prev, ...newMessages]);
+        scrollToBottom();
+      }
+      setInitialLoad(false);
+    }
+  }, [data, initialLoad]);
+
   useEffect(() => {
     if (roomId && client?.connected) {
       const headers = { Authorization: `Bearer ${accessToken}` };
@@ -100,22 +92,20 @@ export const ChatRoom: React.FC<{
     }
   }, [roomId, client, accessToken]);
 
-  // 유저 정보 가져오기
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const user = await searchUserByNickname(roomName);
-        setUserInfo(user?.length > 0 ? user[0] : null);
-      } catch (error) {
-        console.error('Failed to fetch user info', error);
-      }
-    };
     if (roomName) {
+      const fetchUserInfo = async () => {
+        try {
+          const user = await searchUserByNickname(roomName);
+          setUserInfo(user?.length > 0 ? user[0] : null);
+        } catch (error) {
+          console.error('Failed to fetch user info', error);
+        }
+      };
       fetchUserInfo();
     }
   }, [roomName]);
 
-  // 메시지 전송 처리
   const handleSendMessage = () => {
     if (!message.trim()) return;
     const chatMessage = {
@@ -126,18 +116,13 @@ export const ChatRoom: React.FC<{
     };
     sendMessage(roomId, client, chatMessage)
       .then(() => {
-        if (isMounted.current) {
-          setMessage('');
-        }
+        if (isMounted.current) setMessage('');
       })
       .catch((error) => {
-        if (isMounted.current) {
-          console.error('Failed to send message:', error);
-        }
+        if (isMounted.current) console.error('Failed to send message:', error);
       });
   };
 
-  // 키보드 입력 처리
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !isComposing) {
       e.preventDefault();
@@ -145,12 +130,10 @@ export const ChatRoom: React.FC<{
     }
   };
 
-  // 입력 변화 감지
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
   };
 
-  // 입력 시작 및 종료 처리
   const handleCompositionStart = () => {
     setIsComposing(true);
   };
@@ -159,19 +142,13 @@ export const ChatRoom: React.FC<{
     setIsComposing(false);
   };
 
-  // 메시지 날짜 형식화
   const formatMessageDate = (dateString: string) => {
     const d = new Date(dateString);
     const month = d.getMonth() + 1;
     const day = d.getDate();
     const hour = d.getHours();
     const minute = d.getMinutes();
-
-    const formattedMonth = month < 10 ? '0' + month : month;
-    const formattedDay = day < 10 ? '0' + day : day;
-    const formattedHour = hour < 10 ? '0' + hour : hour;
-    const formattedMinute = minute < 10 ? '0' + minute : minute;
-    return `${formattedMonth}.${formattedDay} ${formattedHour}:${formattedMinute}`;
+    return `${month < 10 ? '0' : ''}${month}.${day < 10 ? '0' : ''}${day} ${hour < 10 ? '0' : ''}${hour}:${minute < 10 ? '0' : ''}${minute}`;
   };
 
   return (
