@@ -33,7 +33,6 @@ export const ChatRoom: React.FC<{
   const queryClient = useQueryClient();
   const { ref, inView } = useInView({
     threshold: 0.1,
-    rootMargin: '250px 0px 0px 0px',
   });
 
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -47,6 +46,14 @@ export const ChatRoom: React.FC<{
   });
 
   useEffect(() => {
+    console.log('InView:', inView);
+  }, [inView]);
+
+  useEffect(() => {
+    console.log('hasNextPage:', hasNextPage, 'loading:', loading);
+  }, [hasNextPage, loading]);
+
+  useEffect(() => {
     setMessages([]);
     queryClient.invalidateQueries({ queryKey: [roomId] });
   }, [roomId, queryClient]);
@@ -54,7 +61,10 @@ export const ChatRoom: React.FC<{
   useEffect(() => {
     if (inView && hasNextPage && !loading) {
       setLoading(true);
-      fetchNextPage().finally(() => setLoading(false));
+      fetchNextPage().then(() => {
+        console.log('Data fetched');
+        setLoading(false);
+      });
     }
   }, [inView, hasNextPage, fetchNextPage, loading]);
 
