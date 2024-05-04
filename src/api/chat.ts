@@ -1,5 +1,5 @@
 import { authInstance } from '@/axios';
-import { MessageForm } from '@/interfaces/chat/chat.interface';
+import { ChatApiResponse, MessageForm } from '@/interfaces/chat/chat.interface';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from 'react-router-dom';
 import { Client } from '@stomp/stompjs';
@@ -71,23 +71,23 @@ export const showChat = async ({
 }: {
   pageParam: number;
   roomId: number;
-}) => {
-  let params = {
+}): Promise<ChatApiResponse> => {
+  const params = {
     page: String(pageParam),
     size: '15',
   };
 
-  let pageable = new URLSearchParams();
+  const pageable = new URLSearchParams();
   pageable.append('page', params.page);
   pageable.append('size', params.size);
 
   try {
-    const response = await authInstance.get(
+    const response = await authInstance.get<ChatApiResponse>(
       `/chat/room/${roomId}/message?${pageable.toString()}`,
     );
     return response.data;
   } catch (error) {
-    throw error as AxiosError<ErrorResponse>;
+    throw error as AxiosError;
   }
 };
 
