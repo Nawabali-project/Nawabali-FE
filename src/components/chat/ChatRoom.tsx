@@ -38,10 +38,10 @@ export const ChatRoom: React.FC<{
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: [roomId],
     queryFn: ({ pageParam = 0 }) => showChat({ pageParam, roomId }),
-    getNextPageParam: (lastPage) =>
-      lastPage.previousPageNumber >= 0
-        ? lastPage.previousPageNumber
-        : undefined,
+    getNextPageParam: (lastPage) => {
+      const nextPage = lastPage.pageable.pageNumber + 1;
+      return lastPage.last ? undefined : nextPage;
+    },
     initialPageParam: 0,
   });
 
