@@ -35,7 +35,7 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     try {
       const resUserInfo = await apiLogin(user);
 
-      const accessToken = resUserInfo.headers['authorization'];
+      const accessToken = resUserInfo.headers['Authorization'];
 
       if (accessToken) {
         cookie.set('accessToken', accessToken, {
