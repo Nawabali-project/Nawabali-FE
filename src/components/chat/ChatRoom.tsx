@@ -33,7 +33,6 @@ export const ChatRoom: React.FC<{
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { ref, inView } = useInView({ threshold: 0.1 });
-  const [initialLoad, setInitialLoad] = useState(true);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<ChatApiResponse, Error>({
@@ -53,20 +52,13 @@ export const ChatRoom: React.FC<{
     }
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
-  };
-
   useEffect(() => {
-    if (initialLoad && data?.pages) {
+    if (data) {
       const newMessages = data.pages.flatMap((page) => page.content);
-      if (newMessages.length > 0) {
-        setMessages((prev) => [...prev, ...newMessages]);
-        scrollToBottom();
-      }
-      setInitialLoad(false);
+      setMessages((prev) => [...prev, ...newMessages]);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
     }
-  }, [data, initialLoad]);
+  }, [data]);
 
   useEffect(() => {
     if (roomId && client?.connected) {
