@@ -29,6 +29,7 @@ export const ChatRoom: React.FC<{
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -45,24 +46,21 @@ export const ChatRoom: React.FC<{
   });
 
   useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
+    if (inView && hasNextPage && !loading) {
+      setLoading(true);
+      fetchNextPage().then(() => setLoading(false));
     }
-  }, [inView, hasNextPage, fetchNextPage]);
+  }, [inView, hasNextPage, fetchNextPage, loading]);
 
   useEffect(() => {
     if (data) {
-      setMessages((prev) => [
-        ...data.pages.flatMap((page) => page.content),
-        ...prev,
-      ]);
+      const newMessages = data.pages.flatMap((page) => page.content).reverse();
+      setMessages((prev) => [...newMessages, ...prev]);
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }, [data]);
-
-  useEffect(() => {
-    setMessages([]);
-  }, [roomId]);
-
   useEffect(() => {
     if (roomId && client?.connected) {
       const headers = { Authorization: `Bearer ${accessToken}` };
@@ -148,7 +146,7 @@ export const ChatRoom: React.FC<{
   };
 
   useEffect(() => {
-    if (messagesEndRef.current) {
+    if (messagesEndRef.current && messages.length === 0) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
@@ -233,7 +231,7 @@ const Chat = styled.div`
   width: 100%;
   padding: 10px;
   overflow-y: auto;
-  max-height: calc(100% - 60px);
+  height: calc(100% - 60px);
 
   &::-webkit-scrollbar {
     width: 8px;
