@@ -63,10 +63,7 @@ export const ChatRoom: React.FC<{
             ),
           };
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-          if (messagesEndRef.current) {
-            messagesEndRef.current.scrollTop =
-              messagesEndRef.current.scrollHeight;
-          }
+
           setHasChanges(true);
         },
         headers,
@@ -89,6 +86,10 @@ export const ChatRoom: React.FC<{
       const newMessages = data.pages.flatMap((page) => page.content).reverse();
       if (data.pages[0].number === 0) {
         setMessages(newMessages);
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollTop =
+            messagesEndRef.current.scrollHeight;
+        }
       } else {
         const currentHeight = messagesEndRef.current?.scrollHeight || 0;
         setMessages((prevMessages) => [...newMessages, ...prevMessages]);
