@@ -28,6 +28,10 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   },
 
   login: (user) => {
+    const token = new Cookies().get('accessToken');
+    if (token) {
+      set({ isLoggedIn: true });
+    }
     set({ isLoggedIn: true, user });
     localStorage.setItem('user', JSON.stringify(user));
   },
