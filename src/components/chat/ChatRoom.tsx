@@ -32,8 +32,8 @@ export const ChatRoom: React.FC<{
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { inView } = useInView({
-    threshold: 0.99,
+  const { ref, inView } = useInView({
+    threshold: 0.1,
     rootMargin: '-300px 0px 0px 0px',
   });
 
@@ -190,6 +190,7 @@ export const ChatRoom: React.FC<{
 
   return (
     <ChatContainer>
+      <div ref={ref} style={{ height: '1px' }} />
       {roomName && userInfo && (
         <UserInfo>
           <UserProfileImg
@@ -200,7 +201,7 @@ export const ChatRoom: React.FC<{
           <h3>{roomName}</h3>
         </UserInfo>
       )}
-      <Chat ref={messagesEndRef}>
+      <Chat>
         {messages.map((msg, index) => (
           <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
             <ProfileImg
@@ -219,6 +220,7 @@ export const ChatRoom: React.FC<{
           </MessageRow>
         ))}
       </Chat>
+      <div ref={messagesEndRef} />
       <InputDiv>
         <Input
           value={message}
