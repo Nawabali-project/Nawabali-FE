@@ -14,32 +14,29 @@ function ChatPage() {
   const cookie = new Cookies();
 
   useEffect(() => {
-    const connectWebSocket = () => {
-      const socket = new SockJS(
-        `${import.meta.env.VITE_APP_BASE_URL}/ws-stomp`,
-      );
-      const client = Stomp.over(socket);
-      const rawToken = cookie.get('accessToken');
-      const accessToken = decodeURIComponent(rawToken).slice(7);
+    const socket = new SockJS(`${import.meta.env.VITE_APP_BASE_URL}/ws-stomp`);
+    const client = Stomp.over(socket);
+    const rawToken = cookie.get('accessToken');
+    const accessToken = decodeURIComponent(rawToken).slice(7);
 
-      client.connect(
-        { Authorization: `Bearer ${accessToken}` },
-        () => {
-          setStompClient(client);
-        },
-        (error: any) => {
-          console.error('Connection error', error);
-        },
-      );
+    client.connect(
+      { Authorization: `Bearer ${accessToken}` },
+      () => {
+        setStompClient(client);
+      },
+      (error: any) => {
+        console.error('Connection error', error);
+      },
+    );
 
-      return () => {
-        if (client) {
-          socket.close();
-        }
-      };
+    return () => {
+      if (client.connected) {
+        client.disconnect(() => {
+          console.log('Disconnected!');
+        });
+      }
+      socket.close();
     };
-
-    connectWebSocket();
   }, []);
 
   return (

@@ -11,7 +11,7 @@ import {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import useSSEStore from '@/store/SSEState';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 
 export const ChatRoom: React.FC<{
@@ -30,13 +30,13 @@ export const ChatRoom: React.FC<{
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
-
+  const queryClient = useQueryClient();
   const { ref, inView } = useInView({
     threshold: 0.1,
   });
 
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ['scrollMessages', roomId],
+    queryKey: [roomId],
     queryFn: ({ pageParam = 0 }) => showChat({ pageParam, roomId }),
     getNextPageParam: (lastPage) =>
       lastPage.previousPageNumber >= 0
@@ -46,6 +46,11 @@ export const ChatRoom: React.FC<{
   });
 
   useEffect(() => {
+    setMessages([]);
+    queryClient.invalidateQueries({ queryKey: [roomId] });
+  }, [roomId, queryClient]);
+
+  useEffect(() => {
     if (inView && hasNextPage && !loading) {
       setLoading(true);
       fetchNextPage().then(() => setLoading(false));
@@ -53,14 +58,22 @@ export const ChatRoom: React.FC<{
   }, [inView, hasNextPage, fetchNextPage, loading]);
 
   useEffect(() => {
+    let oldScrollHeight = 0;
+    if (messagesEndRef.current) {
+      oldScrollHeight = messagesEndRef.current.scrollHeight;
+    }
+
     if (data) {
       const newMessages = data.pages.flatMap((page) => page.content).reverse();
       setMessages((prev) => [...newMessages, ...prev]);
+
       if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        const newScrollHeight = messagesEndRef.current.scrollHeight;
+        messagesEndRef.current.scrollTop = newScrollHeight - oldScrollHeight;
       }
     }
   }, [data]);
+
   useEffect(() => {
     if (roomId && client?.connected) {
       const headers = { Authorization: `Bearer ${accessToken}` };
