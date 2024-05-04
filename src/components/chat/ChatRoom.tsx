@@ -36,7 +36,6 @@ export const ChatRoom: React.FC<{
     threshold: 0,
     rootMargin: '-100px 0px 0px 0px',
   });
-  const [loadedPagesHeight, setLoadedPagesHeight] = useState(0);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<ChatApiResponse, Error>({
@@ -51,38 +50,25 @@ export const ChatRoom: React.FC<{
     });
 
   useEffect(() => {
-    if (!data?.pages.length && !isFetchingNextPage && hasNextPage) {
+    if (inView && !isFetchingNextPage && hasNextPage) {
       fetchNextPage();
     }
-  }, [data, fetchNextPage, isFetchingNextPage, hasNextPage]);
+  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   useEffect(() => {
-    if (inView && !isFetchingNextPage && hasNextPage) {
-      // 현재 스크롤 위치 저장
-      const currentScrollPosition = messagesEndRef.current
-        ? messagesEndRef.current.scrollTop
-        : 0;
-      fetchNextPage().then(() => {
-        // 새 페이지 로드 후 원래의 스크롤 위치로 돌아가기
-        if (messagesEndRef.current) {
-          const newScrollHeight = messagesEndRef.current.scrollHeight;
-          const heightAdded = newScrollHeight - loadedPagesHeight;
-          messagesEndRef.current.scrollTop =
-            currentScrollPosition + heightAdded;
-          setLoadedPagesHeight(newScrollHeight);
-        }
-      });
+    if (data?.pages) {
+      const newMessages = data.pages.flatMap((page) => page.content);
+      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
     }
-  }, [
-    inView,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-    loadedPagesHeight,
-  ]);
+  }, [data]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     if (roomId && client?.connected) {
+      fetchNextPage();
       const headers = { Authorization: `Bearer ${accessToken}` };
       const subscription = client.subscribe(
         `/sub/chat/room/${roomId}`,
@@ -94,9 +80,7 @@ export const ChatRoom: React.FC<{
             ),
           };
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-          if (isAtBottom()) {
-            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-          }
+          scrollToBottom();
           setHasChanges(true);
         },
         headers,
@@ -121,15 +105,6 @@ export const ChatRoom: React.FC<{
       fetchUserInfo();
     }
   }, [roomName]);
-
-  const isAtBottom = () => {
-    const scrollElement = messagesEndRef.current?.parentNode as HTMLElement;
-    return (
-      scrollElement &&
-      scrollElement.scrollHeight - scrollElement.scrollTop ===
-        scrollElement.clientHeight
-    );
-  };
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -189,7 +164,6 @@ export const ChatRoom: React.FC<{
         </UserInfo>
       )}
       <Chat ref={ref}>
-        <div ref={messagesEndRef} />
         {messages.map((msg, index) => (
           <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
             <ProfileImg
@@ -207,6 +181,7 @@ export const ChatRoom: React.FC<{
             </MessageText>
           </MessageRow>
         ))}
+        <div ref={messagesEndRef} />
       </Chat>
       <InputDiv>
         <Input
