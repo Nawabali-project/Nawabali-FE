@@ -94,6 +94,17 @@ const Header: React.FC = () => {
     }
   };
 
+  // 글쓰기 버튼 클릭
+  const handleWriteButtonClick = () => {
+    const district = localStorage.getItem('district');
+
+    if (district == '수정해주세요') {
+      alert('마이페이지에서 구를 설정해주세요');
+    } else {
+      setIsAddPostModalOpen(true);
+    }
+  };
+
   return (
     <>
       <HeaderLayout>
@@ -175,7 +186,7 @@ const Header: React.FC = () => {
                   </ProfileContainer>
                 </Items>
 
-                <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
+                <WriteButton onClick={handleWriteButtonClick}>
                   <HeaderSpan style={{ margin: '0', color: 'white' }}>
                     글쓰기
                   </HeaderSpan>

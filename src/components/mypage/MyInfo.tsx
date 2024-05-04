@@ -16,6 +16,11 @@ import {
   Lv3Icon,
   TbAppsIcon,
   TbAppsGrayIcon,
+  TopArrowIcon,
+  BottomArrowIcon,
+  SamllHatLv1,
+  SamllHatLv2,
+  SamllHatLv3,
 } from '@/utils/icons';
 
 const MyInfo = () => {
@@ -31,6 +36,7 @@ const MyInfo = () => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
     useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [showDropdown, setShowDropdown] = useState(true);
 
   const handlePostClick = (post: Post) => {
     setSelectedPost(post);
@@ -88,7 +94,7 @@ const MyInfo = () => {
   };
 
   return (
-    <div style={{ width: '1000px', margin: '0 auto' }}>
+    <div style={{ width: '1000px', margin: '0 auto', position: 'relative' }}>
       <Row
         style={{
           width: '1000px',
@@ -244,6 +250,38 @@ const MyInfo = () => {
           )),
         )}
       </Row>
+
+      <InfoLayout onClick={() => setShowDropdown(!showDropdown)}>
+        <BasicInfo>
+          <InfoCheck>동네방네 등급기준 알아보기</InfoCheck>
+          {showDropdown ? <TopArrowIcon /> : <BottomArrowIcon />}
+        </BasicInfo>
+        {showDropdown && (
+          <div>
+            <InfoBox>
+              <HatBox>
+                <SamllHatLv1 />
+              </HatBox>
+              <GradeBox>동네주민</GradeBox>
+              <DetailBox>신규유저</DetailBox>
+            </InfoBox>
+            <InfoBox>
+              <HatBox>
+                <SamllHatLv2 />
+              </HatBox>
+              <GradeBox>토박이</GradeBox>{' '}
+              <DetailBox> 게시물 1개 + 받은 주민추천 1개</DetailBox>
+            </InfoBox>
+            <InfoBox>
+              <HatBox>
+                <SamllHatLv3 />
+              </HatBox>
+              <GradeBox>터줏대감</GradeBox>{' '}
+              <DetailBox> 게시물 2개 + 받은 주민추천 2개</DetailBox>
+            </InfoBox>
+          </div>
+        )}
+      </InfoLayout>
       {hasNoPosts && (
         <div
           style={{
@@ -274,6 +312,62 @@ const MyInfo = () => {
 };
 
 export default MyInfo;
+
+const InfoCheck = styled.div`
+  margin: 0 10px 0 0;
+`;
+
+const InfoLayout = styled.div`
+  position: absolute;
+  top: -10px;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 320px;
+  padding: 10px 5px;
+  border-radius: 15px;
+  background-color: white;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+`;
+
+const BasicInfo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  color: #424242;
+  font-weight: bold;
+  text-decoration: underline;
+`;
+
+const HatBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+`;
+
+const GradeBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  font-weight: bold;
+`;
+
+const DetailBox = styled.div`
+  display: flex;
+  align-items: center;
+  width: 180px;
+`;
+
+const InfoBox = styled.div`
+  display: flex;
+  padding: 8px;
+  font-size: 14px;
+`;
 
 const Row = styled.div`
   display: flex;
