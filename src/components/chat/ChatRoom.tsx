@@ -33,6 +33,7 @@ export const ChatRoom: React.FC<{
   const queryClient = useQueryClient();
   const { ref, inView } = useInView({
     threshold: 0.1,
+    rootMargin: '250px 0px 0px 0px',
   });
 
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -53,7 +54,7 @@ export const ChatRoom: React.FC<{
   useEffect(() => {
     if (inView && hasNextPage && !loading) {
       setLoading(true);
-      fetchNextPage().then(() => setLoading(false));
+      fetchNextPage().finally(() => setLoading(false));
     }
   }, [inView, hasNextPage, fetchNextPage, loading]);
 
@@ -159,7 +160,7 @@ export const ChatRoom: React.FC<{
   };
 
   useEffect(() => {
-    if (messagesEndRef.current && messages.length === 0) {
+    if (messages.length > 0 && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
@@ -284,7 +285,7 @@ const MessageText = styled.div<MessageProps>`
   margin-top: 5px;
   word-wrap: break-word;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
 `;
 
 const MessageDate = styled.span<MessageProps>`
