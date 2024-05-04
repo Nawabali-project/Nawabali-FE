@@ -11,7 +11,9 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   initializeLoginState: async () => {
     try {
       const userJson = localStorage.getItem('user');
-      if (userJson) {
+      const token = new Cookies().get('accessToken');
+      console.log('Token from cookies:', token);
+      if (userJson && token) {
         const user = JSON.parse(userJson);
         set({
           isLoggedIn: true,
@@ -19,7 +21,7 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
           loading: false,
         });
       } else {
-        set({ loading: false });
+        set({ isLoggedIn: false, loading: false, user: null });
       }
     } catch (error) {
       console.error('Failed to initialize login state:', error);
@@ -28,8 +30,13 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   },
 
   login: (user) => {
-    set({ isLoggedIn: true, user });
-    localStorage.setItem('user', JSON.stringify(user));
+    const token = new Cookies().get('accessToken');
+    if (token) {
+      set({ isLoggedIn: true, user });
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      alert('로그인 토큰이 없습니다.');
+    }
   },
 
   logout: () => {

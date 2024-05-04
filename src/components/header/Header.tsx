@@ -14,6 +14,7 @@ import DetailPostModal from '../modal/DetailPostModal';
 import { useNavigate } from 'react-router-dom';
 import { LogoIcon, MessageIcon } from '@/utils/icons';
 import useSSEStore from '@/store/SSEState';
+import { Cookies } from 'react-cookie';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -27,12 +28,24 @@ const Header: React.FC = () => {
   const [isSearchFocused, setSearchFocused] = useState<boolean>(false);
 
   const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
+
+  const cookie = new Cookies();
 
   const debouncedContent = useDebounce(content, 10);
 
   const notificationCount = useSSEStore((state) => state.unreadMessageCount);
+
+  useEffect(() => {
+    const token = cookie.get('accessToken');
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [useIsLoggedIn]);
 
   useEffect(() => {
     setSearchbarOpen(!!debouncedContent.trim());
