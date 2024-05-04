@@ -79,6 +79,12 @@ export const ChatRoom: React.FC<{
   }, [roomId, client, accessToken]);
 
   useEffect(() => {
+    if (messagesEndRef.current && messages.length > 0) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
     if (data?.pages) {
       const newMessages = data.pages.flatMap((page) => page.content).reverse();
       if (data.pages[0].number === 0) {
@@ -138,6 +144,10 @@ export const ChatRoom: React.FC<{
       .then(() => {
         if (isMounted.current) {
           setMessage('');
+          messagesEndRef.current?.scrollTo(
+            0,
+            messagesEndRef.current.scrollHeight,
+          );
         }
       })
       .catch((error) => {
