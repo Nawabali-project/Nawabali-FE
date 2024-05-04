@@ -139,10 +139,6 @@ export const checkAuthStatus = async () => {
       return {
         isLoggedIn: true,
       };
-    } else {
-      return {
-        isLoggedIn: false,
-      };
     }
   } catch (error) {
     const axiosError = error as AxiosError;
