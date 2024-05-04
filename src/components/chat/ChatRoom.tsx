@@ -32,10 +32,9 @@ export const ChatRoom: React.FC<{
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { ref, inView } = useInView({
+  const { inView } = useInView({
     threshold: 0.99,
   });
-  const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<ChatApiResponse, Error>({
@@ -52,6 +51,7 @@ export const ChatRoom: React.FC<{
   // 초기 메시지 로드 및 구독 설정
   useEffect(() => {
     if (roomId && client?.connected) {
+      if (!data || data.pages.length === 0) fetchNextPage();
       const headers = { Authorization: `Bearer ${accessToken}` };
       const subscription = client.subscribe(
         `/sub/chat/room/${roomId}`,
@@ -63,7 +63,10 @@ export const ChatRoom: React.FC<{
             ),
           };
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-          scrollToBottom();
+          if (messagesEndRef.current) {
+            messagesEndRef.current.scrollTop =
+              messagesEndRef.current.scrollHeight;
+          }
           setHasChanges(true);
         },
         headers,
@@ -75,27 +78,32 @@ export const ChatRoom: React.FC<{
     }
   }, [roomId, client, accessToken]);
 
-  // 페이지 데이터가 업데이트 될 때마다 메시지 목록 업데이트
   useEffect(() => {
     if (data?.pages) {
-      const newMessages = data.pages.flatMap((page) => page.content).reverse(); // 최신 메시지가 먼저 오도록
+      const newMessages = data.pages.flatMap((page) => page.content).reverse();
       if (data.pages[0].number === 0) {
         setMessages(newMessages);
-        scrollToBottom();
       } else {
-        const scrollHeightBefore = messagesEndRef.current?.scrollHeight;
+        const currentHeight = messagesEndRef.current?.scrollHeight || 0;
         setMessages((prevMessages) => [...newMessages, ...prevMessages]);
-        if (scrollHeightBefore && messagesEndRef.current) {
-          // 스크롤 위치 조정
-          const newScrollPos =
-            messagesEndRef.current.scrollHeight - scrollHeightBefore;
-          messagesEndRef.current.scrollTop = newScrollPos + prevScrollPos;
-          // 이전 스크롤 위치 업데이트
-          setPrevScrollPos(newScrollPos + prevScrollPos);
-        }
+        const newHeight = messagesEndRef.current?.scrollHeight || 0;
+        messagesEndRef.current?.scrollTo(0, newHeight - currentHeight);
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      const scrollAtBottom =
+        messagesEndRef.current.scrollHeight -
+          messagesEndRef.current.clientHeight <=
+        messagesEndRef.current.scrollTop + 1;
+
+      if (scrollAtBottom) {
+        messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+      }
+    }
+  }, [messages]);
 
   // 스크롤 맨 위에서 추가 데이터 로드
   useEffect(() => {
@@ -103,10 +111,6 @@ export const ChatRoom: React.FC<{
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView();
-  };
 
   useEffect(() => {
     if (roomName) {
@@ -134,7 +138,6 @@ export const ChatRoom: React.FC<{
       .then(() => {
         if (isMounted.current) {
           setMessage('');
-          scrollToBottom();
         }
       })
       .catch((error) => {
@@ -182,9 +185,7 @@ export const ChatRoom: React.FC<{
           <h3>{roomName}</h3>
         </UserInfo>
       )}
-      <Chat>
-        <div ref={ref} />
-        <div ref={messagesEndRef} />
+      <Chat ref={messagesEndRef}>
         {messages.map((msg, index) => (
           <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
             <ProfileImg
