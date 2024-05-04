@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import useSSEStore from '@/store/SSEState';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
+import useIsMounted from '@/hooks/useIsMounted';
 
 export const ChatRoom: React.FC<{
   roomId: number;
@@ -20,6 +21,7 @@ export const ChatRoom: React.FC<{
   client: Client | null;
   isRoomActive: boolean;
 }> = ({ roomId, roomName, client }) => {
+  const isMounted = useIsMounted();
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -52,38 +54,41 @@ export const ChatRoom: React.FC<{
   }, [messages]);
 
   useEffect(() => {
-    if (roomId) {
-      setMessages([]);
-      queryClient.invalidateQueries({ queryKey: [roomId] });
-      setLoading(false);
-    }
+    setMessages([]);
+    queryClient.invalidateQueries({ queryKey: [roomId] });
   }, [roomId, queryClient]);
 
   useEffect(() => {
     if (inView && hasNextPage && !loading) {
       setLoading(true);
       fetchNextPage().finally(() => {
+        if (!isMounted.current) return;
         setLoading(false);
       });
     }
-  }, [inView, hasNextPage, fetchNextPage, loading]);
+  }, [inView, hasNextPage, fetchNextPage, loading, isMounted]);
 
   useEffect(() => {
-    let oldScrollTop = 0;
-    if (messagesEndRef.current) {
-      oldScrollTop = messagesEndRef.current.scrollTop;
-    }
+    let oldScrollTop = messagesEndRef.current
+      ? messagesEndRef.current.scrollTop
+      : 0;
+    let oldScrollHeight = messagesEndRef.current
+      ? messagesEndRef.current.scrollHeight
+      : 0;
 
     if (data) {
       const newMessages = data.pages.flatMap((page) => page.content).reverse();
       setMessages((prev) => [...newMessages, ...prev]);
 
-      if (messagesEndRef.current) {
-        const scrollDiff = messagesEndRef.current.scrollHeight - oldScrollTop;
-        messagesEndRef.current.scrollTop = scrollDiff;
-      }
+      setTimeout(() => {
+        if (messagesEndRef.current && isMounted.current) {
+          const newScrollHeight = messagesEndRef.current.scrollHeight;
+          const scrollOffset = newScrollHeight - oldScrollHeight;
+          messagesEndRef.current.scrollTop = oldScrollTop + scrollOffset;
+        }
+      }, 0);
     }
-  }, [data]);
+  }, [data, isMounted]);
 
   useEffect(() => {
     if (roomId && client?.connected) {
@@ -132,8 +137,16 @@ export const ChatRoom: React.FC<{
       userId: parseInt(localStorage.getItem('userId') || '0', 10),
     };
     sendMessage(roomId, client, chatMessage)
-      .then(() => setMessage(''))
-      .catch((error) => console.error('Failed to send message:', error));
+      .then(() => {
+        if (isMounted.current) {
+          setMessage('');
+        }
+      })
+      .catch((error) => {
+        if (isMounted.current) {
+          console.error('Failed to send message:', error);
+        }
+      });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
