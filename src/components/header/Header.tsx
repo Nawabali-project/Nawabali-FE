@@ -35,6 +35,10 @@ const Header: React.FC = () => {
   const notificationCount = useSSEStore((state) => state.unreadMessageCount);
 
   useEffect(() => {
+    useAuthStore.getState().initializeLoginState();
+  }, []);
+
+  useEffect(() => {
     setSearchbarOpen(!!debouncedContent.trim());
   }, [debouncedContent]);
 
