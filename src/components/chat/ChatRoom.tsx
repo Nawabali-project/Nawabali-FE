@@ -11,7 +11,7 @@ import {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import useSSEStore from '@/store/SSEState';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import useIsMounted from '@/hooks/useIsMounted';
 
@@ -32,7 +32,6 @@ export const ChatRoom: React.FC<{
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
-  const queryClient = useQueryClient();
   const { ref, inView } = useInView({
     threshold: 0.1,
   });
@@ -54,11 +53,6 @@ export const ChatRoom: React.FC<{
   }, [messages]);
 
   useEffect(() => {
-    setMessages([]);
-    queryClient.invalidateQueries({ queryKey: [roomId] });
-  }, [roomId, queryClient]);
-
-  useEffect(() => {
     if (inView && hasNextPage && !loading) {
       setLoading(true);
       fetchNextPage().finally(() => {
@@ -66,7 +60,7 @@ export const ChatRoom: React.FC<{
         setLoading(false);
       });
     }
-  }, [inView, hasNextPage, fetchNextPage, loading, isMounted]);
+  }, [inView, hasNextPage, fetchNextPage, isMounted]);
 
   useEffect(() => {
     let oldScrollTop = messagesEndRef.current
@@ -112,7 +106,7 @@ export const ChatRoom: React.FC<{
         setHasChanges(false);
       };
     }
-  }, [roomId, client, accessToken, setHasChanges]);
+  }, [roomId, client, accessToken]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
