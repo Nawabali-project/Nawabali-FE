@@ -34,6 +34,7 @@ export const ChatRoom: React.FC<{
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { inView } = useInView({
     threshold: 0.99,
+    rootMargin: '-200px 0px 0px 0px',
   });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
