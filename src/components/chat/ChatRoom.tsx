@@ -34,7 +34,6 @@ export const ChatRoom: React.FC<{
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { ref, inView } = useInView({
     threshold: 0.1,
-    rootMargin: '-300px 0px 0px 0px',
   });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -190,7 +189,6 @@ export const ChatRoom: React.FC<{
 
   return (
     <ChatContainer>
-      <div ref={ref} style={{ height: '1px' }} />
       {roomName && userInfo && (
         <UserInfo>
           <UserProfileImg
@@ -202,6 +200,7 @@ export const ChatRoom: React.FC<{
         </UserInfo>
       )}
       <Chat>
+        <div ref={ref} style={{ height: '1px' }} />
         {messages.map((msg, index) => (
           <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
             <ProfileImg
