@@ -10,16 +10,6 @@ export interface MessageForm {
   type: MessageType;
 }
 
-export interface ReturnedMessageForm {
-  messageId: number;
-  messageType: MessageType;
-  roomId: number;
-  userId: number;
-  sender: string;
-  message: string;
-  createdMessageAt: string;
-}
-
 export interface ChatRoom {
   roomId: number;
   roomName: string;
@@ -57,4 +47,43 @@ export interface SSEState {
 
 export interface MessageProps {
   isMyMessage: boolean;
+}
+
+export interface ReturnedMessageForm {
+  id: number;
+  roomId: number;
+  userId: number;
+  sender: string;
+  message: string;
+  receiver: string;
+  createdMessageAt: string;
+  read: boolean;
+  receiverRead: boolean;
+}
+
+export interface ChatApiResponse {
+  content: ReturnedMessageForm[];
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
 }
