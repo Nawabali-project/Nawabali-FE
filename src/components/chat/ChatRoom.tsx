@@ -34,7 +34,7 @@ export const ChatRoom: React.FC<{
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { inView } = useInView({
     threshold: 0.99,
-    rootMargin: '-200px 0px 0px 0px',
+    rootMargin: '-300px 0px 0px 0px',
   });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -114,8 +114,12 @@ export const ChatRoom: React.FC<{
 
   // 스크롤 맨 위에서 추가 데이터 로드
   useEffect(() => {
+    console.log('InView:', inView); // Log inView status
     if (inView && !isFetchingNextPage && hasNextPage) {
-      fetchNextPage();
+      console.log('Fetching next page...'); // Log before fetching
+      fetchNextPage().then(() => {
+        console.log('Next page fetched'); // Log after fetching
+      });
     }
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
