@@ -33,9 +33,9 @@ export const ChatRoom: React.FC<{
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { ref, inView } = useInView({
-    threshold: 0,
-    rootMargin: '-100px 0px 0px 0px',
+    threshold: 0.99,
   });
+  const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<ChatApiResponse, Error>({
@@ -49,26 +49,9 @@ export const ChatRoom: React.FC<{
       enabled: true,
     });
 
-  useEffect(() => {
-    if (inView && !isFetchingNextPage && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
-
-  useEffect(() => {
-    if (data?.pages) {
-      const newMessages = data.pages.flatMap((page) => page.content);
-      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-    }
-  }, [data]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  // 초기 메시지 로드 및 구독 설정
   useEffect(() => {
     if (roomId && client?.connected) {
-      fetchNextPage();
       const headers = { Authorization: `Bearer ${accessToken}` };
       const subscription = client.subscribe(
         `/sub/chat/room/${roomId}`,
@@ -91,6 +74,39 @@ export const ChatRoom: React.FC<{
       };
     }
   }, [roomId, client, accessToken]);
+
+  // 페이지 데이터가 업데이트 될 때마다 메시지 목록 업데이트
+  useEffect(() => {
+    if (data?.pages) {
+      const newMessages = data.pages.flatMap((page) => page.content).reverse(); // 최신 메시지가 먼저 오도록
+      if (data.pages[0].number === 0) {
+        setMessages(newMessages);
+        scrollToBottom();
+      } else {
+        const scrollHeightBefore = messagesEndRef.current?.scrollHeight;
+        setMessages((prevMessages) => [...newMessages, ...prevMessages]);
+        if (scrollHeightBefore && messagesEndRef.current) {
+          // 스크롤 위치 조정
+          const newScrollPos =
+            messagesEndRef.current.scrollHeight - scrollHeightBefore;
+          messagesEndRef.current.scrollTop = newScrollPos + prevScrollPos;
+          // 이전 스크롤 위치 업데이트
+          setPrevScrollPos(newScrollPos + prevScrollPos);
+        }
+      }
+    }
+  }, [data]);
+
+  // 스크롤 맨 위에서 추가 데이터 로드
+  useEffect(() => {
+    if (inView && !isFetchingNextPage && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     if (roomName) {
@@ -116,7 +132,10 @@ export const ChatRoom: React.FC<{
     };
     sendMessage(roomId, client, chatMessage)
       .then(() => {
-        if (isMounted.current) setMessage('');
+        if (isMounted.current) {
+          setMessage('');
+          scrollToBottom();
+        }
       })
       .catch((error) => {
         if (isMounted.current) console.error('Failed to send message:', error);
