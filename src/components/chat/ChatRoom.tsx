@@ -58,31 +58,30 @@ export const ChatRoom: React.FC<{
       fetchNextPage().finally(() => {
         if (!isMounted.current) return;
         setLoading(false);
+        let oldScrollTop = messagesEndRef.current
+          ? messagesEndRef.current.scrollTop
+          : 0;
+        let oldScrollHeight = messagesEndRef.current
+          ? messagesEndRef.current.scrollHeight
+          : 0;
+
+        if (data) {
+          const newMessages = data.pages
+            .flatMap((page) => page.content)
+            .reverse();
+          setMessages((prev) => [...newMessages, ...prev]);
+
+          setTimeout(() => {
+            if (messagesEndRef.current && isMounted.current) {
+              const newScrollHeight = messagesEndRef.current.scrollHeight;
+              const scrollOffset = newScrollHeight - oldScrollHeight;
+              messagesEndRef.current.scrollTop = oldScrollTop + scrollOffset;
+            }
+          }, 0);
+        }
       });
     }
   }, [inView, hasNextPage, fetchNextPage, isMounted]);
-
-  useEffect(() => {
-    let oldScrollTop = messagesEndRef.current
-      ? messagesEndRef.current.scrollTop
-      : 0;
-    let oldScrollHeight = messagesEndRef.current
-      ? messagesEndRef.current.scrollHeight
-      : 0;
-
-    if (data) {
-      const newMessages = data.pages.flatMap((page) => page.content).reverse();
-      setMessages((prev) => [...newMessages, ...prev]);
-
-      setTimeout(() => {
-        if (messagesEndRef.current && isMounted.current) {
-          const newScrollHeight = messagesEndRef.current.scrollHeight;
-          const scrollOffset = newScrollHeight - oldScrollHeight;
-          messagesEndRef.current.scrollTop = oldScrollTop + scrollOffset;
-        }
-      }, 0);
-    }
-  }, [data, isMounted]);
 
   useEffect(() => {
     if (roomId && client?.connected) {
