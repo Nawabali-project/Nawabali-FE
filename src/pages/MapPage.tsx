@@ -35,7 +35,8 @@ const MapPage = () => {
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
-  const { setIsLoggedIn, isLoggedIn } = useAuthStore();
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
 
   // 스켈레톤 UI
   useEffect(() => {
@@ -51,7 +52,7 @@ const MapPage = () => {
     };
 
     initializeAuth();
-  }, [setIsLoggedIn]);
+  }, []);
 
   // 유저정보
   const { isSuccess } = useQuery({

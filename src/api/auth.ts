@@ -120,33 +120,39 @@ export const useLogout = () => {
   };
 };
 
-export const checkAuthStatus = async () => {
+interface AuthStatus {
+  isLoggedIn: boolean;
+}
+
+export const checkAuthStatus = async (): Promise<AuthStatus> => {
   const cookie = new Cookies();
-  try {
-    const response = await authInstance.get('/users/authenticate');
-    const { authenticated } = response.data;
+  const token = cookie.get('accessToken');
+  if (token) {
+    return { isLoggedIn: true };
+  } else {
+    try {
+      const response = await authInstance.get('/users/authenticate');
+      const { authenticated } = response.data;
 
-    if (authenticated) {
-      const accessToken = response.headers['Authorization'];
+      if (authenticated) {
+        const accessToken = response.headers['Authorization'];
 
-      if (accessToken) {
-        cookie.set('accessToken', accessToken, {
-          path: '/',
-          secure: true,
-          sameSite: 'none',
-        });
+        if (accessToken) {
+          cookie.set('accessToken', accessToken, {
+            path: '/',
+            secure: true,
+            sameSite: 'none',
+          });
+        }
+        return { isLoggedIn: true };
       }
-      return {
-        isLoggedIn: true,
-      };
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.status != 403) {
+        console.error('Error checking authentication status:', error);
+      }
+      return { isLoggedIn: false };
     }
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    if (axiosError.response && axiosError.response.status != 403) {
-      console.error('Error checking authentication status:', error);
-    }
-    return {
-      isLoggedIn: false,
-    };
+    return { isLoggedIn: false };
   }
 };
