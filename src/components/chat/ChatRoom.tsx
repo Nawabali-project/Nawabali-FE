@@ -105,7 +105,7 @@ export const ChatRoom: React.FC<{
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView();
   };
 
   useEffect(() => {
@@ -182,7 +182,9 @@ export const ChatRoom: React.FC<{
           <h3>{roomName}</h3>
         </UserInfo>
       )}
-      <Chat ref={ref}>
+      <Chat>
+        <div ref={ref} />
+        <div ref={messagesEndRef} />
         {messages.map((msg, index) => (
           <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
             <ProfileImg
@@ -200,7 +202,6 @@ export const ChatRoom: React.FC<{
             </MessageText>
           </MessageRow>
         ))}
-        <div ref={messagesEndRef} />
       </Chat>
       <InputDiv>
         <Input
