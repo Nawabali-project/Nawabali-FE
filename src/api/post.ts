@@ -38,7 +38,6 @@ export const getAllPosts = async () => {
 // 지도에서 게시글 전체 조회 (Elastic으로 개선)
 export const getAllPostsElastic = async () => {
   const response = await instance.get(`/posts/searchAll`);
-  console.log('Elastic 전체조회', response);
   return response;
 };
 

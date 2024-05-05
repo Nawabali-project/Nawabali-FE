@@ -12,7 +12,6 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
     try {
       const userJson = localStorage.getItem('user');
       const token = new Cookies().get('accessToken');
-      console.log('Token from cookies:', token);
       if (userJson && token) {
         const user = JSON.parse(userJson);
         set({

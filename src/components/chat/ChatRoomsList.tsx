@@ -87,9 +87,6 @@ export const ChatRoomsList: React.FC<{
       try {
         const response = await searchChatRoom(debouncedSearchWord);
         setSearchChatResults(response);
-        console.log('response: ', response);
-
-        console.log('searchChatResult: ', searchChatResults);
       } catch (error) {
         console.error('Error searching chat by nickname', error);
         setSearchChatResults([]);
