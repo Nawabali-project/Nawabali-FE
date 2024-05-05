@@ -12,9 +12,7 @@ import {
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import useSSEStore from '@/store/SSEState';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useInView } from 'react-intersection-observer';
-import useIsMounted from '@/hooks/useIsMounted';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 
 export const ChatRoom: React.FC<{
   roomId: number;
@@ -22,7 +20,6 @@ export const ChatRoom: React.FC<{
   client: Client | null;
   isRoomActive: boolean;
 }> = ({ roomId, roomName, client }) => {
-  const isMounted = useIsMounted();
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -32,27 +29,93 @@ export const ChatRoom: React.FC<{
   const navigate = useNavigate();
   const setHasChanges = useSSEStore((state) => state.setHasChanges);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [initialLoad, setInitialLoad] = useState(true);
-  const { ref, inView } = useInView({
-    threshold: 0.1,
+  const queryClient = useQueryClient();
+  // 스크롤 상태 관리 변수
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const previousScrollHeight = useRef<number>(0);
+  const previousScrollTop = useRef<number>(0);
+
+  // 첫 마운트 시 초기화
+  useEffect(() => {
+    setMessages([]);
+    queryClient.invalidateQueries();
+  }, [roomId]);
+
+  const {
+    data: chatData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<ChatApiResponse>({
+    queryKey: [roomId, 'infinite'],
+    queryFn: ({ pageParam = 0 }) =>
+      showChat({ pageParam: Number(pageParam), roomId }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      !lastPage.last ? lastPage.pageable.pageNumber + 1 : undefined,
   });
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery<ChatApiResponse, Error>({
-      queryKey: ['chatRoomMessages', roomId],
-      queryFn: async ({ pageParam = 0 }) => {
-        return showChat({ pageParam: Number(pageParam), roomId });
-      },
-      getNextPageParam: (lastPage) =>
-        !lastPage.last ? lastPage.pageable.pageNumber + 1 : undefined,
-      initialPageParam: 0,
-      enabled: true,
-    });
+  // 스크롤을 감지하여 다음 페이지 요청
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer && !isFetchingNextPage) {
+      chatContainer.scrollTop =
+        chatContainer.scrollHeight -
+        previousScrollHeight.current +
+        previousScrollTop.current;
+    }
+  }, [chatData, isFetchingNextPage]);
 
-  // 초기 메시지 로드 및 구독 설정
+  // 스크롤 위치 저장
+  const handleScroll = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer && chatContainer.scrollTop === 0 && hasNextPage) {
+      previousScrollHeight.current = chatContainer.scrollHeight;
+      previousScrollTop.current = chatContainer.scrollTop;
+      fetchNextPage();
+    }
+  };
+
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      chatContainer.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (chatContainer) {
+        chatContainer.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [hasNextPage]);
+
+  //페이지 추가 후 스크롤 위치 조정
+  useEffect(() => {
+    if (!isScrolling && !isFetchingNextPage && hasNextPage) {
+      const chatContainer = chatContainerRef.current;
+
+      if (chatContainer) {
+        const lastPage = chatData?.pages[chatData.pages.length - 1];
+        const lastMessage = lastPage?.content[lastPage.content.length - 1];
+
+        if (lastMessage) {
+          // 마지막 메시지를 가리키는 DOM 요소를 찾아서 스크롤
+          const lastMessageElement = document.getElementById(
+            `message-${lastMessage.id}`,
+          );
+          if (lastMessageElement) {
+            lastMessageElement.scrollIntoView();
+          }
+        }
+
+        setIsScrolling(false);
+      }
+    }
+  }, [isFetchingNextPage, hasNextPage, isScrolling, chatData]);
+
+  // 실시간 메시지 수신 처리
   useEffect(() => {
     if (roomId && client?.connected) {
-      if (!data || data.pages.length === 0) fetchNextPage();
       const headers = { Authorization: `Bearer ${accessToken}` };
       const subscription = client.subscribe(
         `/sub/chat/room/${roomId}`,
@@ -63,8 +126,19 @@ export const ChatRoom: React.FC<{
               JSON.parse(message.body).createdMessageAt,
             ),
           };
-          setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, receivedMessage];
+            updatedMessages.sort((a, b) => a.id - b.id);
+            return updatedMessages;
+          });
           setHasChanges(true);
+
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+          const timer = setTimeout(() => {
+            setHasChanges(false);
+          }, 1000);
+          return () => clearTimeout(timer);
         },
         headers,
       );
@@ -73,60 +147,7 @@ export const ChatRoom: React.FC<{
         setHasChanges(false);
       };
     }
-  }, [roomId, client, accessToken]);
-
-  useEffect(() => {
-    if (initialLoad && messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-      setInitialLoad(false);
-    }
-  }, [messages]);
-
-  useEffect(() => {
-    if (data?.pages) {
-      const newMessages = data.pages.flatMap((page) => page.content).reverse();
-      if (data.pages[0].number === 0) {
-        setMessages(newMessages);
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollTop =
-            messagesEndRef.current.scrollHeight;
-        }
-      } else {
-        const currentHeight = messagesEndRef.current?.scrollHeight || 0;
-        setMessages((prevMessages) => [...newMessages, ...prevMessages]);
-        const newHeight = messagesEndRef.current?.scrollHeight || 0;
-        messagesEndRef.current?.scrollTo(0, newHeight - currentHeight);
-      }
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      const scrollAtBottom =
-        messagesEndRef.current.scrollHeight -
-          messagesEndRef.current.clientHeight <=
-        messagesEndRef.current.scrollTop + 1;
-
-      if (scrollAtBottom) {
-        messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-      }
-    }
-  }, [messages]);
-
-  // 스크롤 맨 위에서 추가 데이터 로드
-  useEffect(() => {
-    console.log(
-      'InView:',
-      inView,
-      'isFetchingNextPage:',
-      isFetchingNextPage,
-      'hasNextPage:',
-      hasNextPage,
-    );
-    if (inView && !isFetchingNextPage && hasNextPage) {
-      fetchNextPage().then(() => console.log('Fetched additional page.'));
-    }
-  }, [inView, hasNextPage, isFetchingNextPage]);
+  }, [roomId, client, accessToken, setHasChanges]);
 
   useEffect(() => {
     if (roomName) {
@@ -152,16 +173,10 @@ export const ChatRoom: React.FC<{
     };
     sendMessage(roomId, client, chatMessage)
       .then(() => {
-        if (isMounted.current) {
-          setMessage('');
-          messagesEndRef.current?.scrollTo(
-            0,
-            messagesEndRef.current.scrollHeight,
-          );
-        }
+        setMessage('');
       })
       .catch((error) => {
-        if (isMounted.current) console.error('Failed to send message:', error);
+        console.error('Error occurred while sending message:', error);
       });
   };
 
@@ -193,9 +208,12 @@ export const ChatRoom: React.FC<{
     return `${month < 10 ? '0' : ''}${month}.${day < 10 ? '0' : ''}${day} ${hour < 10 ? '0' : ''}${hour}:${minute < 10 ? '0' : ''}${minute}`;
   };
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   return (
     <ChatContainer>
-      <div ref={ref} style={{ height: '1px', position: 'absolute', top: 0 }} />
       {roomName && userInfo && (
         <UserInfo>
           <UserProfileImg
@@ -206,9 +224,42 @@ export const ChatRoom: React.FC<{
           <h3>{roomName}</h3>
         </UserInfo>
       )}
-      <Chat ref={messagesEndRef}>
-        {messages.map((msg, index) => (
-          <MessageRow key={index} isMyMessage={msg.sender === myNickname}>
+      <Chat ref={chatContainerRef}>
+        {chatData?.pages
+          .slice()
+          .reverse()
+          .map((page, pageIndex) => (
+            <div key={pageIndex}>
+              {page.content
+                .slice()
+                .reverse()
+                .map((msg: ReturnedMessageForm) => (
+                  <MessageRow
+                    key={msg.id}
+                    $isMyMessage={msg.sender === myNickname}
+                  >
+                    <ProfileImg
+                      src={
+                        msg.sender === myNickname
+                          ? localStorage
+                              .getItem('profileImageUrl')!
+                              .split('"')[1]
+                          : userInfo?.imgUrl
+                      }
+                    />
+                    <MessageText $isMyMessage={msg.sender === myNickname}>
+                      <MessageContent>{msg.message}</MessageContent>
+                      <MessageDate $isMyMessage={msg.sender === myNickname}>
+                        {formatMessageDate(msg.createdMessageAt)}
+                      </MessageDate>
+                    </MessageText>
+                  </MessageRow>
+                ))}
+            </div>
+          ))}
+
+        {messages.map((msg) => (
+          <MessageRow key={msg.id} $isMyMessage={msg.sender === myNickname}>
             <ProfileImg
               src={
                 msg.sender === myNickname
@@ -216,15 +267,17 @@ export const ChatRoom: React.FC<{
                   : userInfo?.imgUrl
               }
             />
-            <MessageText isMyMessage={msg.sender === myNickname}>
+            <MessageText $isMyMessage={msg.sender === myNickname}>
               <MessageContent>{msg.message}</MessageContent>
-              <MessageDate isMyMessage={msg.sender === myNickname}>
+              <MessageDate $isMyMessage={msg.sender === myNickname}>
                 {formatMessageDate(msg.createdMessageAt)}
               </MessageDate>
             </MessageText>
           </MessageRow>
         ))}
+        <div ref={messagesEndRef} />
       </Chat>
+
       <InputDiv>
         <Input
           value={message}
@@ -244,7 +297,7 @@ export default ChatRoom;
 
 const ChatContainer = styled.div`
   height: 85vh;
-  margin: 100px 0 0 20px;
+  margin: 100px 100px 0 20px;
   padding: 0 10px;
   width: 100%;
   display: flex;
@@ -252,6 +305,7 @@ const ChatContainer = styled.div`
   border-radius: 8px;
   background-color: white;
   border-radius: 20px;
+  overflow: hidden;
 `;
 
 const UserInfo = styled.div`
@@ -270,14 +324,13 @@ const UserProfileImg = styled.img`
 `;
 
 const Chat = styled.div`
-  width: 100%;
+  height: calc(100% - 60px);
+  width: 98%;
   padding: 10px;
   overflow-y: auto;
-  height: calc(100% - 60px);
 
   &::-webkit-scrollbar {
     width: 8px;
-    height: 15px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.4);
   }
@@ -291,8 +344,8 @@ const MessageRow = styled.div<MessageProps>`
   width: 100%;
   display: flex;
   margin-bottom: 10px;
-  justify-content: ${({ isMyMessage }) =>
-    isMyMessage ? 'flex-end' : 'flex-start'};
+  justify-content: ${({ $isMyMessage }) =>
+    $isMyMessage ? 'flex-end' : 'flex-start'};
   align-items: flex-start;
 `;
 
@@ -307,9 +360,9 @@ const MessageText = styled.div<MessageProps>`
   display: flex;
   padding: 8px 12px;
   border-radius: 18px;
-  background-color: ${({ isMyMessage }) =>
-    isMyMessage ? '#0084ff' : '#e5e5ea'};
-  color: ${({ isMyMessage }) => (isMyMessage ? 'white' : 'black')};
+  background-color: ${({ $isMyMessage }) =>
+    $isMyMessage ? '#0084ff' : '#e5e5ea'};
+  color: ${({ $isMyMessage }) => ($isMyMessage ? 'white' : 'black')};
   margin-top: 5px;
   word-wrap: break-word;
   justify-content: space-between;
@@ -320,7 +373,7 @@ const MessageDate = styled.span<MessageProps>`
   display: block;
   width: 34px;
   font-size: 12px;
-  color: ${({ isMyMessage }) => (isMyMessage ? 'white' : '#666')};
+  color: ${({ $isMyMessage }) => ($isMyMessage ? 'white' : '#666')};
   padding-left: 6px;
   align-self: flex-end;
 `;

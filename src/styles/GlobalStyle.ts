@@ -60,12 +60,13 @@ const GlobalStyles = createGlobalStyle`
 
 
 body {
-
+  margin: 0;
+  height: 100%;
   font-family: "Pretendard", "Noto Sans KR", sans-serif;
 }
 
 button{
-    cursor: pointer;
+  cursor: pointer;
 }`;
 
 export default GlobalStyles;
