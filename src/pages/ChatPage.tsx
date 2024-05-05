@@ -30,11 +30,6 @@ function ChatPage() {
     );
 
     return () => {
-      if (client.connected) {
-        client.disconnect(() => {
-          console.log('Disconnected!');
-        });
-      }
       socket.close();
     };
   }, []);

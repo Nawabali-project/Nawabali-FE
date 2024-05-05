@@ -46,7 +46,6 @@ export const sendMessage = (
 ): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
     if (client && client.connected) {
-      console.log('Publishing message:', chatMessage);
       try {
         client.publish({
           destination: `/pub/chat/message/${roomId}`,

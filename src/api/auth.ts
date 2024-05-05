@@ -42,8 +42,6 @@ export const login = async (user: LoginUser) => {
 };
 
 export const getUserInfo = async () => {
-  console.log('getUserInfo실행됨');
-
   try {
     const response = await authInstance.get('/users/my-info');
     localStorage.setItem('user', JSON.stringify(response.data));
