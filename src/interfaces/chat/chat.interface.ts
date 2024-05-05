@@ -46,7 +46,7 @@ export interface SSEState {
 }
 
 export interface MessageProps {
-  isMyMessage: boolean;
+  $isMyMessage: boolean;
 }
 
 export interface ReturnedMessageForm {
@@ -86,4 +86,8 @@ export interface ChatApiResponse {
   first: boolean;
   last: boolean;
   empty: boolean;
+}
+
+export interface ShowChatData {
+  page: number;
 }

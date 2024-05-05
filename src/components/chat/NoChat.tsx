@@ -27,8 +27,9 @@ export default NoChat;
 const ChatContainer = styled.div`
   margin-top: 100px;
   margin-left: 20px;
-  height: 740px;
+  height: 700px;
   width: 60vw;
+  overflow: hidden;
   background-color: white;
   border-radius: 20px;
   color: #757575;
