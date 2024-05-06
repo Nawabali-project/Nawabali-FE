@@ -42,7 +42,7 @@ const MapPage = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 800);
+    }, 1000);
   }, []);
 
   useEffect(() => {
