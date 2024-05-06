@@ -33,9 +33,10 @@
 
 <br><br>
 ## 🛠 Architecture
-* 전체
+* #### 전체
 ![unnamed](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6eba048d-a713-4574-82f6-25e68319b121)
-* FE
+br>
+* #### FE
 ![front](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/d47032a5-765c-4027-8d27-c96f0e5e20a3)
 
 
