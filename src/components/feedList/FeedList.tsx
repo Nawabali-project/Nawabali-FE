@@ -91,7 +91,7 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
               </UserGrade>
             </UserInfoBox>
             <ImgBox onClick={() => handlePostClick(post)}>
-              <img src={post.mainImageUrl} alt="게시물 이미지" loading="lazy" />
+              <img src={post.mainImageUrl} alt="게시물 이미지" />
               <PostType category={post.category}>
                 {post.category === 'FOOD'
                   ? '맛집'
