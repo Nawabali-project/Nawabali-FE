@@ -1,6 +1,6 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=180&text=동네방네&animation=&fontColor=ffffff&fontSize=70" />
 
-![동네방네 브로셔이미지_2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/04580244-b863-4ccc-a356-f513ba0c5a50)
+![동네방네 썸네일 시안2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/a0a3aa24-c2a2-46f9-872a-b66258c6d6ce)
 
 * 🔗 사이트: https://www.dongnaebangnae.com/
 * 📆 개발 기간: 2024.03.26 ~ 2024.05.06 (총 6주)
@@ -33,7 +33,9 @@
 
 <br><br>
 ## 🛠 Architecture
-![ServiceArchitecture_R1](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/cadcd137-c042-4457-89c3-4b28ae4ef095)
+![unnamed](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6eba048d-a713-4574-82f6-25e68319b121)
+![front](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/d47032a5-765c-4027-8d27-c96f0e5e20a3)
+
 
 
 <br><br>
