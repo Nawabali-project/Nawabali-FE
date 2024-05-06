@@ -112,7 +112,7 @@ const SearchResponsePage = () => {
         <div style={{ margin: '0 auto' }}>
           <FeedsBox>
             {data?.content.map((item: PostItem, idx: number) => (
-              <ImageContainer key={idx}>
+              <ImageContainer key={idx} onClick={() => handlePostClick(item)}>
                 <Row style={{ marginBottom: '8px' }}>
                   <ProfileImg $profileImageUrl={item.profileImageUrl} />
                   <span style={{ fontSize: '14px', fontWeight: 800 }}>
@@ -202,7 +202,6 @@ const SearchResponsePage = () => {
                         cursor: 'pointer',
                         marginRight: '5px',
                       }}
-                      onClick={() => handlePostClick(item)}
                     >
                       게시물 보기
                     </span>
