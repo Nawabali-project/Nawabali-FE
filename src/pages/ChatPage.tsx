@@ -30,7 +30,9 @@ function ChatPage() {
     );
 
     return () => {
-      socket.close();
+      if (client.connected) {
+        setStompClient(null);
+      }
     };
   }, []);
 
