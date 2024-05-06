@@ -54,8 +54,7 @@ const SSEListener: React.FC = () => {
         },
       );
 
-      eventSourceRef.current.onerror = (event: any): void => {
-        console.error('SSE Error:', event);
+      eventSourceRef.current.onerror = (): void => {
         setIsConnected(false);
         eventSourceRef.current?.close();
         retryConnection();

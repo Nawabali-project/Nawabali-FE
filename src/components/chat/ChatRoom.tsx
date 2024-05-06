@@ -172,12 +172,8 @@ export const ChatRoom: React.FC<{
   useEffect(() => {
     if (roomName) {
       const fetchUserInfo = async () => {
-        try {
-          const user = await searchUserByNickname(roomName);
-          setUserInfo(user?.length > 0 ? user[0] : null);
-        } catch (error) {
-          console.error('Failed to fetch user info', error);
-        }
+        const user = await searchUserByNickname(roomName);
+        setUserInfo(user?.length > 0 ? user[0] : null);
       };
       fetchUserInfo();
     }
@@ -191,13 +187,9 @@ export const ChatRoom: React.FC<{
       sender: myNickname!,
       userId: parseInt(localStorage.getItem('userId') || '0', 10),
     };
-    sendMessage(roomId, client, chatMessage)
-      .then(() => {
-        setMessage('');
-      })
-      .catch((error) => {
-        console.error('Error occurred while sending message:', error);
-      });
+    sendMessage(roomId, client, chatMessage).then(() => {
+      setMessage('');
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

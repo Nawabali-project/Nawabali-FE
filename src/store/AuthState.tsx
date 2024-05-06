@@ -23,7 +23,6 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
         set({ isLoggedIn: false, loading: false, user: null });
       }
     } catch (error) {
-      console.error('Failed to initialize login state:', error);
       set({ isLoggedIn: false, loading: false, user: null });
     }
   },

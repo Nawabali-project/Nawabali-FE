@@ -96,24 +96,14 @@ export const useGetDedetailPost = (postId: number) => {
 
 // 게시물 수정
 export const editPost = async (postId: number, editedContent: string) => {
-  try {
-    const response = await authInstance.patch(`/posts/${postId}`, {
-      contents: editedContent,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting post', error);
-    throw error;
-  }
+  const response = await authInstance.patch(`/posts/${postId}`, {
+    contents: editedContent,
+  });
+  return response.data;
 };
 
 // 게시글 삭제
 export const deletePost = async (postId: number) => {
-  try {
-    const response = await authInstance.delete(`/posts/${postId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting post', error);
-    throw error;
-  }
+  const response = await authInstance.delete(`/posts/${postId}`);
+  return response.data;
 };

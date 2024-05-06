@@ -54,11 +54,9 @@ export const sendMessage = (
         });
         resolve();
       } catch (error) {
-        console.error('Error publishing message:', error);
         reject(error);
       }
     } else {
-      console.error('WebSocket connection is not active.');
       reject('WebSocket connection is not active.');
     }
   });

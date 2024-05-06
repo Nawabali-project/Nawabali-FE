@@ -54,9 +54,6 @@ export const useDeleteUser = () => {
       clearCookies();
       localStorage.clear();
     },
-    onError: (error) => {
-      console.error('회원탈퇴 중 에러 발생: ', error);
-    },
   });
 };
 
@@ -77,9 +74,6 @@ export const deletePhoto = async () => {
 export const useDeletePhoto = () => {
   return useMutation({
     mutationFn: deletePhoto,
-    onError: (error) => {
-      console.error('프로필이미지 삭제 중 에러 발생: ', error);
-    },
   });
 };
 
@@ -87,25 +81,17 @@ export const updatePhoto = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  try {
-    const response = await authInstance.patch('/profileImage', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('프로필 이미지 업데이트 실패:', error);
-    throw error;
-  }
+  const response = await authInstance.patch('/profileImage', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
 };
 
 export const useUpdatePhoto = () => {
   return useMutation({
     mutationFn: (file: File) => updatePhoto(file),
-    onError: (error) => {
-      console.error('프로필 이미지 업데이트 중 에러 발생:', error);
-    },
   });
 };
 

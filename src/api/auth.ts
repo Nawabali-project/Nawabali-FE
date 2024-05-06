@@ -108,11 +108,7 @@ export const nicknameDupCheck = async (nickname: string) => {
 export const useLogout = () => {
   const navigate = useNavigate();
   return async () => {
-    try {
-      await authInstance.post(`/users/logout`);
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+    await authInstance.post(`/users/logout`);
     useAuthStore.getState().logout();
     navigate('/');
   };
@@ -145,10 +141,6 @@ export const checkAuthStatus = async (): Promise<AuthStatus> => {
         return { isLoggedIn: true };
       }
     } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError.response && axiosError.response.status != 403) {
-        console.error('Error checking authentication status:', error);
-      }
       return { isLoggedIn: false };
     }
     return { isLoggedIn: false };

@@ -41,12 +41,8 @@ const OtherUserPage = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      try {
-        const user = await searchUserByNickname(nickname!);
-        setUser(user);
-      } catch (error) {
-        console.error('Failed to fetch user info', error);
-      }
+      const user = await searchUserByNickname(nickname!);
+      setUser(user);
     };
 
     if (nickname) {

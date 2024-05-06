@@ -52,7 +52,6 @@ export const ChatRoomsList: React.FC<{
         );
         setChatRooms(roomsWithUserImages);
       } catch (error) {
-        console.error('Failed to load chat rooms or user data', error);
         setChatRooms([]);
       }
     };
@@ -70,7 +69,6 @@ export const ChatRoomsList: React.FC<{
         const response = await searchUserByNickname(debouncedSearchWord);
         setSearchResults(response);
       } catch (error) {
-        console.error('Error searching user by nickname', error);
         setSearchResults([]);
       }
     };
@@ -88,7 +86,6 @@ export const ChatRoomsList: React.FC<{
         const response = await searchChatRoom(debouncedSearchWord);
         setSearchChatResults(response);
       } catch (error) {
-        console.error('Error searching chat by nickname', error);
         setSearchChatResults([]);
       }
     };
@@ -103,7 +100,6 @@ export const ChatRoomsList: React.FC<{
       const newRoom = await getChatRooms();
       handleRoomClick(newRoom[0].roomId, newRoom[0].roomName);
     } catch (error) {
-      console.error('채팅방 생성 실패', error);
       alert('채팅 생성에 실패했습니다.');
     }
   };

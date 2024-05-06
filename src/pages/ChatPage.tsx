@@ -19,15 +19,9 @@ function ChatPage() {
     const rawToken = cookie.get('accessToken');
     const accessToken = decodeURIComponent(rawToken).slice(7);
 
-    client.connect(
-      { Authorization: `Bearer ${accessToken}` },
-      () => {
-        setStompClient(client);
-      },
-      (error: any) => {
-        console.error('Connection error', error);
-      },
-    );
+    client.connect({ Authorization: `Bearer ${accessToken}` }, () => {
+      setStompClient(client);
+    });
 
     return () => {
       if (client.connected) {

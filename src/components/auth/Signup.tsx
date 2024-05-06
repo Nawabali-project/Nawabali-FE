@@ -93,9 +93,6 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
     onSuccess: () => {
       setEmailOkMessage('인증 메일이 발송되었어요.');
     },
-    onError: (error: AxiosError) => {
-      console.error('Error:', error.message);
-    },
   });
 
   const handleSendVerificationCodeClick = () => {
@@ -123,9 +120,6 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
         setValidNumberValidityMessage('');
         setValidNumberOkMessage('인증번호가 일치해요.');
       }
-    },
-    onError: (error: AxiosError) => {
-      console.error('Error:', error.message);
     },
   });
   const handleCheckVerificationCodeClick = () => {
@@ -183,7 +177,6 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
             setNicknameOkMessage('');
           }
         } catch (error) {
-          console.error('닉네임 중복 검사 중 에러 발생:', error);
           setNicknameValidityMessage('');
         }
       } else {
@@ -258,12 +251,10 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
         showAlertModal('회원가입이 완료되었어요!');
       } catch (error) {
         if (error instanceof AxiosError) {
-          console.error('회원가입 오류:', error.message);
           alert(
             '회원가입 실패: ' + (error.response?.data.message || error.message),
           );
         } else {
-          console.error('Unexpected error:', error);
           alert('회원가입 실패: 알 수 없는 오류가 발생했습니다.');
         }
       }

@@ -54,15 +54,10 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
       // }
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
-        console.error(
-          '로그인 오류:',
-          error.message || error.response.data.message,
-        );
         alert(
           '로그인 실패: ' + (error.response?.data.message || error.message),
         );
       } else {
-        console.error('Unexpected error:', error);
         alert('로그인 실패: 알 수 없는 오류');
       }
     }

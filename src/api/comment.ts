@@ -9,7 +9,6 @@ export const getComments = async ({
   postId: string;
 }) => {
   if (!postId) {
-    console.error('postId is undefined!');
     return;
   }
 

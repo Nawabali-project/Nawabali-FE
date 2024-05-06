@@ -116,14 +116,10 @@ const EditUser: React.FC = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      try {
-        const data = await updatePhoto(file);
-        const quotedImageUrl = `"${data.imgUrl}"`;
-        localStorage.setItem('profileImageUrl', quotedImageUrl);
-        setImageAction('modify');
-      } catch (error) {
-        console.error('프로필 이미지 업로드 실패:', error);
-      }
+      const data = await updatePhoto(file);
+      const quotedImageUrl = `"${data.imgUrl}"`;
+      localStorage.setItem('profileImageUrl', quotedImageUrl);
+      setImageAction('modify');
     }
   };
 
@@ -158,7 +154,6 @@ const EditUser: React.FC = () => {
             response ? '' : '기존 비밀번호와 일치하지 않습니다.',
           );
         } catch (error) {
-          console.error('비밀번호 검증 오류:', error);
           setPrevPwValidityMessage(
             '서버 오류로 비밀번호를 검증할 수 없습니다.',
           );
@@ -318,7 +313,6 @@ const EditUser: React.FC = () => {
       alert('회원 정보가 성공적으로 업데이트 되었습니다.');
       navigate('/mypage');
     } catch (error) {
-      console.error('Update error:', error);
       alert('회원 정보 업데이트에 실패했습니다.');
     }
   };
