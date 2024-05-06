@@ -1,6 +1,6 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=180&text=동네방네&animation=&fontColor=ffffff&fontSize=70" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
 
-![동네방네 브로셔이미지_2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/04580244-b863-4ccc-a356-f513ba0c5a50)
+![동네방네 썸네일 시안2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/a0a3aa24-c2a2-46f9-872a-b66258c6d6ce)
 
 * 🔗 사이트: https://www.dongnaebangnae.com/
 * 📆 개발 기간: 2024.03.26 ~ 2024.05.06 (총 6주)
@@ -19,7 +19,7 @@
       <td align="center">
         <a href="https://github.com/inhachoi">최경일</a><br />
         <img src="https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/387265705_688108082998779_5231387308078165349_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=VqkETrfmL_EQ7kNvgEz6-fE&edm=AGXveE0BAAAA&ccb=7-5&oh=00_AfAokniF-Ao9PXx3EFNym1c8mseIwhiJYnrkuLYkRZ5aaA&oe=66382C92&_nc_sid=cf751b" width="200px;" alt=""/><br />
-         돈가스 좋아해요? <br />
+         아침 안먹는 남자자 <br />
         </td>
       <td align="center">
         <a href="https://github.com/1roo">하나래</a><br />
@@ -33,7 +33,11 @@
 
 <br><br>
 ## 🛠 Architecture
-![befe](https://github.com/Nawabali-project/Nawabali-FE/assets/133945249/94c580fb-e10b-4bfd-b7d9-041ba8dc0779)
+* #### 전체
+![unnamed](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6eba048d-a713-4574-82f6-25e68319b121)
+<br>
+* #### FE
+![front](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/d47032a5-765c-4027-8d27-c96f0e5e20a3)
 
 
 
@@ -50,7 +54,6 @@
   <img src="https://img.shields.io/badge/Axios-%23593d88.svg?style=for-the-badge&logoColor=000000">
   <img src="https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white">
   <br>
-  <img src="https://img.shields.io/badge/GitHub%20Actions-232F3E?style=for-the-badge&logo=GitHubActions&logoColor=2088FF"/>
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
   <br>
@@ -63,6 +66,8 @@
 <summary>🌟 간단한 로그인 및 회원가입</summary>
 <br>
 
+![328189527-3239cde3-db66-4806-835a-72e2b7f02585](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6b5c3335-8e50-4513-89cd-59d2a4b3fe94)
+
 - 로컬 로그인 / 회원가입 (이메일 인증기능)
 - 소셜 로그인 (kakao)
 
@@ -71,6 +76,8 @@
 <details>
 <summary>🌟 꾸며진 전체 지도 한눈에 확인</summary>
 <br>
+
+![스크린샷(175)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/9c2061c0-5fc6-441b-ae2b-a52d3d428929)
 
 - 지도 API 연동 (kakao)
 - 게시물 작성시 해당위치에 게시물이 놓아짐
@@ -81,6 +88,8 @@
 <details>
 <summary>🌟 리스트로 나열된 게시글 한눈에 확인</summary>
 <br>
+ 
+![스크린샷(176)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/2dd903ff-4702-4561-876a-12d49e154ac7)
 
 - 지역 / 카테고리 별로 분류 가능
 
@@ -89,6 +98,8 @@
 <details>
 <summary>🌟 게시물 CRUD</summary>
 <br>
+
+![328188568-22597347-613f-49bd-9ba0-d158bc761306](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/2213a784-a673-49f6-abde-b3bf1ae9bc0e)
 
 - 게시물 작성은 본인 동네에만 작성 가능
 
@@ -116,6 +127,8 @@
 <summary>🌟 상대적인 동네별 활동점수 확인을 통해 경쟁유도</summary>
 <br>
 
+![스크린샷(177)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/ee2b18a5-0c06-444d-bfec-eaa29860c8d0)
+
 - 서울시 25개 구를 경계선으로 나누고 클릭시 점수를 쉽게 확인할 수 있게함
 - '구'별 주민추천 수 + 게시물 수로 점수 측정
 - 점수가 상대적으로 높은 지역일수록 색을 진하게 표시
@@ -126,6 +139,8 @@
 <details>
 <summary>🌟 인기글들을 편하게 보라고 모아준 동네뉴스 페이지</summary>
 <br>
+
+![328188210-09d8879b-91ed-410f-bc07-17bfd0b230b5](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/30b7f8df-1fb6-473d-8341-6f33b28f5a3c)
 
 - 자동 및 수동으로 동적으로 동작하는 화면으로 편하게 확인
 - 지역별로 일주일간 사람들이 가장 많이 찾은 게시글들 확인
@@ -139,6 +154,8 @@
 <summary>🌟 마이페이지에서 레벨 확인 및 간편한 정보관리</summary>
 <br>
 
+![스크린샷(178)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/74578298-0acc-4830-8c27-d24251c03dc4)
+
 - 프로필 사진에 레벨에 따른 귀여운 모자 표시 (주민 / 토박이 / 터줏대감)
 - 다양한 개인정보 수정 가능 (닉네임, 거주지역, 프로필 사진 ...)
 - 내가 쓴 게시물과 북마크해둔 게시물 확인 가능
@@ -149,6 +166,7 @@
 <summary>🌟 유저와 실시간 통신</summary>
 <br>
 
+![328190019-2d7b1a2a-87c0-4db8-85e0-61bde1719c7c](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/18e7ef1b-ee74-4d56-967c-6da08e3d33ea)
 - 1:1 실시간으로 익명의 유저와 소통
 
 </details>
@@ -171,10 +189,12 @@
 
 * #### 개선 사항
   * 동적 import로 첫 로딩시간 개선 (React.lazy)
-  * 이미지 최적화로 속도 개선 (사이즈 조정 및 압축 / CLS / Lazy Loading / Pre Loading )
+  * 이미지 최적화로 속도 개선 (사이즈 조정 및 압축 / CLS / Lazy Loading )
+  * meta 데이터 설정, console 제거 등 권장사항 준수
 
-* #### 2024-05-01
-![스크린샷 2024-05-01 235255](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6086b80d-3303-4223-858f-c9256937e268)
+* #### 2024-05-05
+![스크린샷 2024-05-06 220746](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/eef39892-3bbb-4344-b5cb-6cd24fc05fc9)
+
 
 
 
