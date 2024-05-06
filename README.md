@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
+![328189527-3239cde3-db66-4806-835a-72e2b7f02585](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/3bef4bb5-07b1-486a-95e5-5bf2b890bd02)<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
 
 ![동네방네 썸네일 시안2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/a0a3aa24-c2a2-46f9-872a-b66258c6d6ce)
 
@@ -66,6 +66,8 @@
 <summary>🌟 간단한 로그인 및 회원가입</summary>
 <br>
 
+![328189527-3239cde3-db66-4806-835a-72e2b7f02585](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/6b5c3335-8e50-4513-89cd-59d2a4b3fe94)
+
 - 로컬 로그인 / 회원가입 (이메일 인증기능)
 - 소셜 로그인 (kakao)
 
@@ -74,6 +76,7 @@
 <details>
 <summary>🌟 꾸며진 전체 지도 한눈에 확인</summary>
 <br>
+
 
 - 지도 API 연동 (kakao)
 - 게시물 작성시 해당위치에 게시물이 놓아짐
@@ -92,6 +95,8 @@
 <details>
 <summary>🌟 게시물 CRUD</summary>
 <br>
+
+![328188568-22597347-613f-49bd-9ba0-d158bc761306](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/2213a784-a673-49f6-abde-b3bf1ae9bc0e)
 
 - 게시물 작성은 본인 동네에만 작성 가능
 
@@ -130,6 +135,7 @@
 <summary>🌟 인기글들을 편하게 보라고 모아준 동네뉴스 페이지</summary>
 <br>
 
+![Uploading 328188210-09d8879b-91ed-410f-bc07-17bfd0b230b5.gif…]()
 - 자동 및 수동으로 동적으로 동작하는 화면으로 편하게 확인
 - 지역별로 일주일간 사람들이 가장 많이 찾은 게시글들 확인
 - 본인 지역의 인기 게시글 확인
@@ -152,6 +158,7 @@
 <summary>🌟 유저와 실시간 통신</summary>
 <br>
 
+![328190019-2d7b1a2a-87c0-4db8-85e0-61bde1719c7c](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/18e7ef1b-ee74-4d56-967c-6da08e3d33ea)
 - 1:1 실시간으로 익명의 유저와 소통
 
 </details>
