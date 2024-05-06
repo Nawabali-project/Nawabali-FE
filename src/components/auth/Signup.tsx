@@ -167,7 +167,7 @@ const Signup: React.FC<SignupProps> = ({ setIsModalOpen, setModalType }) => {
   useEffect(() => {
     const checkNickname = async () => {
       if (debouncedNickname.length > 0) {
-        if (input.nickname.length > 10) {
+        if (input.nickname.length > 10 || input.nickname.length < 3) {
           setNicknameValidityMessage('닉네임은 3자~10자 입니다.');
           return;
         }
