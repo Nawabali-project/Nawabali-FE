@@ -177,7 +177,7 @@
   * 이미지 최적화로 속도 개선 (사이즈 조정 및 압축 / CLS / Lazy Loading / Pre Loading )
 
 * #### 2024-05-05
-![스크린샷 2024-05-06 220632](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/25e5d482-ac65-43cc-bb83-939449249065)
+![스크린샷 2024-05-06 220746](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/eef39892-3bbb-4344-b5cb-6cd24fc05fc9)
 
 
 
