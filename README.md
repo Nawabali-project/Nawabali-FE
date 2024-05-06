@@ -77,7 +77,7 @@
 <summary>🌟 꾸며진 전체 지도 한눈에 확인</summary>
 <br>
 
-![스크린샷(175)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/bc4b3f1a-270d-4c6d-a312-4e2deaaebb64)
+![스크린샷(175)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/9c2061c0-5fc6-441b-ae2b-a52d3d428929)
 
 - 지도 API 연동 (kakao)
 - 게시물 작성시 해당위치에 게시물이 놓아짐
@@ -89,7 +89,7 @@
 <summary>🌟 리스트로 나열된 게시글 한눈에 확인</summary>
 <br>
  
-![스크린샷(176)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/60a371a1-c8e4-4a15-a5ce-46c8619199d7)
+![스크린샷(176)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/2dd903ff-4702-4561-876a-12d49e154ac7)
 
 - 지역 / 카테고리 별로 분류 가능
 
@@ -127,7 +127,7 @@
 <summary>🌟 상대적인 동네별 활동점수 확인을 통해 경쟁유도</summary>
 <br>
 
-![스크린샷(177)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/365b3802-e64a-4a34-9ad8-2fcbb9ee1a2c)
+![스크린샷(177)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/ee2b18a5-0c06-444d-bfec-eaa29860c8d0)
 
 - 서울시 25개 구를 경계선으로 나누고 클릭시 점수를 쉽게 확인할 수 있게함
 - '구'별 주민추천 수 + 게시물 수로 점수 측정
@@ -154,7 +154,7 @@
 <summary>🌟 마이페이지에서 레벨 확인 및 간편한 정보관리</summary>
 <br>
 
-![스크린샷(178)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/d89e1225-72e7-4fec-bed1-01fc9091c818)
+![스크린샷(178)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/74578298-0acc-4830-8c27-d24251c03dc4)
 
 - 프로필 사진에 레벨에 따른 귀여운 모자 표시 (주민 / 토박이 / 터줏대감)
 - 다양한 개인정보 수정 가능 (닉네임, 거주지역, 프로필 사진 ...)
