@@ -1,4 +1,4 @@
-![328189527-3239cde3-db66-4806-835a-72e2b7f02585](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/3bef4bb5-07b1-486a-95e5-5bf2b890bd02)<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
 
 ![동네방네 썸네일 시안2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/a0a3aa24-c2a2-46f9-872a-b66258c6d6ce)
 
@@ -19,7 +19,7 @@
       <td align="center">
         <a href="https://github.com/inhachoi">최경일</a><br />
         <img src="https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/387265705_688108082998779_5231387308078165349_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=VqkETrfmL_EQ7kNvgEz6-fE&edm=AGXveE0BAAAA&ccb=7-5&oh=00_AfAokniF-Ao9PXx3EFNym1c8mseIwhiJYnrkuLYkRZ5aaA&oe=66382C92&_nc_sid=cf751b" width="200px;" alt=""/><br />
-         돈가스 좋아해요? <br />
+         아침 안먹는 남자자 <br />
         </td>
       <td align="center">
         <a href="https://github.com/1roo">하나래</a><br />
@@ -135,7 +135,8 @@
 <summary>🌟 인기글들을 편하게 보라고 모아준 동네뉴스 페이지</summary>
 <br>
 
-![Uploading 328188210-09d8879b-91ed-410f-bc07-17bfd0b230b5.gif…]()
+![328188210-09d8879b-91ed-410f-bc07-17bfd0b230b5](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/30b7f8df-1fb6-473d-8341-6f33b28f5a3c)
+
 - 자동 및 수동으로 동적으로 동작하는 화면으로 편하게 확인
 - 지역별로 일주일간 사람들이 가장 많이 찾은 게시글들 확인
 - 본인 지역의 인기 게시글 확인
