@@ -35,6 +35,7 @@ export const ChatRoom: React.FC<{
   const [isScrolling, setIsScrolling] = useState(false);
   const previousScrollHeight = useRef<number>(0);
   const previousScrollTop = useRef<number>(0);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   // 첫 마운트 시 초기화
   useEffect(() => {
@@ -208,9 +209,15 @@ export const ChatRoom: React.FC<{
     return `${month < 10 ? '0' : ''}${month}.${day < 10 ? '0' : ''}${day} ${hour < 10 ? '0' : ''}${hour}:${minute < 10 ? '0' : ''}${minute}`;
   };
 
+  // 첫 렌더링 시 스크롤을 맨 밑으로 이동
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (isFirstLoad && chatData) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      setIsFirstLoad(false);
+    }
+  }, [chatData]);
 
   return (
     <ChatContainer>
@@ -296,10 +303,10 @@ export const ChatRoom: React.FC<{
 export default ChatRoom;
 
 const ChatContainer = styled.div`
-  height: 85vh;
+  height: 700px;
   margin: 100px 100px 0 20px;
   padding: 0 10px;
-  width: 100%;
+  width: 60vw;
   display: flex;
   flex-direction: column;
   border-radius: 8px;

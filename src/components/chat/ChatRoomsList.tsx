@@ -282,7 +282,6 @@ const Row = styled.div`
 
 const ChatList = styled.div`
   min-width: 320px;
-  width: 25vw;
   height: 500px;
   margin: 100px 0 0 100px;
   background-color: white;
