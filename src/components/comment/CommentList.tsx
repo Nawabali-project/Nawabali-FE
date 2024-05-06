@@ -9,7 +9,7 @@ import { deleteComment, editComment, getComments } from '@/api/comment';
 import { useEffect, useState } from 'react';
 import AlertModal from '../modal/AlertModal';
 import { NoCommentIcon } from '@/utils/icons';
-import { formatDistanceToNow, addHours } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 interface CommentListType {
@@ -197,7 +197,7 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
                   />
                 )}
                 <CommentTime>
-                  {formatDistanceToNow(addHours(new Date(post.createdAt), 9), {
+                  {formatDistanceToNow(new Date(post.createdAt), {
                     addSuffix: true,
                     locale: ko,
                   })}
