@@ -12,6 +12,7 @@ import {
 import Button from '@/components/button/Button';
 import useAuthStore from '@/store/AuthState';
 import { AxiosError } from 'axios';
+import { Cookies } from 'react-cookie';
 
 interface LoginProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,26 +25,39 @@ const Login: React.FC<LoginProps> = ({ setIsModalOpen, setModalType }) => {
     password: '',
   });
 
-  const { login } = useAuthStore();
+  const { setIsLoggedIn, login } = useAuthStore();
+  const cookie = new Cookies();
 
   const handleSubmit = async () => {
     const user = { email, password };
     try {
       const resUserInfo = await apiLogin(user);
-      if (!resUserInfo || typeof resUserInfo === 'number') {
-        throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
+
+      const accessToken = resUserInfo.headers['Authorization'];
+
+      if (accessToken) {
+        cookie.set('accessToken', accessToken, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        });
       }
-      const userToken = resUserInfo.headers;
-      resetInput();
-      setIsModalOpen(false);
-      const token = userToken['authorization'].slice(7);
-      if (token) {
+      if (resUserInfo.data.message === '회원 로그인에 성공') {
+        setIsLoggedIn(true);
         const userInfo = await getUserInfo();
         login(userInfo);
+        resetInput();
+        setIsModalOpen(false);
+      } else {
+        throw new Error('API 로그인 호출 실패: 반환된 정보가 없습니다.');
       }
+      // }
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error('로그인 오류:', error.message);
+      if (error instanceof AxiosError && error.response) {
+        console.error(
+          '로그인 오류:',
+          error.message || error.response.data.message,
+        );
         alert(
           '로그인 실패: ' + (error.response?.data.message || error.message),
         );

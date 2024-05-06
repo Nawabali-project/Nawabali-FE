@@ -1,12 +1,12 @@
 import { authInstance } from '@/axios';
-import {
-  MessageForm,
-  ReturnedMessageForm,
-} from '@/interfaces/chat/chat.interface';
+import { MessageForm } from '@/interfaces/chat/chat.interface';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from 'react-router-dom';
 import { Client } from '@stomp/stompjs';
 import { Cookies } from 'react-cookie';
+
+const cookie = new Cookies();
+const accessToken = cookie.get('accessToken');
 
 export const getChatRooms = async () => {
   try {
@@ -43,18 +43,24 @@ export const sendMessage = (
   roomId: number,
   client: Client | null,
   chatMessage: MessageForm,
-) => {
-  const accessToken = new Cookies().get('accessToken');
-
-  if (!client?.connected) {
-    console.error('WebSocket connection is not active.');
-    return;
-  }
-
-  client.publish({
-    destination: `/pub/chat/message/${roomId}`,
-    headers: { Authorization: `Bearer ${accessToken}` },
-    body: JSON.stringify(chatMessage),
+): Promise<void> => {
+  return new Promise<void>((resolve, reject) => {
+    if (client && client.connected) {
+      try {
+        client.publish({
+          destination: `/pub/chat/message/${roomId}`,
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify(chatMessage),
+        });
+        resolve();
+      } catch (error) {
+        console.error('Error publishing message:', error);
+        reject(error);
+      }
+    } else {
+      console.error('WebSocket connection is not active.');
+      reject('WebSocket connection is not active.');
+    }
   });
 };
 
@@ -64,18 +70,23 @@ export const showChat = async ({
 }: {
   pageParam: number;
   roomId: number;
-}): Promise<ReturnedMessageForm[]> => {
-  const pageSize = 15;
-  const pageNumber = pageParam;
-  const startIndex = (pageNumber - 1) * pageSize;
+}) => {
+  const params = {
+    page: String(pageParam),
+    size: '15',
+  };
+
+  const pageable = new URLSearchParams();
+  pageable.append('page', params.page);
+  pageable.append('size', params.size);
 
   try {
     const response = await authInstance.get(
-      `/chat/room/${roomId}/message?page=${startIndex}&size=${pageSize}`,
+      `/chat/room/${roomId}/message?${pageable.toString()}`,
     );
-    return response.data.content;
+    return response.data;
   } catch (error) {
-    throw error as AxiosError<ErrorResponse>;
+    throw error as AxiosError;
   }
 };
 

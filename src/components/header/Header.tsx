@@ -14,6 +14,7 @@ import DetailPostModal from '../modal/DetailPostModal';
 import { useNavigate } from 'react-router-dom';
 import { LogoIcon, MessageIcon } from '@/utils/icons';
 import useSSEStore from '@/store/SSEState';
+import { Cookies } from 'react-cookie';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -27,12 +28,24 @@ const Header: React.FC = () => {
   const [isSearchFocused, setSearchFocused] = useState<boolean>(false);
 
   const useIsLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
+
+  const cookie = new Cookies();
 
   const debouncedContent = useDebounce(content, 10);
 
   const notificationCount = useSSEStore((state) => state.unreadMessageCount);
+
+  useEffect(() => {
+    const token = cookie.get('accessToken');
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [useIsLoggedIn]);
 
   useEffect(() => {
     setSearchbarOpen(!!debouncedContent.trim());
@@ -78,6 +91,17 @@ const Header: React.FC = () => {
     if (event.key === 'Enter' && content.trim()) {
       navigate(`/search/${content.trim()}`);
       setContent('');
+    }
+  };
+
+  // 글쓰기 버튼 클릭
+  const handleWriteButtonClick = () => {
+    const district = localStorage.getItem('district');
+
+    if (district == '수정해주세요') {
+      alert('마이페이지에서 구를 설정해주세요');
+    } else {
+      setIsAddPostModalOpen(true);
     }
   };
 
@@ -162,7 +186,7 @@ const Header: React.FC = () => {
                   </ProfileContainer>
                 </Items>
 
-                <WriteButton onClick={() => setIsAddPostModalOpen(true)}>
+                <WriteButton onClick={handleWriteButtonClick}>
                   <HeaderSpan style={{ margin: '0', color: 'white' }}>
                     글쓰기
                   </HeaderSpan>

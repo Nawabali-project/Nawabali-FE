@@ -1,6 +1,7 @@
 import { createWithEqualityFn } from 'zustand/traditional';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 import { AuthState } from '@/interfaces/user/user.interface';
+import { Cookies } from 'react-cookie';
 
 export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   isLoggedIn: false,
@@ -8,12 +9,10 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
   loading: true,
 
   initializeLoginState: async () => {
-    const cookies = new Cookies();
     try {
-      const accessToken = cookies.get('accessToken');
-      // const accessToken = cookies.get('Authorization');
       const userJson = localStorage.getItem('user');
-      if (accessToken && userJson) {
+      const token = new Cookies().get('accessToken');
+      if (userJson && token) {
         const user = JSON.parse(userJson);
         set({
           isLoggedIn: true,
@@ -21,27 +20,33 @@ export const useAuthStore = createWithEqualityFn<AuthState>((set) => ({
           loading: false,
         });
       } else {
-        set({ loading: false });
+        set({ isLoggedIn: false, loading: false, user: null });
       }
     } catch (error) {
       console.error('Failed to initialize login state:', error);
-      set({ loading: false });
+      set({ isLoggedIn: false, loading: false, user: null });
     }
   },
 
-  login: () => {
-    set({ isLoggedIn: true });
+  login: (user) => {
+    const token = new Cookies().get('accessToken');
+    if (token) {
+      set({ isLoggedIn: true, user });
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      alert('로그인 토큰이 없습니다.');
+    }
   },
 
   logout: () => {
-    localStorage.clear();
     new Cookies().remove('accessToken');
+    localStorage.clear();
     set({ isLoggedIn: false, user: null });
     alert('로그아웃 성공!');
   },
 
-  setIsLoggedIn: (isLoggedIn: boolean) => {
-    set({ isLoggedIn });
+  setIsLoggedIn: (isLoggedIn: boolean, user = null) => {
+    set({ isLoggedIn, user });
   },
 }));
 

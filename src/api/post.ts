@@ -35,6 +35,12 @@ export const getAllPosts = async () => {
   return response;
 };
 
+// 지도에서 게시글 전체 조회 (Elastic으로 개선)
+export const getAllPostsElastic = async () => {
+  const response = await instance.get(`/posts/searchAll`);
+  return response;
+};
+
 // 게시글 생성
 export const createPost = async (newPost: FormData) => {
   await authInstance.post('/posts', newPost);

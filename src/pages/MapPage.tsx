@@ -17,8 +17,8 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import CustomMap from '@/components/customMap/CustomMap';
 import { useNavigate } from 'react-router-dom';
-import { Cookies } from 'react-cookie';
-import { getUserInfo } from '@/api/auth';
+// import { Cookies } from 'react-cookie';
+import { checkAuthStatus, getUserInfo } from '@/api/auth';
 import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '@/store/AuthState';
 import SkeletonMap from '@/components/skeleton/SkeletonMap';
@@ -31,12 +31,12 @@ const MapPage = () => {
     null,
   );
   const navigate = useNavigate();
-  const cookie = new Cookies();
-  const { setIsLoggedIn } = useAuthStore();
+  // const cookie = new Cookies();
   const [selectedArea, setSelectedArea] = useState('서울특별시');
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
-  const { isLoggedIn } = useAuthStore();
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
 
   // 스켈레톤 UI
   useEffect(() => {
@@ -46,18 +46,13 @@ const MapPage = () => {
   }, []);
 
   useEffect(() => {
-    // const urlParams = new URLSearchParams(location.search);
-    // console.log(urlParams);
-    const token = cookie.get('Athorization');
+    const initializeAuth = async () => {
+      const authStatus = await checkAuthStatus();
+      setIsLoggedIn(authStatus.isLoggedIn);
+    };
 
-    if (token) {
-      cookie.set('accessToken', token.slice(7), {
-        path: '/',
-        secure: true,
-      });
-      setIsLoggedIn(true);
-    }
-  }, [location]);
+    initializeAuth();
+  }, []);
 
   // 유저정보
   const { isSuccess } = useQuery({
@@ -195,20 +190,15 @@ const MapPage = () => {
           </FourComponentBox>
         </SecondHeader>
       </CategoryBox>
-      {isLoading ? (
-        <SkeletonMap />
-      ) : (
-        <>
-          <CustomMap
-            width="100%"
-            height="811px"
-            clickedCategory={clickedKind}
-            selectedDistrict={selectedArea}
-            selectedLatitude={selectedLatitude}
-            selectedLongitude={selectedLongitude}
-          />
-        </>
-      )}
+      {isLoading && <SkeletonMap />}
+      <CustomMap
+        width="100%"
+        height="811px"
+        clickedCategory={clickedKind}
+        selectedDistrict={selectedArea}
+        selectedLatitude={selectedLatitude}
+        selectedLongitude={selectedLongitude}
+      />
     </Layout>
   );
 };

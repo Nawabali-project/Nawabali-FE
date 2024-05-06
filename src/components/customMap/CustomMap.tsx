@@ -106,23 +106,21 @@ const CustomMap = ({
 
   // 지도에 커스텀 오버레이
   useEffect(() => {
-    if (map && data?.data?.content.length) {
+    if (map && data?.data?.length) {
       overlays.forEach((overlay) => overlay.setMap(null));
       setOverlays([]);
 
       const filteredPosts =
         clickedCategory === null
-          ? data.data.content
-          : data.data.content.filter(
-              (post: Post) => post.category === clickedCategory,
-            );
+          ? data.data
+          : data.data.filter((post: Post) => post.category === clickedCategory);
 
       const newOverlays = filteredPosts.map((post: Post) => {
         let borderColor = getBorderColor(post.category);
         let content = `
           <div style="box-shadow: 3px 3px 6px rgba(86, 86, 86, 0.5); cursor: pointer; border: 3px solid ${borderColor}; border-radius: 10px; width: 60px; height: 60px; overflow: hidden; display: flex; justify-content: center; align-items: center;"
               onclick="window.handlePostClick(${post.postId})">
-            <img src="${post.mainImageUrl}" style="width: 60px; height: 60px; pointer-events: none;" alt="" />
+            <img src="${post.resizedImageUrl}" style="width: 60px; height: 60px; object-fit: cover; pointer-events: none;" alt="" />
           </div>
         `;
         let customOverlay = new window.kakao.maps.CustomOverlay({
@@ -135,11 +133,11 @@ const CustomMap = ({
 
       setOverlays(newOverlays);
     }
-  }, [data?.data?.content, map, clickedCategory, selectedDistrict]);
+  }, [data?.data, map, clickedCategory, selectedDistrict]);
 
   // 전역 함수로 클릭시 상세보기 모달 띄움
   window.handlePostClick = (postId: number) => {
-    const post = data.data.content.find((p: Post) => p.postId === postId);
+    const post = data.data.find((p: Post) => p.postId === postId);
     if (post) {
       setSelectedPost(post);
       setIsDetailPostModalOpen(true);

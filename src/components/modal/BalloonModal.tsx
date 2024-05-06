@@ -37,6 +37,7 @@ const BalloonModal: React.FC<BalloonModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const goToMypage = () => {
+    onClose();
     navigate('/mypage');
   };
 

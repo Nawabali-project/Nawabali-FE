@@ -3,237 +3,316 @@ import { Client, Message } from '@stomp/stompjs';
 import { searchUserByNickname, sendMessage, showChat } from '@/api/chat';
 import { Cookies } from 'react-cookie';
 import {
-  MessageForm,
+  ChatApiResponse,
+  MessageProps,
   MessageType,
   ReturnedMessageForm,
   User,
 } from '@/interfaces/chat/chat.interface';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import useSSEStore from '@/store/SSEState';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+
 export const ChatRoom: React.FC<{
   roomId: number;
   roomName: string;
   client: Client | null;
+  isRoomActive: boolean;
 }> = ({ roomId, roomName, client }) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<ReturnedMessageForm[]>([]);
   const [userInfo, setUserInfo] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [isComposing, setIsComposing] = useState(false);
   const accessToken = new Cookies().get('accessToken');
   const myNickname = localStorage.getItem('nickname');
-  const chatEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const setHasChanges = useSSEStore((state) => state.setHasChanges);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  // 스크롤 상태 관리 변수
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const previousScrollHeight = useRef<number>(0);
+  const previousScrollTop = useRef<number>(0);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  // 첫 마운트 시 초기화
+  useEffect(() => {
+    setMessages([]);
+    queryClient.invalidateQueries();
+  }, [roomId]);
+
+  const {
+    data: chatData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<ChatApiResponse>({
+    queryKey: [roomId, 'infinite'],
+    queryFn: ({ pageParam = 0 }) =>
+      showChat({ pageParam: Number(pageParam), roomId }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      !lastPage.last ? lastPage.pageable.pageNumber + 1 : undefined,
+  });
+
+  // 스크롤을 감지하여 다음 페이지 요청
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer && !isFetchingNextPage) {
+      chatContainer.scrollTop =
+        chatContainer.scrollHeight -
+        previousScrollHeight.current +
+        previousScrollTop.current;
+    }
+  }, [chatData, isFetchingNextPage]);
+
+  // 스크롤 위치 저장
+  const handleScroll = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer && chatContainer.scrollTop === 0 && hasNextPage) {
+      previousScrollHeight.current = chatContainer.scrollHeight;
+      previousScrollTop.current = chatContainer.scrollTop;
+      fetchNextPage();
+    }
+  };
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const user = await searchUserByNickname(roomName);
-        if (user && user.length > 0) {
-          setUserInfo(user[0]);
-          console.log('user: ', user);
-        } else {
-          setUserInfo(null);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user info', error);
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      chatContainer.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (chatContainer) {
+        chatContainer.removeEventListener('scroll', handleScroll);
       }
     };
+  }, [hasNextPage]);
 
-    if (roomName) {
-      fetchUserInfo();
-    }
-  }, [roomName]);
-
+  //페이지 추가 후 스크롤 위치 조정
   useEffect(() => {
-    if (roomId && client && client.connected) {
+    if (!isScrolling && !isFetchingNextPage && hasNextPage) {
+      const chatContainer = chatContainerRef.current;
+
+      if (chatContainer) {
+        const lastPage = chatData?.pages[chatData.pages.length - 1];
+        const lastMessage = lastPage?.content[lastPage.content.length - 1];
+
+        if (lastMessage) {
+          // 마지막 메시지를 가리키는 DOM 요소를 찾아서 스크롤
+          const lastMessageElement = document.getElementById(
+            `message-${lastMessage.id}`,
+          );
+          if (lastMessageElement) {
+            lastMessageElement.scrollIntoView();
+          }
+        }
+
+        setIsScrolling(false);
+      }
+    }
+  }, [isFetchingNextPage, hasNextPage, isScrolling, chatData]);
+
+  // 타이머를 추적하기 위한 참조 변수
+  const changeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 타이머를 정리하는 함수
+  const clearChangeTimer = () => {
+    if (changeTimerRef.current) {
+      clearTimeout(changeTimerRef.current);
+      changeTimerRef.current = null;
+    }
+  };
+
+  // 메시지 변경 상태 설정 및 타이머 정리
+  const triggerChangeFlag = () => {
+    clearChangeTimer();
+    setHasChanges(true);
+    changeTimerRef.current = setTimeout(() => {
+      setHasChanges(false);
+      clearChangeTimer();
+    }, 1000);
+  };
+
+  // 실시간 메시지 수신 처리
+  useEffect(() => {
+    if (roomId && client?.connected) {
       const headers = { Authorization: `Bearer ${accessToken}` };
-      const sub = client.subscribe(
+      client.subscribe(
         `/sub/chat/room/${roomId}`,
         (message: Message) => {
-          try {
-            const parsedMessage = JSON.parse(message.body);
-            const receivedMessage: ReturnedMessageForm = {
-              ...parsedMessage,
-              createdMessageAt: new Date(parsedMessage.createdMessageAt),
-            };
-            setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-          } catch (error) {
-            console.error('Failed to parse message:', message.body, error);
-          }
+          const receivedMessage: ReturnedMessageForm = {
+            ...JSON.parse(message.body),
+            createdMessageAt: new Date(
+              JSON.parse(message.body).createdMessageAt,
+            ),
+          };
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, receivedMessage];
+            updatedMessages.sort((a, b) => a.id - b.id);
+            return updatedMessages;
+          });
+          triggerChangeFlag();
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
         },
         headers,
       );
       return () => {
-        const unsubscribeHeaders = {
-          chatRoomId: String(roomId),
-        };
-        sub.unsubscribe(unsubscribeHeaders);
+        if (client && client.connected) {
+          const headers = { roomId: String(roomId) };
+          client.unsubscribe(`/sub/chat/room/${roomId}`, headers);
+          clearChangeTimer();
+        }
+        clearChangeTimer();
       };
     }
-  }, [roomId, client, accessToken]);
+  }, [roomId, client]);
 
   useEffect(() => {
-    setIsLoading(true);
-
-    const fetchMessages = async () => {
-      try {
-        const fetchedMessages = await showChat({
-          pageParam: pageNumber,
-          roomId,
-        });
-        const hasNextPage = fetchedMessages.length > 0;
-
-        const sortedMessages = fetchedMessages.sort(
-          (a: ReturnedMessageForm, b: ReturnedMessageForm) =>
-            new Date(a.createdMessageAt).getTime() -
-            new Date(b.createdMessageAt).getTime(),
-        );
-
-        if (hasNextPage && chatEndRef.current) {
-          const chatDiv = chatEndRef.current.parentElement;
-
-          if (chatDiv && chatDiv.scrollTop === 0) {
-            setMessages((prevMessages) => [...prevMessages, ...sortedMessages]);
-            setPageNumber((prevPageNumber) => prevPageNumber + 1);
-          }
-        } else {
-          if (pageNumber === 1) {
-            setMessages(fetchedMessages);
-          } else {
-            setMessages([]);
-          }
+    if (roomName) {
+      const fetchUserInfo = async () => {
+        try {
+          const user = await searchUserByNickname(roomName);
+          setUserInfo(user?.length > 0 ? user[0] : null);
+        } catch (error) {
+          console.error('Failed to fetch user info', error);
         }
-      } catch (error) {
-        console.error('메시지를 불러오는데 실패했습니다', error);
-        setMessages([]);
-      }
-      setIsLoading(false);
-    };
-
-    if (roomId) {
-      fetchMessages();
+      };
+      fetchUserInfo();
     }
-  }, [roomId, pageNumber]);
-
-  useEffect(() => {
-    const scrollToBottom = () => {
-      const chatDiv = chatEndRef.current?.parentElement as HTMLElement | null;
-      if (chatDiv) {
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-      }
-    };
-
-    scrollToBottom();
-  }, [messages]);
+  }, [roomName]);
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
-    const chatMessage: MessageForm = {
+    const chatMessage = {
       type: MessageType.TALK,
       message,
-      sender: localStorage.getItem('nickname')!,
-      userId: parseInt(localStorage.getItem('userId')!),
+      sender: myNickname!,
+      userId: parseInt(localStorage.getItem('userId') || '0', 10),
     };
-
-    sendMessage(roomId, client, chatMessage);
-
-    setMessage('');
+    sendMessage(roomId, client, chatMessage)
+      .then(() => {
+        setMessage('');
+      })
+      .catch((error) => {
+        console.error('Error occurred while sending message:', error);
+      });
   };
 
-  const goToUserProfile = (userNick: string) => {
-    navigate(`/userProfile/${userNick}`);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !isComposing) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
-  function formatMessageDate(dateString: string) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+  };
+
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
+  };
+
+  const formatMessageDate = (dateString: string) => {
     const d = new Date(dateString);
-    const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-    const dayOfWeek = weekdays[d.getDay()];
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const day = d.getDate().toString().padStart(2, '0');
-    const hour = d.getHours().toString().padStart(2, '0');
-    const minute = d.getMinutes().toString().padStart(2, '0');
-    return `${month}.${day}(${dayOfWeek}) ${hour}:${minute}`;
-  }
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    const hour = d.getHours();
+    const minute = d.getMinutes();
+    return `${month < 10 ? '0' : ''}${month}.${day < 10 ? '0' : ''}${day} ${hour < 10 ? '0' : ''}${hour}:${minute < 10 ? '0' : ''}${minute}`;
+  };
+
+  // 첫 렌더링 시 스크롤을 맨 밑으로 이동
+  useEffect(() => {
+    if (isFirstLoad && chatData) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      setIsFirstLoad(false);
+    }
+  }, [chatData]);
 
   return (
     <ChatContainer>
-      {isLoading ? (
-        <div>로딩 중...</div>
-      ) : (
-        <>
-          {roomName && userInfo && (
-            <UserInfo>
-              <UserProfileImg
-                src={userInfo?.imgUrl}
-                alt={`${roomName}의 프로필`}
-                onClick={() => goToUserProfile(roomName)}
-              />
-              <h3>{roomName}</h3>
-            </UserInfo>
-          )}
-          <Chat>
-            {messages.map((msg, index) =>
-              msg.sender === myNickname ? (
-                <Row
-                  key={index}
-                  style={{ alignSelf: 'flex-end', minWidth: '290px' }}
-                >
-                  <ProfileImg
-                    src={localStorage.getItem('profileImageUrl')?.split('"')[1]}
-                    alt="내 프로필"
-                  />
-                  <MyMessage>
-                    <span>{msg.message}</span>
-                    <div
-                      style={{
-                        fontSize: '12px',
-                        color: '#dfdfdf',
-                        width: '50px',
-                      }}
-                    >
-                      {formatMessageDate(msg.createdMessageAt)}
-                    </div>
-                  </MyMessage>
-                </Row>
-              ) : (
-                <Row
-                  key={index}
-                  style={{ alignSelf: 'flex-start', minWidth: '290px' }}
-                >
-                  <ProfileImg src={userInfo?.imgUrl} alt={`상대방 프로필`} />
-                  <OtherMessage>
-                    {msg.message}
-                    <div
-                      style={{
-                        fontSize: '12px',
-                        color: '#3f3f3f',
-                        width: '50px',
-                      }}
-                    >
-                      {formatMessageDate(msg.createdMessageAt)}
-                    </div>
-                  </OtherMessage>
-                </Row>
-              ),
-            )}
-            <div ref={chatEndRef} />
-          </Chat>
-        </>
+      {roomName && userInfo && (
+        <UserInfo>
+          <UserProfileImg
+            src={userInfo?.imgUrl}
+            alt={`${roomName}'s profile`}
+            onClick={() => navigate(`/userProfile/${roomName}`)}
+          />
+          <h3>{roomName}</h3>
+        </UserInfo>
       )}
+      <Chat ref={chatContainerRef}>
+        {chatData?.pages
+          .slice()
+          .reverse()
+          .map((page, pageIndex) => (
+            <div key={pageIndex}>
+              {page.content
+                .slice()
+                .reverse()
+                .map((msg: ReturnedMessageForm) => (
+                  <MessageRow
+                    key={msg.id}
+                    $isMyMessage={msg.sender === myNickname}
+                  >
+                    <ProfileImg
+                      src={
+                        msg.sender === myNickname
+                          ? localStorage
+                              .getItem('profileImageUrl')!
+                              .split('"')[1]
+                          : userInfo?.imgUrl
+                      }
+                    />
+                    <MessageText $isMyMessage={msg.sender === myNickname}>
+                      <MessageContent>{msg.message}</MessageContent>
+                      <MessageDate $isMyMessage={msg.sender === myNickname}>
+                        {formatMessageDate(msg.createdMessageAt)}
+                      </MessageDate>
+                    </MessageText>
+                  </MessageRow>
+                ))}
+            </div>
+          ))}
+
+        {messages.map((msg) => (
+          <MessageRow key={msg.id} $isMyMessage={msg.sender === myNickname}>
+            <ProfileImg
+              src={
+                msg.sender === myNickname
+                  ? localStorage.getItem('profileImageUrl')!.split('"')[1]
+                  : userInfo?.imgUrl
+              }
+            />
+            <MessageText $isMyMessage={msg.sender === myNickname}>
+              <MessageContent>{msg.message}</MessageContent>
+              <MessageDate $isMyMessage={msg.sender === myNickname}>
+                {formatMessageDate(msg.createdMessageAt)}
+              </MessageDate>
+            </MessageText>
+          </MessageRow>
+        ))}
+        <div ref={messagesEndRef} />
+      </Chat>
 
       <InputDiv>
-        <input
+        <Input
           value={message}
           type="text"
           placeholder="메시지 입력 ..."
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSendMessage();
-              e.preventDefault();
-            }
-          }}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
         />
       </InputDiv>
     </ChatContainer>
@@ -242,120 +321,109 @@ export const ChatRoom: React.FC<{
 
 export default ChatRoom;
 
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
 const ChatContainer = styled.div`
-  margin-top: 100px;
-  margin-left: 20px;
-  height: 70vh;
-  min-width: 300px;
+  height: 700px;
+  margin: 100px 100px 0 20px;
+  padding: 0 10px;
   width: 60vw;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
   background-color: white;
   border-radius: 20px;
+  overflow: hidden;
 `;
 
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  padding-left: 20px;
-  height: 100px;
-  border-bottom: 1px solid #cccccc;
+  padding: 10px;
+  background: white;
+  border-bottom: 1px solid #ccc;
+`;
+
+const UserProfileImg = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
 `;
 
 const Chat = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 65%;
-  min-width: 290px;
-  width: 57.5vw;
-  margin-top: 10px;
+  height: calc(100% - 60px);
+  width: 98%;
+  padding: 10px;
   overflow-y: auto;
-  padding: 0 20px 20px;
 
   &::-webkit-scrollbar {
     width: 8px;
-    height: 15px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.4);
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(124, 124, 124, 0.3);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 6px;
   }
 `;
 
-const MyMessage = styled.div`
+const MessageRow = styled.div<MessageProps>`
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-end;
-  min-width: 300px;
-  max-width: 500px;
-  width: 25vw;
-  background-color: #00a3ff;
-  padding: 5px;
-  color: white;
-  border-radius: 8px;
-  margin: 3px 0;
+  margin-bottom: 10px;
+  justify-content: ${({ $isMyMessage }) =>
+    $isMyMessage ? 'flex-end' : 'flex-start'};
+  align-items: flex-start;
 `;
 
-const OtherMessage = styled.div`
+const MessageContent = styled.span`
+  display: block;
+  width: calc(100% - 30px);
+  word-wrap: break-word;
+`;
+
+const MessageText = styled.div<MessageProps>`
+  width: 42%;
   display: flex;
-  flex-direction: row;
+  padding: 8px 12px;
+  border-radius: 18px;
+  background-color: ${({ $isMyMessage }) =>
+    $isMyMessage ? '#0084ff' : '#e5e5ea'};
+  color: ${({ $isMyMessage }) => ($isMyMessage ? 'white' : 'black')};
+  margin-top: 5px;
+  word-wrap: break-word;
   justify-content: space-between;
-  align-items: flex-end;
-  min-width: 300px;
-  max-width: 500px;
-  width: 25vw;
-  background-color: #f0f0f0;
-  padding: 5px;
-  border-radius: 8px;
-  margin: 3px 0;
+  align-items: flex-start;
+`;
+
+const MessageDate = styled.span<MessageProps>`
+  display: block;
+  width: 34px;
+  font-size: 12px;
+  color: ${({ $isMyMessage }) => ($isMyMessage ? 'white' : '#666')};
+  padding-left: 6px;
+  align-self: flex-end;
 `;
 
 const InputDiv = styled.div`
-  width: 90%;
-  height: 30px;
-  border: 1px solid #cccccc;
-  border-radius: 15px;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 0 10px;
-  margin: 30px auto 10px;
-
-  input {
-    width: 100%;
-    border: none;
-    font-size: 13px;
-    &:focus {
-      outline: none;
-    }
-  }
-
-  input::placeholder {
-    color: #cccccc;
-  }
+  padding: 10px;
+  background: white;
+  border-top: 1px solid #ccc;
 `;
 
-const UserProfileImg = styled.img`
-  width: 70px;
-  height: 70px;
-  border: 1px solid #d9d9d9;
-  background-size: cover;
-  border-radius: 50%;
-  margin-right: 10px;
-  cursor: pointer;
+const Input = styled.input`
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
 `;
 
 const ProfileImg = styled.img`
   width: 30px;
   height: 30px;
-  border: 1px solid #d9d9d9;
-  background-size: cover;
   border-radius: 50%;
-  margin-right: 10px;
+  margin: 5px 5px 0 0;
+  border: 1px solid #d9d9d9;
 `;

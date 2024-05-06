@@ -12,24 +12,12 @@ export const authInstance = axios.create({
   withCredentials: true,
 });
 
-// // 요청 인터셉터
-// authInstance.interceptors.request.use(
-//   (config) => {
-//     const accessToken = cookie.get('Authorization').split('+')[1];
-//     if (accessToken) {
-//       config.headers['Authorization'] = `Bearer ${accessToken}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error),
-// );
-
 // 요청 인터셉터
 authInstance.interceptors.request.use(
   (config) => {
     const accessToken = cookie.get('accessToken');
     if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+      config.headers['Authorization'] = `${accessToken}`;
     } else {
       delete config.headers['Authorization'];
     }
@@ -44,7 +32,7 @@ authInstance.interceptors.response.use(
     const authHeader =
       response.headers['authorization'] || response.headers['Authorization'];
     if (authHeader) {
-      const token = authHeader.split(' ')[1];
+      const token = authHeader;
       cookie.set('accessToken', token, {
         path: '/',
         sameSite: 'none',

@@ -18,12 +18,15 @@ import { Client } from '@stomp/stompjs';
 import Button from '../button/Button';
 import { useDebounce } from '@/hooks/useDebounce';
 import useSSEStore from '@/store/SSEState';
+import { Title } from '@/styles/CommonSytle';
 
 export const ChatRoomsList: React.FC<{
   onRoomSelect: (roomId: number) => void;
   onRoomNameSelect: (roomName: string) => void;
+  setIsRoomActive: React.Dispatch<React.SetStateAction<boolean>>;
+
   client: Client | null;
-}> = ({ onRoomSelect, onRoomNameSelect, client }) => {
+}> = ({ onRoomSelect, onRoomNameSelect, setIsRoomActive, client }) => {
   const [chatRooms, setChatRooms] = useState<NewChatRoom[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [searchChatResults, setSearchChatResults] = useState<User[]>([]);
@@ -33,27 +36,29 @@ export const ChatRoomsList: React.FC<{
   const debouncedSearchWord = useDebounce(searchWord, 300);
 
   const unreadMessageCount = useSSEStore((state) => state.unreadMessageCount);
+  const hasChanges = useSSEStore((state) => state.hasChanges);
+  const setHasChanges = useSSEStore((state) => state.setHasChanges);
 
   useEffect(() => {
+    const fetchChatRooms = async () => {
+      try {
+        const rooms = await getChatRooms();
+        const roomsWithUserImages = await Promise.all(
+          rooms.map(async (room: any) => {
+            const users = await searchUserByNickname(room.roomName);
+            const imgUrls = users.map((user: User) => user.imgUrl);
+            return { ...room, imgUrls };
+          }),
+        );
+        setChatRooms(roomsWithUserImages);
+      } catch (error) {
+        console.error('Failed to load chat rooms or user data', error);
+        setChatRooms([]);
+      }
+    };
     fetchChatRooms();
-  }, [unreadMessageCount]);
-
-  const fetchChatRooms = async () => {
-    try {
-      const rooms = await getChatRooms();
-      const roomsWithUserImages = await Promise.all(
-        rooms.map(async (room: any) => {
-          const users = await searchUserByNickname(room.roomName);
-          const imgUrls = users.map((user: User) => user.imgUrl);
-          return { ...room, imgUrls };
-        }),
-      );
-      setChatRooms(roomsWithUserImages);
-    } catch (error) {
-      console.error('Failed to load chat rooms or user data', error);
-      setChatRooms([]);
-    }
-  };
+    setHasChanges(false);
+  }, [unreadMessageCount, hasChanges]);
 
   useEffect(() => {
     const fetchSearchUsers = async () => {
@@ -82,9 +87,6 @@ export const ChatRoomsList: React.FC<{
       try {
         const response = await searchChatRoom(debouncedSearchWord);
         setSearchChatResults(response);
-        console.log('response: ', response);
-
-        console.log('searchChatResult: ', searchChatResults);
       } catch (error) {
         console.error('Error searching chat by nickname', error);
         setSearchChatResults([]);
@@ -108,6 +110,7 @@ export const ChatRoomsList: React.FC<{
 
   const handleRoomClick = (roomId: number, roomName: string) => {
     setSearchWord('');
+    setIsRoomActive(true);
     if (client) {
       const messageForm = {
         sender: localStorage.getItem('nickname')!,
@@ -134,7 +137,7 @@ export const ChatRoomsList: React.FC<{
 
   return (
     <ChatList>
-      <h1>채팅방이욤</h1>
+      <Title style={{ textAlign: 'center', margin: '10px 0' }}>채팅 목록</Title>
       <div>
         <SearchDiv>
           <IoIosSearch style={{ color: 'gray' }} />
@@ -156,7 +159,6 @@ export const ChatRoomsList: React.FC<{
                 user.nickname === localStorage.getItem('nickname');
 
               if (!isRoomExist && !isCurrentUser) {
-                // 추가 수정: 현재 사용자일 때도 필터링
                 return (
                   <div key={index}>
                     <Row>
@@ -205,7 +207,9 @@ export const ChatRoomsList: React.FC<{
               >
                 <ProfileImg $profileImg={group.profileImageUrl} />
                 <div style={{ display: 'flex' }}>
-                  <div style={{ width: '100px' }}>{group.roomName}</div>
+                  <div style={{ width: '100px', paddingTop: '3px' }}>
+                    {group.roomName}
+                  </div>
                   <div>
                     {group.chatMessages
                       .slice(0, 3)
@@ -246,7 +250,9 @@ export const ChatRoomsList: React.FC<{
                 </div>
               </div>
               {room.chatMessage != '' && (
-                <ChatMessage>{room.chatMessage}</ChatMessage>
+                <ChatMessage style={{ marginLeft: '50px' }}>
+                  {room.chatMessage}
+                </ChatMessage>
               )}
             </div>
           </ChatRooms>
@@ -276,7 +282,6 @@ const Row = styled.div`
 
 const ChatList = styled.div`
   min-width: 320px;
-  width: 25vw;
   height: 500px;
   margin: 100px 0 0 100px;
   background-color: white;
@@ -314,7 +319,7 @@ const SearchDiv = styled.div`
   justify-content: flex-start;
   align-items: center;
   padding: 0 10px 0 5px;
-  margin: 0 auto;
+  margin: 10px auto;
 
   input {
     width: 90%;
@@ -353,9 +358,8 @@ const UserNicknamesDiv = styled.div`
 
 const ChatMessage = styled.span`
   display: block;
-  width: 85%;
+  width: 150px;
   margin: 0;
-  margin-left: 50px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

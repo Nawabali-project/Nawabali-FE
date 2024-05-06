@@ -108,16 +108,18 @@ const CreatePostModal: React.FC<CreatePostProps> = (props) => {
       ? data.district.replace(/"/g, '').trim()
       : '';
     const possibleFileType = ['jpg', 'jpeg', 'png'];
-    const incorrectTypeFiles = data.file.filter((file) => {
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
-      return !possibleFileType.includes(fileExtension!);
-    });
-
     if (!data.file || data.file.length === 0) {
       setAlertType('error');
       showAlertModal('사진을 하나 이상 올려주세요 :)');
       return;
-    } else if (!data.contents) {
+    }
+
+    const incorrectTypeFiles = data.file.filter((file) => {
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() ?? '';
+      return !possibleFileType.includes(fileExtension);
+    });
+
+    if (!data.contents) {
       setAlertType('error');
       showAlertModal('내용을 작성해주세요 :)');
       return;

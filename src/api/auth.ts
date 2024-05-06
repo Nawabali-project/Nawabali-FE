@@ -5,9 +5,10 @@ import type {
   LoginUser,
   VarifyCheck,
 } from '@/interfaces/main/auth/auth.interface';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 import useAuthStore from '@/store/AuthState';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 export interface ErrorResponse {
   statusCode: number;
   message: string;
@@ -79,6 +80,7 @@ export const sendVerificationCode = async (email: string) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
+
 export const varifyNumberCheck = async (user: VarifyCheck) => {
   const { email, code } = user;
   try {
@@ -91,6 +93,7 @@ export const varifyNumberCheck = async (user: VarifyCheck) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
+
 export const nicknameDupCheck = async (nickname: string) => {
   try {
     const res = await instance.get(
@@ -101,19 +104,53 @@ export const nicknameDupCheck = async (nickname: string) => {
     throw error as AxiosError<ErrorResponse>;
   }
 };
+
 export const useLogout = () => {
   const navigate = useNavigate();
-  const cookie = new Cookies();
   return async () => {
-    const token = cookie.get('accessToken');
-    const param = `Bearer ${token}`;
     try {
-      await instance.post(`/users/logout?accessToken=${param}`);
+      await authInstance.post(`/users/logout`);
     } catch (error) {
       console.error('Logout failed:', error);
     }
-    cookie.remove('accessToken', { path: '/' });
     useAuthStore.getState().logout();
     navigate('/');
   };
+};
+
+interface AuthStatus {
+  isLoggedIn: boolean;
+}
+
+export const checkAuthStatus = async (): Promise<AuthStatus> => {
+  const cookie = new Cookies();
+  const token = cookie.get('accessToken');
+  if (token) {
+    return { isLoggedIn: true };
+  } else {
+    try {
+      const response = await authInstance.get('/users/authenticate');
+      const { authenticated } = response.data;
+
+      if (authenticated) {
+        const accessToken = response.headers['Authorization'];
+
+        if (accessToken) {
+          cookie.set('accessToken', accessToken, {
+            path: '/',
+            secure: true,
+            sameSite: 'none',
+          });
+        }
+        return { isLoggedIn: true };
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.status != 403) {
+        console.error('Error checking authentication status:', error);
+      }
+      return { isLoggedIn: false };
+    }
+    return { isLoggedIn: false };
+  }
 };
