@@ -114,11 +114,32 @@ export const ChatRoom: React.FC<{
     }
   }, [isFetchingNextPage, hasNextPage, isScrolling, chatData]);
 
+  // 타이머를 추적하기 위한 참조 변수
+  const changeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 타이머를 정리하는 함수
+  const clearChangeTimer = () => {
+    if (changeTimerRef.current) {
+      clearTimeout(changeTimerRef.current);
+      changeTimerRef.current = null;
+    }
+  };
+
+  // 메시지 변경 상태 설정 및 타이머 정리
+  const triggerChangeFlag = () => {
+    clearChangeTimer();
+    setHasChanges(true);
+    changeTimerRef.current = setTimeout(() => {
+      setHasChanges(false);
+      clearChangeTimer();
+    }, 1000);
+  };
+
   // 실시간 메시지 수신 처리
   useEffect(() => {
     if (roomId && client?.connected) {
       const headers = { Authorization: `Bearer ${accessToken}` };
-      const subscription = client.subscribe(
+      client.subscribe(
         `/sub/chat/room/${roomId}`,
         (message: Message) => {
           const receivedMessage: ReturnedMessageForm = {
@@ -132,23 +153,21 @@ export const ChatRoom: React.FC<{
             updatedMessages.sort((a, b) => a.id - b.id);
             return updatedMessages;
           });
-          setHasChanges(true);
-
+          triggerChangeFlag();
           messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-
-          const timer = setTimeout(() => {
-            setHasChanges(false);
-          }, 1000);
-          return () => clearTimeout(timer);
         },
         headers,
       );
       return () => {
-        subscription.unsubscribe();
-        setHasChanges(false);
+        if (client && client.connected) {
+          const headers = { roomId: String(roomId) };
+          client.unsubscribe(`/sub/chat/room/${roomId}`, headers);
+          clearChangeTimer();
+        }
+        clearChangeTimer();
       };
     }
-  }, [roomId, client, accessToken, setHasChanges]);
+  }, [roomId, client]);
 
   useEffect(() => {
     if (roomName) {
