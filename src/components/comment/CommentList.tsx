@@ -11,6 +11,7 @@ import AlertModal from '../modal/AlertModal';
 import { NoCommentIcon } from '@/utils/icons';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { queryKeys } from '@/queryKeys/queryKeys';
 
 interface CommentListType {
   postId: number;
@@ -47,7 +48,7 @@ const CommentList: React.FC<CommentListType> = ({ postId }: any) => {
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ['scrollComments', postId],
+    queryKey: queryKeys.scrollComments(postId),
     queryFn: ({ pageParam }) => getComments({ pageParam, postId }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {

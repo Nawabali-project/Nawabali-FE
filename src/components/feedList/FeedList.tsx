@@ -13,6 +13,7 @@ import DetailPostModal from '../modal/DetailPostModal';
 import { Post } from '@/interfaces/main/posts.interface';
 import { LocationIcon } from '@/utils/icons';
 import SkeletonList from '../skeleton/SkeletonList';
+import { queryKeys } from '@/queryKeys/queryKeys';
 
 const FeedList = ({ category, district }: { category: any; district: any }) => {
   const [isDetailPostModalOpen, setIsDetailPostModalOpen] =
@@ -32,7 +33,7 @@ const FeedList = ({ category, district }: { category: any; district: any }) => {
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ['scrollPosts', category, district],
+    queryKey: queryKeys.scrollPosts(category, district),
     queryFn: ({ pageParam = 0 }) =>
       getPostsByFilter({
         pageParam,

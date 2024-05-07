@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllPostsElastic } from '@/api/post';
+import { queryKeys } from '@/queryKeys/queryKeys';
 
 const AllPosts = () => {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['allPosts'],
+    queryKey: queryKeys.allPosts,
     queryFn: getAllPostsElastic,
   });
 
