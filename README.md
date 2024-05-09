@@ -156,12 +156,11 @@
 - 프로필 사진, 닉네임, 나의 지역을 변경할 수 있습니다.
 
 ![00마이페이지 _ 등록한 게시물 확인](https://github.com/Nawabali-project/Nawabali-BE/assets/157681548/675f6f3d-9bb0-45a4-b48a-8a434c64a190)
-![본인게시물확인짤](https://github.com/Nawabali-project/Nawabali-BE/assets/105621255/f39b2b0b-85b2-4ca6-8e75-42d8b7ee871d)
+![스크린샷(178)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/ad891eb7-4852-4264-bca0-939be18765e2)
 
 - 마이페이지에서 내가 등록한 게시물들을 확인할 수 있습니다.
 
 ![북마크](https://github.com/Nawabali-project/Nawabali-BE/assets/157681548/85842426-1704-49a8-a8cc-4890a0e10e27)
-![본인의 북마크짤](https://github.com/Nawabali-project/Nawabali-BE/assets/105621255/032dd71f-a49d-421f-b9bb-d3cebce953df)
 - 마이페이지에서 내가 등록한 북마크된 게시물들을 볼 수 있습니다.
 
 ![본인등급확인짤](https://github.com/Nawabali-project/Nawabali-BE/assets/105621255/570cd66e-0d58-4494-86f9-530dc2a0cfe1)
