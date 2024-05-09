@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
+![스크린샷(182)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/eae2afdb-9626-4643-89e2-3b39f5f2a730)<img src="https://capsule-render.vercel.app/api?type=waving&color=0:85daff,100:6799fe&height=100" />
 
 ![동네방네 썸네일 시안2](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/a0a3aa24-c2a2-46f9-872a-b66258c6d6ce)
 
@@ -109,6 +109,8 @@
 <summary>🌟 댓글 CRUD</summary>
 <br>
 
+![스크린샷(183)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/c72b9d1e-0dd8-4129-bd72-4a75607f5c75)
+
 - 댓글을 통해 사람들과 소통
 
 </details>
@@ -116,6 +118,8 @@
 <details>
 <summary>🌟 주민추천 / 좋아요 / 북마크 기능</summary>
 <br>
+
+![스크린샷(182)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/ba25a380-1315-4310-8960-8d2d9f648993)
 
 - 주민추천은 게시물이 작성된 동네의 주민만 클릭 가능
 - 좋아요는 외부주민도 클릭 가능
@@ -166,7 +170,8 @@
 <summary>🌟 유저와 실시간 통신</summary>
 <br>
 
-![328190019-2d7b1a2a-87c0-4db8-85e0-61bde1719c7c](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/18e7ef1b-ee74-4d56-967c-6da08e3d33ea)
+![스크린샷(190)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/a9f4a571-6f0e-40eb-8ec4-a83abbdd3f04)
+
 - 1:1 실시간으로 익명의 유저와 소통
 
 </details>
@@ -174,6 +179,8 @@
 <details>
 <summary>🌟 빠르고 간편한 검색</summary>
 <br>
+
+![스크린샷(189)](https://github.com/Nawabali-project/Nawabali-FE/assets/80045891/b678e0a2-010c-40b9-8c4c-1d7163d39dcb)
 
 - 게시물 내용으로 빠른 검색 가능
 
