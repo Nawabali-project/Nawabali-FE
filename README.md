@@ -20,7 +20,7 @@
 ## 🧑🏻‍💻👩🏻‍💻 FE 팀원
 | **최경일(팀장)** | **하나래** |
 | :------: |  :------: |
-| [<img src="https://github.com/kyungmin1221/BaekJoon/assets/105621255/1d1fd83d-ef01-4144-9d65-9b6056d40a43" height=150 width=150> <br/> @kyungmin](https://github.com/kyungmin1221) | [<img src="https://github.com/Nawabali-project/Nawabali-BE/assets/105621255/dd34e52f-3038-470a-9aca-1833b42a0ace" height=150 width=150> <br/> @Peter-Yu](https://github.com/Peter-Yu-0402) | [<img src="https://github.com/Nawabali-project/Nawabali-BE/assets/105621255/87cd2bd0-62e3-4e01-b4c3-e1d06b29fde2" height=150 width=150> <br/> @Juwum12](https://github.com/juwum12) | [<img src="https://github.com/kyungmin1221/BaekJoon/assets/105621255/2373d997-73e3-47d7-84f9-fdc0c12cfa28" height=150 width=150> <br/> @minnieming](https://github.com/minnieming) |
+| [<img src="https://avatars.githubusercontent.com/u/80045891?s=400&u=621eb447ca2a6cfff4542f203245b89588f29d66&v=4" height=150 width=150> <br/> @inhachoi](https://github.com/inhachoi) | [<img src="https://avatars.githubusercontent.com/u/133945249?v=4" height=150 width=150> <br/> @1roo](https://github.com/1roo) |
 
 
 | 이름    | 역할    | 깃허브    |
@@ -177,7 +177,7 @@
 
 * #### 개선 사항
   * 동적 import로 첫 로딩시간 개선 (React.lazy)
-  * 이미지 최적화로 속도 개선 (사이즈 조정 및 압축 / CLS / Lazy Loading )
+  * 이미지 최적화로 속도 개선 (사이즈 조정 및 압축 / CLS / Lazy Loading / webp는 성능개선만 확인해보고 주석처리 )
   * meta 데이터 설정, console 제거 등 권장사항 준수
 
 * #### 2024-05-05
