@@ -18,22 +18,17 @@
 
 <br><br>
 ## 🧑🏻‍💻👩🏻‍💻 FE 팀원
-<table>
-  <tbody>
-    <tr>
-      <td align="center">
-        <a href="https://github.com/inhachoi">최경일</a><br />
-        <img src="https://scontent-ssn1-1.cdninstagram.com/v/t51.2885-15/387265705_688108082998779_5231387308078165349_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=VqkETrfmL_EQ7kNvgEz6-fE&edm=AGXveE0BAAAA&ccb=7-5&oh=00_AfAokniF-Ao9PXx3EFNym1c8mseIwhiJYnrkuLYkRZ5aaA&oe=66382C92&_nc_sid=cf751b" width="200px;" alt=""/><br />
-         아침 안먹는 남자자 <br />
-        </td>
-      <td align="center">
-        <a href="https://github.com/1roo">하나래</a><br />
-        <img src="https://scontent-ssn1-1.cdninstagram.com/v/t51.12442-15/69368022_980938318926608_4714438118412745851_n.jpg?stp=c0.398.1024.1024a_dst-jpg_e35_s150x150&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=108&_nc_ohc=YjyM_2KJLjcQ7kNvgGYoJvc&edm=AGXveE0BAAAA&ccb=7-5&oh=00_AfANWQdR07IR3pkt-AVZfkHDuHN0o4KrN9koCeWCXOnnyw&oe=66343A24&_nc_sid=cf751b" width="200px;" alt=""/><br />
-         아침 먹고 자는 여자 <br />
-        </td>
-    </tr>
-  </tbody>
-</table>
+| **최경일(팀장)** | **하나래** |
+| :------: |  :------: |
+| [<img src="https://github.com/kyungmin1221/BaekJoon/assets/105621255/1d1fd83d-ef01-4144-9d65-9b6056d40a43" height=150 width=150> <br/> @kyungmin](https://github.com/kyungmin1221) | [<img src="https://github.com/Nawabali-project/Nawabali-BE/assets/105621255/dd34e52f-3038-470a-9aca-1833b42a0ace" height=150 width=150> <br/> @Peter-Yu](https://github.com/Peter-Yu-0402) | [<img src="https://github.com/Nawabali-project/Nawabali-BE/assets/105621255/87cd2bd0-62e3-4e01-b4c3-e1d06b29fde2" height=150 width=150> <br/> @Juwum12](https://github.com/juwum12) | [<img src="https://github.com/kyungmin1221/BaekJoon/assets/105621255/2373d997-73e3-47d7-84f9-fdc0c12cfa28" height=150 width=150> <br/> @minnieming](https://github.com/minnieming) |
+
+
+| 이름    | 역할    | 깃허브    |
+| -----    | -----    | -----    |
+| 최경일    | 게시물 CRUD, 댓글 CRUD, 무한스크롤, 주민추천/좋아요/북마크 기능, 카카오 지도 API 연동 (커스텀 오버레이 / 폴리곤 / 키워드 장소검색 목록 표시 / 지도에 마커 찍기 / 내 위치로 이동), 장소 및 카테고리별 필터링, 이미지 최적화(webp 변환, lazy loading), 스켈레톤 UI, 최적화 작업(라이트 하우스 기반) | https://github.com/inhachoi | 
+| 하나래    | 마이페이지, 프로필 편집, 실시간 채팅 및 알림, 역 무한스크롤, 검색(debounce), 로그인 및 회원가입(로컬/소셜), 뉴스페이지, | https://github.com/1roo |
+
+
 
 
 <br><br>
